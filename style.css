@@ -73,7 +73,7 @@
   color: #7a4030;
 }
 
-body { padding-top: 44px; }
+.wip-text.zh { display: none; }
 
 /* ============================================================
    RESET & BASE
@@ -94,7 +94,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
-  padding: 40px 16px 60px;
+  padding: 84px 16px 60px;
 
   background-color: #ece8e2;
   background-image:
@@ -732,7 +732,7 @@ hr {
   }
 
   body {
-    padding: 16px 8px 40px;
+    padding: 60px 8px 40px;
   }
 
   .container {
