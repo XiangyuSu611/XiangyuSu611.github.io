@@ -42,26 +42,38 @@
 }
 
 /* ============================================================
-   WIP BADGE
+   WIP BANNER
    ============================================================ */
-.wip-badge {
+.wip-banner {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 107, 53, 0.4);
   font-family: var(--font-stack);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.75);
-  background: rgba(30, 30, 30, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 5px 10px;
-  border-radius: 20px;
   pointer-events: none;
 }
+
+.wip-icon { flex-shrink: 0; }
+
+.wip-text { line-height: 1.4; }
+
+[data-theme="light"] .wip-banner {
+  background: #fff8f5;
+  border-bottom-color: rgba(255, 107, 53, 0.35);
+  color: #7a4030;
+}
+
+body { padding-top: 44px; }
 
 /* ============================================================
    RESET & BASE
@@ -659,7 +671,12 @@ hr {
 [data-lang="zh"] .contact-intro.en,
 [data-lang="zh"] .life-text .en,
 [data-lang="zh"] .prose .prose-en,
-[data-lang="zh"] .pub-summary.en {
+[data-lang="zh"] .pub-summary.en,
+[data-lang="zh"] .wip-text.en {
+  display: none;
+}
+
+[data-lang="en"] .wip-text.zh {
   display: none;
 }
 
