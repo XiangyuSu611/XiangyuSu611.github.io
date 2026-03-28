@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="" data-lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xiangyu Su</title>
+  <meta name="description" content="Personal homepage of Xiangyu Su, a CS/AI/ML researcher." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- FOUC prevention: set theme before first paint -->
+  <script>
+    (function () {
+      var stored = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      var lang = localStorage.getItem('lang') || 'en';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ======================================================
+       HERO
+       ====================================================== -->
+  <section class="hero-block" aria-label="Introduction">
+
+    <!-- Top bar: name + toggles -->
+    <div class="hero-top-bar">
+      <h1 class="hero-name">Xiangyu Su</h1>
+      <div class="toggles">
+        <label class="capsule-toggle" aria-label="Switch language">
+          <input type="checkbox" id="langToggle">
+          <span class="cap-dot"></span>
+          <span class="cap-text cap-a">EN</span>
+          <span class="cap-sep">/</span>
+          <span class="cap-text cap-b">中</span>
+        </label>
+        <label class="capsule-toggle capsule-toggle--theme" aria-label="Switch theme">
+          <input type="checkbox" id="themeToggle">
+          <span class="cap-dot"></span>
+          <span class="cap-text cap-a">☀️</span>
+          <span class="cap-sep">/</span>
+          <span class="cap-text cap-b">🌙</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="hero-divider"></div>
+
+    <!-- Bottom: photo + bio + social -->
+    <div class="hero-bottom">
+      <div class="hero-photo" aria-label="Photo">
+        <!-- 换图时：把下面的 div 删掉，改为 <img src="photo.jpg" alt="Xiangyu Su"> -->
+        <div class="hero-photo-placeholder">Photo</div>
+      </div>
+      <div class="hero-info">
+        <p class="bio-en">
+          I'm a researcher working at the intersection of machine learning, AI safety, and
+          human-centered computing. My work focuses on making learned systems more transparent,
+          reliable, and aligned with how people actually think and decide.
+        </p>
+        <!-- Social links — add more icons here to extend -->
+        <div class="social-links">
+          <a href="mailto:your@email.com" class="social-icon" aria-label="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+            Email
+          </a>
+          <span class="social-divider"></span>
+          <a href="https://github.com/username" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+          <!-- 新增链接时在前面加 <span class="social-divider"></span> -->
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <hr />
+
+  <!-- ======================================================
+       RESEARCH
+       ====================================================== -->
+  <section aria-label="Research">
+    <h2 class="section-title">Research</h2>
+
+    <div class="research-prose">
+      <!-- 在此添加当前研究方向或在研项目 -->
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ======================================================
+       PUBLICATIONS
+       ====================================================== -->
+  <section aria-label="Publications">
+    <h2 class="section-title">Publications</h2>
+
+    <div class="pub-list">
+
+      <!-- Publication item — 有外部报道时加 <div class="pub-press">...</div> -->
+      <div class="pub-item">
+        <div class="pub-thumb">
+          <!-- 换图：<img src="paper1.jpg" alt="paper thumbnail"> -->
+          <div class="pub-thumb-placeholder"></div>
+        </div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">NeurIPS 2024</span>
+            <div class="pub-links">
+              <a href="#">Paper</a>
+              <a href="#">Code</a>
+            </div>
+          </div>
+          <div class="pub-title en">Understanding Gradient Flow in Overparameterized Networks</div>
+          <div class="pub-authors"><strong>Xiangyu Su</strong>, Jane Doe, John Smith</div>
+          <div class="pub-summary en">We characterize how gradient signals propagate through depth, identifying a phase transition that explains empirical training instabilities in large-scale models.</div>
+          <div class="pub-summary zh">我们分析了梯度信号在深度网络中的传播规律，发现了一种相变现象，可以解释大规模模型训练中的不稳定性。</div>
+          <!-- 外部报道（没有时删掉这行） -->
+          <div class="pub-press">
+            <span class="pub-press-label">Coverage</span>
+            <a href="#" class="pub-press-link">MIT News</a>
+            <a href="#" class="pub-press-link">The Gradient</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <div class="pub-thumb">
+          <div class="pub-thumb-placeholder"></div>
+        </div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">ICML 2024</span>
+            <div class="pub-links">
+              <a href="#">Paper</a>
+              <a href="#">Code</a>
+            </div>
+          </div>
+          <div class="pub-title en">Efficient Sparse Inference via Learned Activation Routing</div>
+          <div class="pub-authors"><strong>Xiangyu Su</strong>, Bob Zhang</div>
+          <div class="pub-summary en">A lightweight routing mechanism that selectively activates subnetworks at inference time, achieving 3× speedup with negligible accuracy loss on standard benchmarks.</div>
+          <div class="pub-summary zh">一种轻量级的路由机制，可以在推理时选择性地激活子网络，在基准测试上实现了 3 倍加速，同时精度损失可以忽略不计。</div>
+          <!-- 此条无外部报道，无需 pub-press -->
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <div class="pub-thumb">
+          <div class="pub-thumb-placeholder"></div>
+        </div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">ICLR 2023</span>
+            <div class="pub-links">
+              <a href="#">Paper</a>
+              <a href="#">Code</a>
+            </div>
+          </div>
+          <div class="pub-title en">Calibrating Model Uncertainty for Human-in-the-Loop Decisions</div>
+          <div class="pub-authors">Jane Doe, <strong>Xiangyu Su</strong>, Alice Chen, Bob Zhang</div>
+          <div class="pub-summary en">We study how predictive uncertainty estimates influence downstream human judgment in high-stakes settings, proposing a calibration framework grounded in cognitive load theory.</div>
+          <div class="pub-summary zh">我们研究了深度集成与保形预测的不确定性估计如何影响高风险场景中的人类判断，并提出了一种基于认知负荷理论的校准框架。</div>
+          <div class="pub-press">
+            <span class="pub-press-label">Coverage</span>
+            <a href="#" class="pub-press-link">Stanford HAI</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ======================================================
+       LIFE
+       ====================================================== -->
+  <section aria-label="Life outside research">
+    <h2 class="section-title">Life</h2>
+
+    <div class="life-list">
+      <div class="life-item">
+        <span class="life-emoji" aria-hidden="true">📷</span>
+        <div class="life-text">
+          <span class="en">Photography — finding geometry in everyday scenes.</span>
+          <span class="zh">摄影 · 在日常风景中寻找几何之美</span>
+        </div>
+      </div>
+      <div class="life-item">
+        <span class="life-emoji" aria-hidden="true">📚</span>
+        <div class="life-text">
+          <span class="en">Reading — philosophy of mind, science fiction, and the occasional recipe book.</span>
+          <span class="zh">阅读 · 心智哲学、科幻小说，偶尔翻翻食谱</span>
+        </div>
+      </div>
+      <div class="life-item">
+        <span class="life-emoji" aria-hidden="true">🥾</span>
+        <div class="life-text">
+          <span class="en">Hiking — slow miles, big views.</span>
+          <span class="zh">徒步 · 走得慢，看得远</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       FOOTER
+       ====================================================== -->
+  <footer class="site-footer">
+    Xiangyu Su · 2025 · Built with <span class="footer-cc">Claude Code</span> ♥
+  </footer>
+
+</div><!-- /.container -->
+
+<script>
+  var html = document.documentElement;
+
+  // ── Transitions (avoid FOUC) ──────────────────────────────
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      html.classList.add('transitions-ready');
+    });
+  });
+
+  // ── Theme toggle ──────────────────────────────────────────
+  var themeCheckbox = document.getElementById('themeToggle');
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    themeCheckbox.checked = (theme === 'dark');
+  }
+
+  applyTheme(html.getAttribute('data-theme') || 'light');
+
+  themeCheckbox.addEventListener('change', function () {
+    var next = this.checked ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    html.setAttribute('data-theme-override', 'true');
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+    if (html.getAttribute('data-theme-override') === 'true') return;
+    applyTheme(e.matches ? 'dark' : 'light');
+  });
+
+  // ── Language toggle ───────────────────────────────────────
+  var langCheckbox = document.getElementById('langToggle');
+
+  function applyLang(lang) {
+    html.setAttribute('data-lang', lang);
+    langCheckbox.checked = (lang === 'zh');
+  }
+
+  applyLang(html.getAttribute('data-lang') || 'en');
+
+  langCheckbox.addEventListener('change', function () {
+    var next = this.checked ? 'zh' : 'en';
+    html.setAttribute('data-lang', next);
+    localStorage.setItem('lang', next);
+  });
+
+</script>
+
+</body>
+</html>
