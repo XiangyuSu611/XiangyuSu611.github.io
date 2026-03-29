@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gradient Background Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { background: #1a1a1a; padding: 40px 24px 80px; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    .page-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+    .page-sub { font-size: 14px; color: #555; margin-bottom: 40px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+
+    .card { border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+    .card-header { padding: 13px 18px 11px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.15); backdrop-filter: blur(8px); }
+    .card-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .card-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); }
+
+    /* Panels */
+    .panels { display: flex; height: 220px; }
+    .panel { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+    .panel-label { position: absolute; top: 12px; left: 14px; font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.4; }
+
+    /* Mock content */
+    .mock { background: rgba(255,255,255,0.65); backdrop-filter: blur(12px); border-radius: 12px; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.4); }
+    .mock.dark-mock { background: rgba(15,15,15,0.55); border-color: rgba(255,255,255,0.08); }
+    .mock-name { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: #1a1a1a; margin-bottom: 4px; }
+    .mock-name.dm { color: rgba(255,255,255,0.9); }
+    .mock-bio { font-size: 10px; color: #888; line-height: 1.5; }
+    .mock-bio.dm { color: rgba(255,255,255,0.4); }
+    .mock-tag { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; margin-top: 6px; }
+    .mock-tag.light { background: rgba(255,107,53,0.15); color: #ff6b35; }
+    .mock-tag.dark  { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+    .card-desc { padding: 13px 18px 15px; font-size: 12px; color: #555; line-height: 1.55; background: #111; }
+    .card-desc strong { color: #888; }
+
+    /* ── A: Warm sand drift ── */
+    .bg-a-light { background: radial-gradient(ellipse at 70% 20%, #f5e6d0 0%, #ede8df 40%, #e8e2d8 100%); }
+    .bg-a-dark  { background: radial-gradient(ellipse at 30% 80%, #1a1208 0%, #0f0f0d 50%, #0d0c0b 100%); }
+
+    /* ── B: Aurora mesh ── */
+    .bg-b-light {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(255,200,150,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(200,230,255,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 60% 80%, rgba(200,240,220,0.25) 0%, transparent 50%),
+        #ece8e2;
+    }
+    .bg-b-dark {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(74,222,128,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(56,100,200,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 60% 80%, rgba(100,60,180,0.06) 0%, transparent 50%),
+        #0a0a0f;
+    }
+
+    /* ── C: Diagonal sweep ── */
+    .bg-c-light { background: linear-gradient(135deg, #f0ebe2 0%, #e8e0d5 35%, #ede5d8 65%, #f2ece4 100%); }
+    .bg-c-dark  { background: linear-gradient(135deg, #0c0c10 0%, #0f0e14 40%, #0b0d0f 70%, #0a0b0d 100%); }
+
+    /* ── D: Soft spotlight ── */
+    .bg-d-light {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,180,100,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 80% at 50% 100%, rgba(200,220,255,0.12) 0%, transparent 60%),
+        #edeae4;
+    }
+    .bg-d-dark {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,222,128,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 80% at 80% 100%, rgba(56,100,200,0.08) 0%, transparent 60%),
+        #090909;
+    }
+
+    /* ── E: Paper grain (pure CSS) ── */
+    .bg-e-light {
+      background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, #f4efe8 0%, #ebe5db 50%, #f0ebe3 100%);
+      background-size: 256px, 100%;
+    }
+    .bg-e-dark {
+      background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, #0d0d0d 0%, #0a0a0c 50%, #0c0b0b 100%);
+      background-size: 256px, 100%;
+    }
+
+    /* ── F: Layered haze ── */
+    .bg-f-light {
+      background:
+        radial-gradient(ellipse at 0% 100%, rgba(255,160,80,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 0%, rgba(180,210,255,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(240,235,228,1) 0%, #e5dfd6 100%);
+    }
+    .bg-f-dark {
+      background:
+        radial-gradient(ellipse at 0% 100%, rgba(74,222,128,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 0%, rgba(100,150,255,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, #0e0e0e 0%, #090909 100%);
+    }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Background · Gradient Options</p>
+<p class="page-sub">六种渐变背景，左侧白天，右侧夜间，含毛玻璃容器预览</p>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">A</span><span class="card-name">Warm Sand · 暖沙</span></div>
+    <div class="panels">
+      <div class="panel bg-a-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-a-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>暖沙系</strong> — 米白到沙棕的径向渐变，温暖内敛，白天橙色主题色很搭。夜间近纯黑，沉稳。</div>
+  </div>
+
+  <!-- B -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">B</span><span class="card-name">Aurora Mesh · 极光网格</span></div>
+    <div class="panels">
+      <div class="panel bg-b-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-b-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>极光网格</strong> — 多个径向渐变叠加，颜色若隐若现，白天有暖橙/冷蓝微光，夜间绿/蓝极光感。</div>
+  </div>
+
+  <!-- C -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">C</span><span class="card-name">Diagonal Sweep · 斜向扫光</span></div>
+    <div class="panels">
+      <div class="panel bg-c-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-c-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>斜向扫光</strong> — 135° 线性渐变，微妙的色阶变化，最克制，几乎感觉不到渐变但有空间感。</div>
+  </div>
+
+  <!-- D -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">D</span><span class="card-name">Soft Spotlight · 柔光灯</span></div>
+    <div class="panels">
+      <div class="panel bg-d-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-d-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>柔光灯</strong> — 顶部暖橙光、底部冷蓝光，像阳光从上方打入，夜间绿色主题色呼应顶部微光。</div>
+  </div>
+
+  <!-- E -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">E</span><span class="card-name">Paper Grain · 纸纹</span></div>
+    <div class="panels">
+      <div class="panel bg-e-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-e-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>纸纹</strong> — 斜向渐变叠加 SVG 噪点纹理，有纸张质感，细腻高级，无任何抢眼元素。</div>
+  </div>
+
+  <!-- F -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">F</span><span class="card-name">Layered Haze · 层叠薄雾</span></div>
+    <div class="panels">
+      <div class="panel bg-f-light">
+        <div class="panel-label" style="color:#1a1a1a">Day</div>
+        <div class="mock"><div class="mock-name">Xiangyu Su</div><div class="mock-bio">Researcher · ML / AI Safety</div><span class="mock-tag light">NeurIPS 2024</span></div>
+      </div>
+      <div class="panel bg-f-dark">
+        <div class="panel-label" style="color:#fff">Night</div>
+        <div class="mock dark-mock"><div class="mock-name dm">Xiangyu Su</div><div class="mock-bio dm">Researcher · ML / AI Safety</div><span class="mock-tag dark">NeurIPS 2024</span></div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>层叠薄雾</strong> — 角落有隐约的彩色光晕，中心干净，视觉焦点自然集中在页面内容上。</div>
+  </div>
+
+</div>
+</body>
+</html>

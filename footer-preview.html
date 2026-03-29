@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Footer Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --orange: #ff6b35; --border: #e8e4de; --muted: #888; --subtle: #bbb; }
+
+    body { background: #f0ede7; padding: 40px 24px 80px; font-family: 'Plus Jakarta Sans', sans-serif; color: #1a1a1a; }
+
+    .page-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+    .page-sub { font-size: 14px; color: #888; margin-bottom: 40px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+
+    .card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: box-shadow 0.2s, transform 0.15s; cursor: pointer; }
+    .card:hover { box-shadow: 0 8px 36px rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px 11px; border-bottom: 1px solid #f5f2ee; }
+    .card-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ccc; }
+    .card-name { font-size: 12px; font-weight: 600; color: #555; }
+
+    /* Simulated container bottom */
+    .mock-container { padding: 0 24px; background: #fff; }
+    .mock-section-end { padding: 16px 0 0; border-top: 1px solid #f0ede7; margin-bottom: 0; }
+    .mock-life { font-size: 11px; color: #ccc; padding-bottom: 16px; }
+
+    /* Footer area */
+    .footer-area { border-top: 1px solid var(--border); }
+
+    .card-desc { padding: 12px 18px 16px; font-size: 12px; color: #888; line-height: 1.55; border-top: 1px solid #f5f2ee; }
+    .card-desc strong { color: #444; }
+
+    /* ── A: Simple badge ── */
+    .footer-a {
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .claude-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      background: #f5f2ee; border: 1px solid var(--border);
+      padding: 3px 9px 3px 7px; border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+    .claude-badge .badge-icon { font-size: 12px; }
+    .footer-a-text { font-size: 11px; color: var(--subtle); }
+
+    /* ── B: Centered with year ── */
+    .footer-b {
+      padding: 18px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .footer-b-main { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .footer-b-main .spark { color: var(--orange); font-size: 14px; }
+    .footer-b-sub { font-size: 10px; color: var(--subtle); letter-spacing: 0.04em; }
+
+    /* ── C: Left-right split ── */
+    .footer-c {
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-c-left { font-size: 11px; color: var(--subtle); font-style: italic; }
+    .footer-c-right { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--subtle); }
+    .footer-c-right .cc-name { color: var(--orange); font-weight: 600; }
+
+    /* ── D: Serif quote style ── */
+    .footer-d {
+      padding: 18px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      text-align: center;
+    }
+    .footer-d-quote {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 13px; color: var(--muted);
+    }
+    .footer-d-attr { font-size: 10px; color: var(--subtle); letter-spacing: 0.06em; text-transform: uppercase; }
+    .footer-d-attr span { color: var(--orange); }
+
+    /* ── E: Minimal one-liner with dot ── */
+    .footer-e {
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; font-size: 11px; color: var(--subtle);
+    }
+    .footer-e .sep { color: var(--border); }
+    .footer-e .cc { color: var(--orange); font-weight: 600; }
+    .footer-e .heart { color: var(--orange); }
+
+    /* ── F: Dark pill ── */
+    .footer-f {
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dark-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #1a1a1a; color: #888;
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.02em;
+    }
+    .dark-pill .dp-name { color: #fff; font-weight: 600; }
+    .dark-pill .dp-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Footer · Options</p>
+<p class="page-sub">六种 footer 方案，标注由 Claude Code 生成</p>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">A</span><span class="card-name">徽章 + 说明</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-a">
+          <div class="claude-badge"><span class="badge-icon">✦</span> Claude Code</div>
+          <span class="footer-a-text">生成并构建此网站</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>小徽章</strong> — 圆角标签标注 Claude Code，旁边接文字说明，简洁有设计感。</div>
+  </div>
+
+  <!-- B -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">B</span><span class="card-name">居中 + 小字副标</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-b">
+          <div class="footer-b-main">
+            <span class="spark">✦</span>
+            <span>由 Claude Code 对话生成</span>
+          </div>
+          <div class="footer-b-sub">Xiangyu Su · 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>居中两行</strong> — 主句 + 年份署名，干净庄重，✦ 作为装饰点缀。</div>
+  </div>
+
+  <!-- C -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">C</span><span class="card-name">左右分栏</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-c">
+          <span class="footer-c-left">手写内容，AI 落笔</span>
+          <div class="footer-c-right">Made with <span class="cc-name">Claude Code</span> · 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>左右分栏</strong> — 左边一句俏皮话，右边署名，有点杂志尾页的感觉。</div>
+  </div>
+
+  <!-- D -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">D</span><span class="card-name">衬线引语</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-d">
+          <div class="footer-d-quote">"思路是我的，代码是它写的。"</div>
+          <div class="footer-d-attr">Generated by <span>Claude Code</span> · 2025</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>衬线引语</strong> — 一句斜体俏皮话 + 小字归因，文艺感强，个人色彩鲜明。</div>
+  </div>
+
+  <!-- E -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">E</span><span class="card-name">极简一行</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-e">
+          <span>Xiangyu Su</span>
+          <span class="sep">·</span>
+          <span>2025</span>
+          <span class="sep">·</span>
+          <span>Built with <span class="cc">Claude Code</span></span>
+          <span class="heart">♥</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>极简一行</strong> — 所有信息用 · 隔开，最干净，橙色高亮 Claude Code。</div>
+  </div>
+
+  <!-- F -->
+  <div class="card">
+    <div class="card-header"><span class="card-num">F</span><span class="card-name">深色药丸</span></div>
+    <div class="mock-container">
+      <div class="mock-section-end"><div class="mock-life">🥾 Hiking — slow miles, big views.</div></div>
+      <div class="footer-area">
+        <div class="footer-f">
+          <div class="dark-pill">
+            <div class="dp-dot"></div>
+            <span>Generated by</span>
+            <span class="dp-name">Claude Code</span>
+            <span>· 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>深色药丸</strong> — 深底白字，橙点装饰，像一枚科技感标签，在浅色页面上很抢眼。</div>
+  </div>
+
+</div>
+</body>
+</html>

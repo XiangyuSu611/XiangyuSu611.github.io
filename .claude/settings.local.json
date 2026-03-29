@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:felixlee.dev)",
+      "Bash(curl:*)",
+      "Bash(open:*)",
+      "Bash(bash /Users/xiangyu/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6/skills/brainstorming/scripts/start-server.sh --project-dir \"/Users/xiangyu/Nutstore Files/Xiangyu/person_page\")"
+    ]
+  }
+}

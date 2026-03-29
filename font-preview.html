@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Font Preview — Xiangyu Su</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?
+    family=Cormorant+Garamond:ital,wght@0,300;1,300
+    &family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400
+    &family=Playfair+Display:wght@400;700
+    &family=DM+Serif+Display:ital@0;1
+    &family=Josefin+Sans:wght@300;400
+    &family=Raleway:wght@300;400
+    &family=Tenor+Sans
+    &family=Libre+Baskerville:ital@0;1
+    &display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f3ef;
+      padding: 40px 24px 60px;
+      font-family: system-ui, sans-serif;
+      color: #1a1a1a;
+    }
+
+    h1 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 32px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 28px 24px;
+      border: 1px solid #e8e5e0;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      transform: translateY(-2px);
+      border-color: #c8c3bb;
+    }
+
+    .card .number {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #bbb;
+    }
+
+    .card .name {
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .card .meta {
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .card .style-tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #f0eee8;
+      color: #888;
+      margin-top: 6px;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ── Individual font styles ── */
+    .f1 .name { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; letter-spacing: -0.01em; }
+    .f2 .name { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; font-style: italic; letter-spacing: 0; }
+    .f3 .name { font-family: 'Bodoni Moda', serif; font-size: 2.7rem; font-weight: 400; font-variation-settings: 'opsz' 48; letter-spacing: -0.02em; }
+    .f4 .name { font-family: 'Bodoni Moda', serif; font-size: 2.7rem; font-weight: 400; font-style: italic; font-variation-settings: 'opsz' 48; letter-spacing: -0.01em; }
+    .f5 .name { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 400; letter-spacing: -0.01em; }
+    .f6 .name { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02em; }
+    .f7 .name { font-family: 'DM Serif Display', serif; font-size: 2.9rem; font-weight: 400; letter-spacing: -0.01em; }
+    .f8 .name { font-family: 'DM Serif Display', serif; font-size: 2.9rem; font-style: italic; letter-spacing: 0; }
+    .f9 .name { font-family: 'Josefin Sans', sans-serif; font-size: 2.6rem; font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; }
+    .f10 .name { font-family: 'Raleway', sans-serif; font-size: 2.8rem; font-weight: 300; letter-spacing: 0.04em; }
+    .f11 .name { font-family: 'Tenor Sans', sans-serif; font-size: 2.7rem; font-weight: 400; letter-spacing: 0.02em; }
+    .f12 .name { font-family: 'Libre Baskerville', serif; font-size: 2.5rem; font-weight: 400; letter-spacing: -0.01em; }
+  </style>
+</head>
+<body>
+
+<h1>Font Preview · Name "Xiangyu Su"</h1>
+
+<div class="grid">
+
+  <div class="card f1">
+    <span class="number">1</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Cormorant Garamond · Light</div>
+    <span class="style-tag">轻盈优雅，古典气质</span>
+  </div>
+
+  <div class="card f2">
+    <span class="number">2</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Cormorant Garamond · Light Italic</div>
+    <span class="style-tag">斜体更有书卷气</span>
+  </div>
+
+  <div class="card f3">
+    <span class="number">3</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Bodoni Moda · Regular</div>
+    <span class="style-tag">高对比，时尚杂志感</span>
+  </div>
+
+  <div class="card f4">
+    <span class="number">4</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Bodoni Moda · Italic</div>
+    <span class="style-tag">Vogue 风格，极有个性</span>
+  </div>
+
+  <div class="card f5">
+    <span class="number">5</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Playfair Display · Regular</div>
+    <span class="style-tag">经典编辑体，可读性强</span>
+  </div>
+
+  <div class="card f6">
+    <span class="number">6</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Playfair Display · Bold</div>
+    <span class="style-tag">粗体版，气场十足</span>
+  </div>
+
+  <div class="card f7">
+    <span class="number">7</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">DM Serif Display · Regular</div>
+    <span class="style-tag">现代衬线，干净利落</span>
+  </div>
+
+  <div class="card f8">
+    <span class="number">8</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">DM Serif Display · Italic</div>
+    <span class="style-tag">斜体更柔和，文艺感</span>
+  </div>
+
+  <div class="card f9">
+    <span class="number">9</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Josefin Sans · Light</div>
+    <span class="style-tag">几何无衬线，建筑感强</span>
+  </div>
+
+  <div class="card f10">
+    <span class="number">10</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Raleway · Light</div>
+    <span class="style-tag">优雅纤细，W 字形独特</span>
+  </div>
+
+  <div class="card f11">
+    <span class="number">11</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Tenor Sans · Regular</div>
+    <span class="style-tag">低调精致，学术范儿</span>
+  </div>
+
+  <div class="card f12">
+    <span class="number">12</span>
+    <div class="name">Xiangyu Su</div>
+    <div class="meta">Libre Baskerville · Regular</div>
+    <span class="style-tag">经典 Baskerville 改版</span>
+  </div>
+
+</div>
+
+</body>
+</html>

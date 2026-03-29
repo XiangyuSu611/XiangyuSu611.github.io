@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layout Preview — Hero Section</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0ede7;
+      padding: 40px 24px 80px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: #1a1a1a;
+    }
+
+    .page-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .page-sub {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 28px;
+    }
+
+    /* ── Card wrapper ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+      transform: translateY(-3px);
+      border-color: #b8b2a8;
+    }
+    .card-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid #f0ede7;
+    }
+    .card-label .num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+    .card-label .tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #f5f2ee;
+      color: #999;
+    }
+    .card-label .name-en {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    /* ── Mockup area ── */
+    .mockup {
+      padding: 24px;
+      background: #fafaf8;
+    }
+    .mock-container {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #e8e4de;
+      padding: 24px;
+      font-size: 13px;
+    }
+
+    /* ── Shared mock elements ── */
+    .mock-photo {
+      background: #e8e4de;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #aaa;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .mock-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: #1a1a1a;
+      line-height: 1.1;
+    }
+    .mock-bio {
+      font-size: 11px;
+      color: #aaa;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    /* Toggle mock */
+    .mock-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mock-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f5f2ee;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: #999;
+    }
+    .mock-toggle .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #d0ccc6;
+    }
+    .mock-toggle .dot.active {
+      background: #1a1a1a;
+    }
+
+    /* Social icons mock */
+    .mock-social {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mock-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f0ede7;
+      border: 1px solid #e0dbd4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #666;
+      flex-shrink: 0;
+    }
+    .mock-icon-add {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1.5px dashed #d0ccc6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #ccc;
+      flex-shrink: 0;
+    }
+
+    /* ── Layout A: Classic (photo left, info right, toggles top-right) ── */
+    .layout-a .mock-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .layout-a .mock-photo { width: 88px; height: 110px; }
+    .layout-a .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .layout-a .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .layout-a .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ── Layout B: Stacked center ── */
+    .layout-b .mock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      position: relative;
+    }
+    .layout-b .mock-photo { width: 80px; height: 80px; border-radius: 50%; }
+    .layout-b .toggles-corner {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* ── Layout C: Name top-full-width bar ── */
+    .layout-c .mock-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .layout-c .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0ede7;
+    }
+    .layout-c .bottom-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .layout-c .mock-photo { width: 72px; height: 90px; }
+
+    /* ── Layout D: Photo right ── */
+    .layout-d .mock-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .layout-d .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 110px;
+    }
+    .layout-d .mock-photo { width: 88px; height: 110px; }
+    .layout-d .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ── Card description ── */
+    .card-desc {
+      padding: 16px 20px 18px;
+      font-size: 13px;
+      color: #777;
+      line-height: 1.6;
+    }
+    .card-desc strong {
+      color: #333;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Hero Section · Layout Options</p>
+<p class="page-sub">四种排版方案，包含照片、姓名、中英/主题切换、社交链接（可扩展）</p>
+
+<div class="grid">
+
+  <!-- ── Option A ── -->
+  <div class="card">
+    <div class="card-label">
+      <span class="num">方案 A</span>
+      <span class="name-en">Classic Left</span>
+      <span class="tag">照片居左</span>
+    </div>
+    <div class="mockup layout-a">
+      <div class="mock-container">
+        <div class="mock-photo">Photo</div>
+        <div class="right">
+          <div class="top-row">
+            <div class="mock-name">Xiangyu Su</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div class="mock-toggle">
+                <span class="dot active"></span>EN
+                <span style="color:#ccc;margin:0 2px">·</span>
+                中<span class="dot"></span>
+              </div>
+              <div class="mock-toggle">
+                ☀️ <span class="dot active"></span>
+                <span class="dot"></span> 🌙
+              </div>
+            </div>
+          </div>
+          <div class="mock-bio">Researcher · ML / AI Safety · Human-centered computing</div>
+          <div class="bottom-row">
+            <div class="mock-social">
+              <div class="mock-icon">✉</div>
+              <div class="mock-icon">⌥</div>
+              <div class="mock-icon-add">+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc">
+      <strong>照片左 · 信息右</strong>，现有布局的升级版。切换按钮靠右对齐，社交图标在左下角，扩展时横向添加。干净，符合阅读习惯。
+    </div>
+  </div>
+
+  <!-- ── Option B ── -->
+  <div class="card">
+    <div class="card-label">
+      <span class="num">方案 B</span>
+      <span class="name-en">Centered Stack</span>
+      <span class="tag">居中对称</span>
+    </div>
+    <div class="mockup layout-b">
+      <div class="mock-container">
+        <div class="toggles-corner">
+          <div class="mock-toggle">
+            <span class="dot active"></span>EN · 中<span class="dot"></span>
+          </div>
+          <div class="mock-toggle">
+            ☀️<span class="dot active"></span><span class="dot"></span>🌙
+          </div>
+        </div>
+        <div class="mock-photo">Photo</div>
+        <div class="mock-name" style="font-size:1.7rem">Xiangyu Su</div>
+        <div class="mock-bio" style="max-width:260px">Researcher · ML / AI Safety · Human-centered computing</div>
+        <div class="mock-social" style="justify-content:center">
+          <div class="mock-icon">✉</div>
+          <div class="mock-icon">⌥</div>
+          <div class="mock-icon-add">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc">
+      <strong>居中对称</strong>，圆形照片，简洁庄重。切换按钮收到右上角不干扰视觉中轴。社交图标水平居中排列，扩展时自然延伸。
+    </div>
+  </div>
+
+  <!-- ── Option C ── -->
+  <div class="card">
+    <div class="card-label">
+      <span class="num">方案 C</span>
+      <span class="name-en">Name Bar</span>
+      <span class="tag">姓名通栏</span>
+    </div>
+    <div class="mockup layout-c">
+      <div class="mock-container">
+        <div class="top-bar">
+          <div class="mock-name">Xiangyu Su</div>
+          <div class="mock-toggle-group">
+            <div class="mock-toggle">
+              <span class="dot active"></span>EN · 中<span class="dot"></span>
+            </div>
+            <div class="mock-toggle">
+              ☀️<span class="dot active"></span><span class="dot"></span>🌙
+            </div>
+          </div>
+        </div>
+        <div class="bottom-row">
+          <div class="mock-photo">Photo</div>
+          <div style="flex:1">
+            <div class="mock-bio" style="margin-top:0">Researcher · ML / AI Safety<br>Human-centered computing</div>
+            <div class="mock-social" style="margin-top:10px">
+              <div class="mock-icon">✉</div>
+              <div class="mock-icon">⌥</div>
+              <div class="mock-icon-add">+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc">
+      <strong>姓名独占一行通栏</strong>，与切换开关形成左右平衡。下方照片和简介并排，社交图标自然接在简介下方。层次感最强。
+    </div>
+  </div>
+
+  <!-- ── Option D ── -->
+  <div class="card">
+    <div class="card-label">
+      <span class="num">方案 D</span>
+      <span class="name-en">Photo Right</span>
+      <span class="tag">照片居右</span>
+    </div>
+    <div class="mockup layout-d">
+      <div class="mock-container">
+        <div class="left">
+          <div>
+            <div class="mock-name">Xiangyu Su</div>
+            <div class="mock-bio">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          </div>
+          <div class="bottom-row">
+            <div class="mock-social">
+              <div class="mock-icon">✉</div>
+              <div class="mock-icon">⌥</div>
+              <div class="mock-icon-add">+</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div class="mock-toggle">
+                <span class="dot active"></span>EN · 中<span class="dot"></span>
+              </div>
+              <div class="mock-toggle">
+                ☀️<span class="dot active"></span><span class="dot"></span>🌙
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mock-photo">Photo</div>
+      </div>
+    </div>
+    <div class="card-desc">
+      <strong>照片居右</strong>，视觉上不太常见，有新鲜感。姓名和简介靠左对齐，切换按钮收到右下照片旁边，社交图标在左下。
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

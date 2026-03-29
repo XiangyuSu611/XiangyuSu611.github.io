@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Theme Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0ede7;
+      padding: 40px 24px 80px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .page-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .page-sub {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .swatch-card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+    }
+    .swatch-card:hover {
+      box-shadow: 0 8px 36px rgba(0,0,0,0.13);
+      transform: translateY(-3px);
+    }
+
+    /* Color band */
+    .band {
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px 16px;
+      gap: 8px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+    }
+    .dot.full { background: rgba(255,255,255,0.9); }
+
+    /* Mini mockup */
+    .mini {
+      padding: 16px;
+      border-bottom: 1px solid #f0ede7;
+    }
+    .mini-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0ede7;
+    }
+    .mini-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      color: #1a1a1a;
+    }
+    .mini-toggles {
+      display: flex;
+      gap: 5px;
+    }
+    .mini-toggle {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      border: 1px solid #e8e4de;
+      color: #aaa;
+    }
+    .mini-bottom {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .mini-photo {
+      width: 40px;
+      height: 50px;
+      border-radius: 5px;
+      background: #f0ede7;
+      flex-shrink: 0;
+    }
+    .mini-bio {
+      flex: 1;
+    }
+    .mini-bio-text {
+      font-size: 10px;
+      color: #bbb;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .mini-icons {
+      display: flex;
+      gap: 5px;
+    }
+    .mini-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      border: 1px solid #e8e4de;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    /* Link color demo */
+    .mini-link {
+      font-size: 10px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mini-section {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Info */
+    .info {
+      padding: 14px 16px 16px;
+    }
+    .info-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 3px;
+    }
+    .info-hex {
+      font-size: 11px;
+      color: #aaa;
+      font-family: monospace;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .info-desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Theme Color · Green Options</p>
+<p class="page-sub">六种活力绿色，每张卡片展示在网站上实际用作强调色的效果</p>
+
+<div class="grid">
+
+  <!-- 1. Emerald -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #10b981, #059669)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#10b981;border-color:#10b981">✉</div>
+            <div class="mini-icon" style="color:#10b981;border-color:#10b981">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#10b981">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#10b981">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#10b981">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Emerald</div>
+      <div class="info-hex">#10b981</div>
+      <div class="info-desc">清爽自然，最经典的活力绿。平衡感强，亮暗背景都好看。</div>
+    </div>
+  </div>
+
+  <!-- 2. Spring Green -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #22c55e, #16a34a)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#22c55e;border-color:#22c55e">✉</div>
+            <div class="mini-icon" style="color:#22c55e;border-color:#22c55e">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#22c55e">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#22c55e">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#22c55e">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Spring Green</div>
+      <div class="info-hex">#22c55e</div>
+      <div class="info-desc">明亮饱满，充满生命力。比 Emerald 更鲜亮，视觉跳跃感更强。</div>
+    </div>
+  </div>
+
+  <!-- 3. Lime -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #84cc16, #65a30d)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#84cc16;border-color:#84cc16">✉</div>
+            <div class="mini-icon" style="color:#84cc16;border-color:#84cc16">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#84cc16">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#84cc16">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#84cc16">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Lime</div>
+      <div class="info-hex">#84cc16</div>
+      <div class="info-desc">偏黄绿，电子感十足，有点科技/赛博朋克气质。个性最强。</div>
+    </div>
+  </div>
+
+  <!-- 4. Mint -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #2dd4bf, #0d9488)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#2dd4bf;border-color:#2dd4bf">✉</div>
+            <div class="mini-icon" style="color:#2dd4bf;border-color:#2dd4bf">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#2dd4bf">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#2dd4bf">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#2dd4bf">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Mint / Teal</div>
+      <div class="info-hex">#2dd4bf</div>
+      <div class="info-desc">薄荷青绿，清透凉爽。介于绿和青之间，现代感很强。</div>
+    </div>
+  </div>
+
+  <!-- 5. Forest -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #4ade80, #15803d)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#4ade80;border-color:#4ade80">✉</div>
+            <div class="mini-icon" style="color:#4ade80;border-color:#4ade80">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#4ade80">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#4ade80">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#4ade80">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Neon Green</div>
+      <div class="info-hex">#4ade80</div>
+      <div class="info-desc">亮绿偏浅，有霓虹感。在深色模式下特别出彩，明亮抢眼。</div>
+    </div>
+  </div>
+
+  <!-- 6. Sage -->
+  <div class="swatch-card">
+    <div class="band" style="background: linear-gradient(135deg, #86efac, #16a34a)">
+      <div class="dot full"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="mini">
+      <div class="mini-top">
+        <div class="mini-name">Xiangyu Su</div>
+        <div class="mini-toggles">
+          <div class="mini-toggle">EN·中</div>
+          <div class="mini-toggle">☀️·🌙</div>
+        </div>
+      </div>
+      <div class="mini-bottom">
+        <div class="mini-photo"></div>
+        <div class="mini-bio">
+          <div class="mini-bio-text">Researcher · ML / AI Safety<br>Human-centered computing</div>
+          <div class="mini-icons">
+            <div class="mini-icon" style="color:#16a34a;border-color:#16a34a">✉</div>
+            <div class="mini-icon" style="color:#16a34a;border-color:#16a34a">⌥</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede7">
+        <div class="mini-section" style="color:#16a34a">Research & Projects</div>
+        <div style="margin-top:4px">
+          <a class="mini-link" style="color:#16a34a">Paper</a>
+          <span style="font-size:10px;color:#ccc"> · </span>
+          <a class="mini-link" style="color:#16a34a">Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="info-name">Forest Green</div>
+      <div class="info-hex">#16a34a</div>
+      <div class="info-desc">沉稳饱和的森林绿，活力中带点成熟感。最耐看，长时间盯着不累。</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

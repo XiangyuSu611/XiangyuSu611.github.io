@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emoji Toggle Effects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #ff6b35;
+      --green: #4ade80;
+    }
+
+    body {
+      background: #f0ede7;
+      padding: 40px 24px 80px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .page-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+    .page-sub { font-size: 14px; color: #888; margin-bottom: 40px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .card:hover { box-shadow: 0 8px 36px rgba(0,0,0,0.12); transform: translateY(-2px); }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 18px 11px;
+      border-bottom: 1px solid #f5f2ee;
+    }
+    .card-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ccc; }
+    .card-name { font-size: 12px; font-weight: 600; color: #666; }
+
+    .panels { display: flex; }
+    .panel {
+      flex: 1; padding: 20px 16px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+    }
+    .panel-light { background: #fff; }
+    .panel-dark  { background: #0f0f0f; }
+    .panel-label { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+    .panel-light .panel-label { color: #ccc; }
+    .panel-dark  .panel-label { color: #333; }
+
+    /* Base capsule for all variants */
+    .cap {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 11px; border-radius: 20px;
+      border: 1px solid #e8e4de;
+      background: #f5f2ee;
+      font-size: 11px; font-weight: 600;
+      color: #aaa;
+    }
+    .cap.dark-cap { background: #1a1a1a; border-color: #2a2a2a; }
+    .cap-dot-o { width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0; box-shadow: 0 0 0 2.5px rgba(255,107,53,0.2); }
+    .cap-dot-g { width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0; box-shadow: 0 0 0 2.5px rgba(74,222,128,0.2); }
+    .sep { font-size: 10px; color: #ddd; }
+    .sep-dark { font-size: 10px; color: #333; }
+
+    /* ── A: Glow halo ── */
+    .glow-sun  { filter: drop-shadow(0 0 5px rgba(255,180,0,0.9)) drop-shadow(0 0 10px rgba(255,150,0,0.5)); font-size: 15px; }
+    .glow-moon { filter: drop-shadow(0 0 5px rgba(100,180,255,0.9)) drop-shadow(0 0 10px rgba(80,160,255,0.5)); font-size: 15px; }
+    .dim       { font-size: 13px; opacity: 0.25; filter: grayscale(1); }
+
+    /* ── B: Scale bounce ── */
+    @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.4)} 70%{transform:scale(0.9)} 100%{transform:scale(1.2)} }
+    .scale-active { font-size: 17px; transform: scale(1.2); display: inline-block; animation: pop 0.3s ease forwards; }
+    .scale-inactive { font-size: 13px; opacity: 0.25; filter: grayscale(1); display: inline-block; }
+
+    /* ── C: Chip background ── */
+    .chip-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .chip-active-o {
+      background: rgba(255,107,53,0.15);
+      border-radius: 6px;
+      padding: 2px 5px;
+      font-size: 15px;
+    }
+    .chip-active-g {
+      background: rgba(74,222,128,0.15);
+      border-radius: 6px;
+      padding: 2px 5px;
+      font-size: 15px;
+    }
+    .chip-inactive { font-size: 13px; opacity: 0.25; filter: grayscale(1); padding: 2px 5px; }
+
+    /* ── D: Underline dot ── */
+    .udot-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+    .udot-emoji-active { font-size: 15px; }
+    .udot-emoji-inactive { font-size: 13px; opacity: 0.25; filter: grayscale(1); }
+    .udot-bar-o { width: 14px; height: 2.5px; border-radius: 2px; background: var(--orange); }
+    .udot-bar-g { width: 14px; height: 2.5px; border-radius: 2px; background: var(--green); }
+    .udot-bar-hidden { width: 14px; height: 2.5px; background: transparent; }
+
+    /* ── E: Ring border ── */
+    .ring-wrap { display: inline-flex; align-items: center; justify-content: center; }
+    .ring-active-o {
+      font-size: 15px;
+      padding: 3px;
+      border-radius: 8px;
+      border: 2px solid var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,107,53,0.15);
+    }
+    .ring-active-g {
+      font-size: 15px;
+      padding: 3px;
+      border-radius: 8px;
+      border: 2px solid var(--green);
+      box-shadow: 0 0 0 3px rgba(74,222,128,0.15);
+    }
+    .ring-inactive { font-size: 13px; opacity: 0.25; filter: grayscale(1); padding: 3px; border: 2px solid transparent; }
+
+    /* ── F: Pulse animation ── */
+    @keyframes pulse-o {
+      0%   { box-shadow: 0 0 0 0 rgba(255,107,53,0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(255,107,53,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,107,53,0); }
+    }
+    @keyframes pulse-g {
+      0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+    .pulse-active-o {
+      font-size: 15px; padding: 3px; border-radius: 50%;
+      animation: pulse-o 1.5s ease infinite;
+      display: inline-block;
+    }
+    .pulse-active-g {
+      font-size: 15px; padding: 3px; border-radius: 50%;
+      animation: pulse-g 1.5s ease infinite;
+      display: inline-block;
+    }
+    .pulse-inactive { font-size: 13px; opacity: 0.25; filter: grayscale(1); padding: 3px; display: inline-block; }
+
+    .card-desc {
+      padding: 13px 18px 15px;
+      font-size: 12px; color: #888; line-height: 1.55;
+      border-top: 1px solid #f5f2ee;
+    }
+    .card-desc strong { color: #444; }
+  </style>
+</head>
+<body>
+
+<p class="page-title">Theme Toggle · Selected State Effects</p>
+<p class="page-sub">六种选中特效，左边白天（橙）右边夜间（绿），选中 ☀️ 或 🌙 时的视觉反馈</p>
+
+<div class="grid">
+
+  <!-- A: Glow -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">A</span>
+      <span class="card-name">Glow · 光晕</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <span class="glow-sun">☀️</span>
+          <span class="sep">/</span>
+          <span class="dim">🌙</span>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <span class="dim">☀️</span>
+          <span class="sep-dark">/</span>
+          <span class="glow-moon">🌙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>发光晕</strong> — 选中的 emoji 加 drop-shadow，模拟真实光源。☀️ 橙黄光，🌙 蓝白光。</div>
+  </div>
+
+  <!-- B: Scale -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">B</span>
+      <span class="card-name">Scale · 放大弹跳</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <span class="scale-active">☀️</span>
+          <span class="sep">/</span>
+          <span class="scale-inactive">🌙</span>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <span class="scale-inactive">☀️</span>
+          <span class="sep-dark">/</span>
+          <span class="scale-active">🌙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>缩放弹跳</strong> — 选中项放大 1.2×，切换时触发弹跳动画，未选中变灰缩小。活泼感最强。</div>
+  </div>
+
+  <!-- C: Chip background -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">C</span>
+      <span class="card-name">Chip · 背景块</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <span class="chip-active-o">☀️</span>
+          <span class="sep">/</span>
+          <span class="chip-inactive">🌙</span>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <span class="chip-inactive">☀️</span>
+          <span class="sep-dark">/</span>
+          <span class="chip-active-g">🌙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>淡色背景块</strong> — 选中项加圆角主题色背景，克制低调，与整体设计融合最好。</div>
+  </div>
+
+  <!-- D: Underline dot -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">D</span>
+      <span class="card-name">Underline · 底部线</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <div class="udot-wrap">
+            <span class="udot-emoji-active">☀️</span>
+            <div class="udot-bar-o"></div>
+          </div>
+          <span class="sep">/</span>
+          <div class="udot-wrap">
+            <span class="udot-emoji-inactive">🌙</span>
+            <div class="udot-bar-hidden"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <div class="udot-wrap">
+            <span class="udot-emoji-inactive">☀️</span>
+            <div class="udot-bar-hidden"></div>
+          </div>
+          <span class="sep-dark">/</span>
+          <div class="udot-wrap">
+            <span class="udot-emoji-active">🌙</span>
+            <div class="udot-bar-g"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>底部彩线</strong> — 选中项下方出现主题色短横线，极简 Tab 风格，精致不张扬。</div>
+  </div>
+
+  <!-- E: Ring -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">E</span>
+      <span class="card-name">Ring · 边框圈</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <span class="ring-active-o">☀️</span>
+          <span class="sep">/</span>
+          <span class="ring-inactive">🌙</span>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <span class="ring-inactive">☀️</span>
+          <span class="sep-dark">/</span>
+          <span class="ring-active-g">🌙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>边框圈</strong> — 选中项加主题色圆角边框 + 外层光晕，像被框选住，清晰直观。</div>
+  </div>
+
+  <!-- F: Pulse -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">F</span>
+      <span class="card-name">Pulse · 呼吸光</span>
+    </div>
+    <div class="panels">
+      <div class="panel panel-light">
+        <div class="panel-label">Light · ☀️ 选中</div>
+        <div class="cap">
+          <div class="cap-dot-o"></div>
+          <span class="pulse-active-o">☀️</span>
+          <span class="sep">/</span>
+          <span class="pulse-inactive">🌙</span>
+        </div>
+      </div>
+      <div class="panel panel-dark">
+        <div class="panel-label">Dark · 🌙 选中</div>
+        <div class="cap dark-cap">
+          <div class="cap-dot-g"></div>
+          <span class="pulse-inactive">☀️</span>
+          <span class="sep-dark">/</span>
+          <span class="pulse-active-g">🌙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-desc"><strong>呼吸脉冲</strong> — 选中项持续散发主题色光圈，像心跳一样有生命感，最有动感。</div>
+  </div>
+
+</div>
+</body>
+</html>
