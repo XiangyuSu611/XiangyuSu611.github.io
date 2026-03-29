@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="" data-lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Option A: Swiss Minimalism — Xiangyu Su</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      var lang = localStorage.getItem('lang') || 'en';
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg: #FAFAFA;
+      --surface: #FFFFFF;
+      --text: #111111;
+      --text-muted: #555555;
+      --text-subtle: #888888;
+      --accent: #2563EB;
+      --border: #E0E0E0;
+      --font: 'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg: #0A0A0A;
+      --surface: #141414;
+      --text: #E5E5E5;
+      --text-muted: #999999;
+      --text-subtle: #666666;
+      --accent: #60A5FA;
+      --border: #222222;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      min-height: 100vh;
+      padding: 0;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── TOGGLES ── */
+    .toggles {
+      display: flex;
+      gap: 12px;
+    }
+    .toggle-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .toggle-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── HERO ── */
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 48px;
+    }
+    .hero-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .hero-bottom {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    .hero-photo {
+      width: 140px;
+      height: 180px;
+      flex-shrink: 0;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .hero-title {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+    .bio {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .social-links {
+      display: flex;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid transparent;
+    }
+    .social-icon:hover {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom-color: var(--accent);
+    }
+    .social-icon svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── SECTIONS ── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 24px;
+    }
+
+    /* ── PUBLICATIONS ── */
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item {
+      display: flex;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pub-item:first-child { padding-top: 0; }
+    .pub-item:last-child { border-bottom: none; }
+    .pub-thumb {
+      width: 140px;
+      height: 100px;
+      flex-shrink: 0;
+      background: var(--border);
+    }
+    .pub-body { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .pub-meta { display: flex; align-items: center; gap: 12px; }
+    .pub-venue {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .pub-links { display: flex; gap: 10px; }
+    .pub-links a {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .pub-title-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .pub-authors {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .pub-authors strong { color: var(--text); font-weight: 600; }
+    .pub-summary {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-style: italic;
+    }
+    .pub-press {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .pub-press-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+    .pub-press-link {
+      font-size: 11px;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 1px 8px;
+    }
+    .pub-press-link:hover { color: var(--text); border-color: var(--text-subtle); text-decoration: none; }
+
+    /* ── LIFE ── */
+    .life-list { display: flex; flex-direction: column; gap: 12px; }
+    .life-item { display: flex; align-items: baseline; gap: 12px; }
+    .life-marker {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      flex-shrink: 0;
+      position: relative;
+      top: 6px;
+    }
+    .life-text { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+    .life-text .zh { display: block; font-size: 14px; color: var(--text-subtle); margin-top: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      font-size: 12px;
+      color: var(--text-subtle);
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .footer-cc { color: var(--accent); font-weight: 600; }
+
+    /* ── LANG ── */
+    .pub-summary.zh { display: none; }
+    [data-lang="zh"] .bio-en,
+    [data-lang="zh"] .life-text .en,
+    [data-lang="zh"] .pub-summary.en { display: none; }
+    [data-lang="zh"] .pub-summary.zh { display: block; }
+    [data-lang="zh"] .life-text .zh { font-size: 15px; color: var(--text-muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .container { padding: 48px 16px 40px; }
+      .hero-bottom { flex-direction: column; gap: 16px; }
+      .hero-photo { width: 100px; height: 130px; }
+      .hero-title { font-size: 28px; }
+      .pub-item { flex-direction: column; gap: 12px; }
+      .pub-thumb { width: 100%; height: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="hero-top">
+    <span class="hero-name">Xiangyu Su</span>
+    <div class="toggles">
+      <button class="toggle-btn" id="langBtn">EN / 中</button>
+      <button class="toggle-btn" id="themeBtn">☀ / ☾</button>
+    </div>
+  </div>
+
+  <section class="hero-bottom" aria-label="Introduction">
+    <div class="hero-photo">Photo</div>
+    <div class="hero-info">
+      <h1 class="hero-title">Xiangyu Su</h1>
+      <p class="bio bio-en">
+        I'm a researcher working at the intersection of machine learning, AI safety, and
+        human-centered computing. My work focuses on making learned systems more transparent,
+        reliable, and aligned with how people actually think and decide.
+      </p>
+      <div class="social-links">
+        <a href="mailto:your@email.com" class="social-icon" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/>
+          </svg>Email
+        </a>
+        <a href="https://github.com/username" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <section aria-label="Research">
+    <h2 class="section-title">Research</h2>
+    <div class="research-prose"></div>
+  </section>
+
+  <hr />
+
+  <section aria-label="Publications">
+    <h2 class="section-title">Publications</h2>
+    <div class="pub-list">
+      <div class="pub-item">
+        <div class="pub-thumb"></div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">NeurIPS 2024</span>
+            <div class="pub-links"><a href="#">Paper</a><a href="#">Code</a></div>
+          </div>
+          <div class="pub-title-text">Understanding Gradient Flow in Overparameterized Networks</div>
+          <div class="pub-authors"><strong>Xiangyu Su</strong>, Jane Doe, John Smith</div>
+          <div class="pub-summary en">We characterize how gradient signals propagate through depth, identifying a phase transition that explains empirical training instabilities in large-scale models.</div>
+          <div class="pub-summary zh">我们分析了梯度信号在深度网络中的传播规律，发现了一种相变现象，可以解释大规模模型训练中的不稳定性。</div>
+          <div class="pub-press">
+            <span class="pub-press-label">Coverage</span>
+            <a href="#" class="pub-press-link">MIT News</a>
+            <a href="#" class="pub-press-link">The Gradient</a>
+          </div>
+        </div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-thumb"></div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">ICML 2024</span>
+            <div class="pub-links"><a href="#">Paper</a><a href="#">Code</a></div>
+          </div>
+          <div class="pub-title-text">Efficient Sparse Inference via Learned Activation Routing</div>
+          <div class="pub-authors"><strong>Xiangyu Su</strong>, Bob Zhang</div>
+          <div class="pub-summary en">A lightweight routing mechanism that selectively activates subnetworks at inference time, achieving 3× speedup with negligible accuracy loss on standard benchmarks.</div>
+          <div class="pub-summary zh">一种轻量级的路由机制，可以在推理时选择性地激活子网络，在基准测试上实现了 3 倍加速，同时精度损失可以忽略不计。</div>
+        </div>
+      </div>
+      <div class="pub-item">
+        <div class="pub-thumb"></div>
+        <div class="pub-body">
+          <div class="pub-meta">
+            <span class="pub-venue">ICLR 2023</span>
+            <div class="pub-links"><a href="#">Paper</a><a href="#">Code</a></div>
+          </div>
+          <div class="pub-title-text">Calibrating Model Uncertainty for Human-in-the-Loop Decisions</div>
+          <div class="pub-authors">Jane Doe, <strong>Xiangyu Su</strong>, Alice Chen, Bob Zhang</div>
+          <div class="pub-summary en">We study how predictive uncertainty estimates influence downstream human judgment in high-stakes settings, proposing a calibration framework grounded in cognitive load theory.</div>
+          <div class="pub-summary zh">我们研究了深度集成与保形预测的不确定性估计如何影响高风险场景中的人类判断，并提出了一种基于认知负荷理论的校准框架。</div>
+          <div class="pub-press">
+            <span class="pub-press-label">Coverage</span>
+            <a href="#" class="pub-press-link">Stanford HAI</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <section aria-label="Life outside research">
+    <h2 class="section-title">Life</h2>
+    <div class="life-list">
+      <div class="life-item">
+        <div class="life-marker"></div>
+        <div class="life-text">
+          <span class="en">Photography — finding geometry in everyday scenes.</span>
+          <span class="zh">摄影 · 在日常风景中寻找几何之美</span>
+        </div>
+      </div>
+      <div class="life-item">
+        <div class="life-marker"></div>
+        <div class="life-text">
+          <span class="en">Reading — philosophy of mind, science fiction, and the occasional recipe book.</span>
+          <span class="zh">阅读 · 心智哲学、科幻小说，偶尔翻翻食谱</span>
+        </div>
+      </div>
+      <div class="life-item">
+        <div class="life-marker"></div>
+        <div class="life-text">
+          <span class="en">Hiking — slow miles, big views.</span>
+          <span class="zh">徒步 · 走得慢，看得远</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    Xiangyu Su · 2025 · Built with <span class="footer-cc">Claude Code</span> ♥
+  </footer>
+
+</div>
+
+<script>
+  var html = document.documentElement;
+  requestAnimationFrame(function(){requestAnimationFrame(function(){html.classList.add('transitions-ready')})});
+
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+  document.getElementById('langBtn').addEventListener('click', function(){
+    var next = html.getAttribute('data-lang') === 'zh' ? 'en' : 'zh';
+    html.setAttribute('data-lang', next);
+    localStorage.setItem('lang', next);
+  });
+</script>
+</body>
+</html>

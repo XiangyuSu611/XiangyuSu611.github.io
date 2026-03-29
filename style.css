@@ -573,25 +573,38 @@ hr {
 
 /* ZH elements hidden by default */
 .pub-summary.zh { display: none; }
+.bio-zh { display: none; }
+span.zh { display: none; }
 
-/* EN elements: visible by default, hidden in ZH mode */
+/* EN elements: hidden in ZH mode */
 [data-lang="zh"] .bio-en,
-[data-lang="zh"] .hero-tagline,
-[data-lang="zh"] .contact-intro.en,
-[data-lang="zh"] .life-text .en,
-[data-lang="zh"] .prose .prose-en,
 [data-lang="zh"] .pub-summary.en,
-[data-lang="zh"] .wip-text.en {
+[data-lang="zh"] .life-text .en,
+[data-lang="zh"] .wip-text.en,
+[data-lang="zh"] span.en {
   display: none;
 }
 
-[data-lang="en"] .wip-text.zh {
-  display: none;
+/* ZH elements: shown in ZH mode */
+[data-lang="zh"] .bio-zh {
+  display: block;
 }
-
-/* ZH pub summary: shown and styled in ZH mode */
 [data-lang="zh"] .pub-summary.zh {
   display: block;
+}
+[data-lang="zh"] span.zh {
+  display: inline;
+}
+[data-lang="zh"] .life-text .zh {
+  display: block;
+}
+[data-lang="zh"] .wip-text.zh {
+  display: inline;
+}
+
+/* EN elements: hidden zh banner in en mode */
+[data-lang="en"] .wip-text.zh {
+  display: none;
 }
 
 /* ZH elements: subtle by default, primary in ZH mode */
