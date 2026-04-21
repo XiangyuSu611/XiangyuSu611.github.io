@@ -5,7 +5,9 @@
 ## Basic Info
 
 name: Xiangyu Su
-photo: photo.jpg          # 放到同目录下，留空则显示占位符
+name_zh: 苏向宇
+photo: xiangyusu2-web.png     # 放到同目录下，留空则显示占位符
+affil: PhD student · Visual Computing Research Center · Shenzhen University   # 一行简述，留空则不显示
 
 
 ---
@@ -13,9 +15,9 @@ photo: photo.jpg          # 放到同目录下，留空则显示占位符
 ## Bio
 
 ### English
-I'm a researcher working at the intersection of machine learning, AI safety, and
-human-centered computing. My work focuses on making learned systems more transparent,
-reliable, and aligned with how people actually think and decide.
+
+I am currently a third-year Ph.D. candidate at [Visual Computing Research Center](https://vcc.tech/index), [Shenzhen University](https://en.szu.edu.cn/), under the supervision of [Prof. Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/index.htm).
+I am looking for internship and full-time opportunities. Feel free to contact me via Email if there is a potential fit! 👋
 
 ### 中文
 （留空则不显示中文简介）
@@ -28,22 +30,22 @@ reliable, and aligned with how people actually think and decide.
 # 支持字段：email / github / twitter / scholar / cv / website
 # 留空或删掉整行表示不显示该链接
 
-email: your@email.com
-github: username
+email: xiangyv.su@gmail.com
+github: https://github.com/XiangyuSu611
 # twitter: username
 # scholar: https://scholar.google.com/...
 # cv: cv.pdf
 
 
+
+
 ---
 
-## Research
+## Research Interests
 
-### English
-（在此写当前研究方向，支持多段落，留空则该区域不显示）
+# 每条一行，格式：- 主题 | 一句话描述。描述留空也可以，只保留主题。
 
-### 中文
-（留空则不显示）
+My current research interests center on 🤖 ==Embodied Intelligence==, particularly task planning for digital humans in household scenarios, and for multi-robot systems on industrial production lines. I also have a research background in 📐 ==Computer Graphics==, with a focus on material transfer from photographs to 3D models.
 
 
 ---

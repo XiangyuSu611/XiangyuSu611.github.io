@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="" data-lang="en">
+<html lang="en" data-theme="">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,18 +7,15 @@
   <meta name="description" content="Personal homepage of Xiangyu Su, a CS/AI/ML researcher." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
     (function () {
       var stored = localStorage.getItem('theme');
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
+      var theme = stored || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
-      var lang = localStorage.getItem('lang') || 'en';
-      document.documentElement.setAttribute('data-lang', lang);
     })();
   </script>
 </head>
@@ -26,9 +23,14 @@
 
 <div class="wip-banner">
   <span class="wip-icon">🚧</span>
-  <span class="wip-text en">This site is under construction — all content is placeholder and will be updated soon.</span>
-  <span class="wip-text zh">网站正在建设中，所有内容均为模板占位符，敬请期待。</span>
+  <span class="wip-text">This site is under construction — all content is placeholder and will be updated soon.</span>
 </div>
+
+<label class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+  <input type="checkbox" id="themeToggle">
+  <span class="icon-sun">☀️</span>
+  <span class="icon-moon">🌙</span>
+</label>
 
 <div class="container">
 
@@ -37,58 +39,18 @@
        ====================================================== -->
   <section class="hero-block" aria-label="Introduction">
 
-    <!-- Top bar: name + toggles -->
-    <div class="hero-top-bar">
-      <span class="hero-name"><span class="en">Xiangyu Su</span><span class="zh">苏向宇</span></span>
-      <div class="toggles">
-        <label class="capsule-toggle" aria-label="Switch language">
-          <input type="checkbox" id="langToggle">
-          <span class="cap-dot"></span>
-          <span class="cap-text cap-a">EN</span>
-          <span class="cap-sep">/</span>
-          <span class="cap-text cap-b">中</span>
-        </label>
-        <label class="capsule-toggle capsule-toggle--theme" aria-label="Switch theme">
-          <input type="checkbox" id="themeToggle">
-          <span class="cap-dot"></span>
-          <span class="cap-text cap-a">☀️</span>
-          <span class="cap-sep">/</span>
-          <span class="cap-text cap-b">🌙</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Bottom: photo + bio + social -->
     <div class="hero-bottom">
-      <div class="hero-photo" aria-label="Photo">
-        <div class="hero-photo-placeholder">Photo</div>
-      </div>
-      <div class="hero-info">
-        <h1 class="hero-title"><span class="en">Xiangyu Su</span><span class="zh">苏向宇</span></h1>
-        <p class="bio-en">
-          I'm a researcher working at the intersection of machine learning, AI safety, and
-          human-centered computing. My work focuses on making learned systems more transparent,
-          reliable, and aligned with how people actually think and decide.
-        </p>
-        <p class="bio-zh">
-          我是一名研究者，研究方向涵盖机器学习、AI 安全与以人为中心的计算。我的工作致力于让学习系统更加透明、可靠，并与人类的真实思维和决策方式保持一致。
-        </p>
-        <div class="social-links">
-          <a href="mailto:your@email.com" class="social-icon" aria-label="Email">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <polyline points="2,4 12,13 22,4"/>
-            </svg>
-            Email
-          </a>
-          <a href="https://github.com/username" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-            </svg>
-            GitHub
-          </a>
+      <div class="hero-top-row">
+        <div class="hero-photo" aria-label="Photo">
+          <div class="hero-photo-placeholder">Photo</div>
+        </div>
+        <div class="hero-meta">
+          <h1 class="hero-title"></h1>
+          <div class="hero-affil"></div>
+          <div class="social-links"></div>
         </div>
       </div>
+      <p class="bio"></p>
     </div>
 
   </section>
@@ -99,8 +61,18 @@
        RESEARCH
        ====================================================== -->
   <section aria-label="Research">
-    <h2 class="section-title"><span class="en">Research</span><span class="zh">研究</span></h2>
+    <h2 class="section-title">Research</h2>
     <div class="research-prose"></div>
+  </section>
+
+  <hr class="interests-hr" />
+
+  <!-- ======================================================
+       RESEARCH INTERESTS
+       ====================================================== -->
+  <section aria-label="Research Interests" class="interests-section">
+    <h2 class="section-title">Research Interests</h2>
+    <div class="interests-list"></div>
   </section>
 
   <hr />
@@ -109,77 +81,9 @@
        PUBLICATIONS
        ====================================================== -->
   <section aria-label="Publications">
-    <h2 class="section-title"><span class="en">Publications</span><span class="zh">发表论文</span></h2>
+    <h2 class="section-title">Publications</h2>
 
-    <div class="pub-list">
-
-      <div class="pub-item">
-        <div class="pub-thumb">
-          <div class="pub-thumb-placeholder"></div>
-        </div>
-        <div class="pub-body">
-          <div class="pub-meta">
-            <span class="pub-venue">NeurIPS 2024</span>
-            <div class="pub-links">
-              <a href="#"><span class="en">Paper</span><span class="zh">论文</span></a>
-              <a href="#"><span class="en">Code</span><span class="zh">代码</span></a>
-            </div>
-          </div>
-          <div class="pub-title">Understanding Gradient Flow in Overparameterized Networks</div>
-          <div class="pub-authors"><strong>Xiangyu Su</strong>, Jane Doe, John Smith</div>
-          <div class="pub-summary en">We characterize how gradient signals propagate through depth, identifying a phase transition that explains empirical training instabilities in large-scale models.</div>
-          <div class="pub-summary zh">我们分析了梯度信号在深度网络中的传播规律，发现了一种相变现象，可以解释大规模模型训练中的不稳定性。</div>
-          <div class="pub-press">
-            <span class="pub-press-label"><span class="en">Coverage</span><span class="zh">报道</span></span>
-            <a href="#" class="pub-press-link">MIT News</a>
-            <a href="#" class="pub-press-link">The Gradient</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="pub-item">
-        <div class="pub-thumb">
-          <div class="pub-thumb-placeholder"></div>
-        </div>
-        <div class="pub-body">
-          <div class="pub-meta">
-            <span class="pub-venue">ICML 2024</span>
-            <div class="pub-links">
-              <a href="#"><span class="en">Paper</span><span class="zh">论文</span></a>
-              <a href="#"><span class="en">Code</span><span class="zh">代码</span></a>
-            </div>
-          </div>
-          <div class="pub-title">Efficient Sparse Inference via Learned Activation Routing</div>
-          <div class="pub-authors"><strong>Xiangyu Su</strong>, Bob Zhang</div>
-          <div class="pub-summary en">A lightweight routing mechanism that selectively activates subnetworks at inference time, achieving 3× speedup with negligible accuracy loss on standard benchmarks.</div>
-          <div class="pub-summary zh">一种轻量级的路由机制，可以在推理时选择性地激活子网络，在基准测试上实现了 3 倍加速，同时精度损失可以忽略不计。</div>
-        </div>
-      </div>
-
-      <div class="pub-item">
-        <div class="pub-thumb">
-          <div class="pub-thumb-placeholder"></div>
-        </div>
-        <div class="pub-body">
-          <div class="pub-meta">
-            <span class="pub-venue">ICLR 2023</span>
-            <div class="pub-links">
-              <a href="#"><span class="en">Paper</span><span class="zh">论文</span></a>
-              <a href="#"><span class="en">Code</span><span class="zh">代码</span></a>
-            </div>
-          </div>
-          <div class="pub-title">Calibrating Model Uncertainty for Human-in-the-Loop Decisions</div>
-          <div class="pub-authors">Jane Doe, <strong>Xiangyu Su</strong>, Alice Chen, Bob Zhang</div>
-          <div class="pub-summary en">We study how predictive uncertainty estimates influence downstream human judgment in high-stakes settings, proposing a calibration framework grounded in cognitive load theory.</div>
-          <div class="pub-summary zh">我们研究了深度集成与保形预测的不确定性估计如何影响高风险场景中的人类判断，并提出了一种基于认知负荷理论的校准框架。</div>
-          <div class="pub-press">
-            <span class="pub-press-label"><span class="en">Coverage</span><span class="zh">报道</span></span>
-            <a href="#" class="pub-press-link">Stanford HAI</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div class="pub-list"></div>
   </section>
 
   <hr />
@@ -188,38 +92,27 @@
        LIFE
        ====================================================== -->
   <section aria-label="Life outside research">
-    <h2 class="section-title"><span class="en">Life</span><span class="zh">生活</span></h2>
+    <h2 class="section-title">Life</h2>
 
-    <div class="life-list">
-      <div class="life-item">
-        <div class="life-marker" aria-hidden="true"></div>
-        <div class="life-text">
-          <span class="en">Photography — finding geometry in everyday scenes.</span>
-          <span class="zh">摄影 · 在日常风景中寻找几何之美</span>
-        </div>
-      </div>
-      <div class="life-item">
-        <div class="life-marker" aria-hidden="true"></div>
-        <div class="life-text">
-          <span class="en">Reading — philosophy of mind, science fiction, and the occasional recipe book.</span>
-          <span class="zh">阅读 · 心智哲学、科幻小说，偶尔翻翻食谱</span>
-        </div>
-      </div>
-      <div class="life-item">
-        <div class="life-marker" aria-hidden="true"></div>
-        <div class="life-text">
-          <span class="en">Hiking — slow miles, big views.</span>
-          <span class="zh">徒步 · 走得慢，看得远</span>
-        </div>
-      </div>
-    </div>
+    <div class="life-list"></div>
+  </section>
+
+  <hr />
+
+  <!-- ======================================================
+       CONTACT
+       ====================================================== -->
+  <section aria-label="Contact" class="contact-section">
+    <h2 class="section-title">Contact</h2>
+    <p class="contact-intro"></p>
+    <div class="social-links contact-socials"></div>
   </section>
 
   <!-- ======================================================
        FOOTER
        ====================================================== -->
   <footer class="site-footer">
-    <span class="en">Xiangyu Su</span><span class="zh">苏向宇</span> · 2025 · Built with <span class="footer-cc">Claude Code</span> ♥
+    Xiangyu Su · 2026 · Built with <svg class="claude-logo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 C12 8.5 14 10.5 22 12 C14 13.5 12 15.5 12 22 C12 15.5 10 13.5 2 12 C10 10.5 12 8.5 12 2 Z"/></svg><span class="footer-cc">Claude Code</span>
   </footer>
 
 </div><!-- /.container -->
@@ -248,29 +141,442 @@
     var next = this.checked ? 'dark' : 'light';
     html.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    html.setAttribute('data-theme-override', 'true');
   });
 
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-    if (html.getAttribute('data-theme-override') === 'true') return;
-    applyTheme(e.matches ? 'dark' : 'light');
-  });
+  // ── Content loader (content.md → DOM) ─────────────────────
+  (function () {
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
 
-  // ── Language toggle ───────────────────────────────────────
-  var langCheckbox = document.getElementById('langToggle');
+    // Inline markdown: [text](url) + **bold**. Escapes HTML first so raw tags are safe.
+    function renderInline(s) {
+      var out = escapeHtml(s);
+      out = out.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (_, text, url) {
+        var external = /^https?:\/\//i.test(url);
+        var attrs = external ? ' target="_blank" rel="noopener"' : '';
+        return '<a href="' + url + '"' + attrs + '>' + text + '</a>';
+      });
+      out = out.replace(/==(.+?)==/g, '<mark>$1</mark>');
+      out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      return out;
+    }
 
-  function applyLang(lang) {
-    html.setAttribute('data-lang', lang);
-    langCheckbox.checked = (lang === 'zh');
-  }
+    function stripInlineComment(line) {
+      var m = line.match(/^([^#]*?)\s+#.*$/);
+      return m ? m[1] : line;
+    }
 
-  applyLang(html.getAttribute('data-lang') || 'en');
+    function isPlaceholder(s) {
+      return /^（[^）]*）$/.test(s.trim());
+    }
 
-  langCheckbox.addEventListener('change', function () {
-    var next = this.checked ? 'zh' : 'en';
-    html.setAttribute('data-lang', next);
-    localStorage.setItem('lang', next);
-  });
+    function parseSections(md) {
+      var sections = {};
+      var parts = md.split(/\n## /);
+      for (var i = 1; i < parts.length; i++) {
+        var nl = parts[i].indexOf('\n');
+        var name = (nl >= 0 ? parts[i].slice(0, nl) : parts[i]).trim();
+        var body = nl >= 0 ? parts[i].slice(nl + 1) : '';
+        // Trim the trailing top-level '---' separator
+        body = body.replace(/\n---\s*$/, '').trim();
+        sections[name] = body;
+      }
+      return sections;
+    }
+
+    function parseKV(text) {
+      var result = {};
+      if (!text) return result;
+      var lines = text.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = stripInlineComment(lines[i]).trim();
+        if (!line || line.charAt(0) === '#') continue;
+        if (line.indexOf('---') === 0) continue;
+        var m = line.match(/^([a-z_]+)\s*:\s*(.*)$/i);
+        if (m) result[m[1].toLowerCase()] = m[2].trim();
+      }
+      return result;
+    }
+
+    function parseProse(text) {
+      // Split into paragraphs by blank lines, collapse intra-paragraph newlines to spaces
+      var paragraphs = (text || '').split(/\n\s*\n/).map(function (p) {
+        return p.split('\n').map(function (l) { return l.trim(); }).filter(Boolean).join(' ').trim();
+      }).filter(Boolean);
+      if (paragraphs.length === 1 && isPlaceholder(paragraphs[0])) return [];
+      return paragraphs;
+    }
+
+    function parseBilingual(text) {
+      var result = { en: [], zh: [] };
+      if (!text) return result;
+      var enMatch = text.match(/### English\s*\n([\s\S]*?)(?=\n### |$)/);
+      var zhMatch = text.match(/### 中文\s*\n([\s\S]*?)(?=\n### |$)/);
+      if (enMatch) result.en = parseProse(enMatch[1]);
+      if (zhMatch) result.zh = parseProse(zhMatch[1]);
+      return result;
+    }
+
+    function parsePubs(text) {
+      if (!text) return [];
+      var blocks = text.split(/\n\[\[paper\]\]\s*\n?/);
+      blocks.shift(); // drop preamble before first [[paper]]
+      return blocks.map(parsePub).filter(function (p) { return p.title; });
+    }
+
+    function parsePub(block) {
+      var result = { coverage: [] };
+      var lines = block.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var raw = lines[i];
+        var stripped = stripInlineComment(raw);
+        var line = stripped.trim();
+        if (!line) continue;
+        if (line.indexOf('---') === 0) break;
+        if (line.charAt(0) === '#') continue;
+        var m = stripped.match(/^([a-z_]+)\s*:\s*(.*)$/i);
+        if (!m) continue;
+        var key = m[1].toLowerCase();
+        var value = m[2].trim();
+        if (key === 'coverage') {
+          while (i + 1 < lines.length && /^\s{2,}\S/.test(lines[i + 1])) {
+            i++;
+            var entry = lines[i].trim();
+            if (!entry || entry.charAt(0) === '#') continue;
+            var pipe = entry.indexOf('|');
+            if (pipe >= 0) {
+              result.coverage.push({
+                name: entry.slice(0, pipe).trim(),
+                url: entry.slice(pipe + 1).trim()
+              });
+            }
+          }
+          continue;
+        }
+        result[key] = value;
+      }
+      return result;
+    }
+
+    function parseLife(text) {
+      if (!text) return [];
+      var items = [];
+      var lines = text.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.indexOf('- ') !== 0) continue;
+        var parts = line.slice(2).split('|').map(function (s) { return s.trim(); });
+        if (parts.length >= 3) {
+          items.push({ emoji: parts[0], en: parts[1], zh: parts[2] });
+        }
+      }
+      return items;
+    }
+
+    function parseInterests(text) {
+      if (!text) return { kind: 'empty' };
+      var lines = text.split('\n');
+      var hasBullet = lines.some(function (l) { return l.trim().indexOf('- ') === 0; });
+      if (hasBullet) {
+        var items = [];
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (line.indexOf('- ') !== 0) continue;
+          var parts = line.slice(2).split('|').map(function (s) { return s.trim(); });
+          if (!parts[0]) continue;
+          items.push({ topic: parts[0], desc: parts[1] || '' });
+        }
+        return { kind: 'list', items: items };
+      }
+      // Prose fallback: strip comment / blank lines, group paragraphs
+      var body = lines.filter(function (l) {
+        var t = l.trim();
+        return t && t.charAt(0) !== '#';
+      }).join('\n');
+      return { kind: 'prose', paragraphs: parseProse(body) };
+    }
+
+    function parseMd(md) {
+      var s = parseSections(md);
+      return {
+        basicInfo: parseKV(s['Basic Info']),
+        bio: parseBilingual(s['Bio']),
+        social: parseKV(s['Social Links']),
+        research: parseBilingual(s['Research']),
+        interests: parseInterests(s['Research Interests']),
+        publications: parsePubs(s['Publications']),
+        life: parseLife(s['Life']),
+        contact: parseKV(s['Contact'])
+      };
+    }
+
+    // ── Social icons ──
+    var SOCIAL_ORDER = ['email', 'github', 'twitter', 'scholar', 'cv', 'website'];
+    var SOCIAL_ICONS = {
+      email: {
+        label: 'Email',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>',
+        href: function (v) { return 'mailto:' + v; },
+        external: false
+      },
+      github: {
+        label: 'GitHub',
+        svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>',
+        href: function (v) { return v.indexOf('http') === 0 ? v : 'https://github.com/' + v; },
+        external: true
+      },
+      twitter: {
+        label: 'Twitter',
+        svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+        href: function (v) { return v.indexOf('http') === 0 ? v : 'https://twitter.com/' + v; },
+        external: true
+      },
+      scholar: {
+        label: 'Scholar',
+        svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769L.5 9.5 12 1l11.5 8.5-4.742 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>',
+        href: function (v) { return v; },
+        external: true
+      },
+      cv: {
+        label: 'CV',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+        href: function (v) { return v; },
+        external: true
+      },
+      website: {
+        label: 'Website',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+        href: function (v) { return v; },
+        external: true
+      }
+    };
+
+    function socialLinksHtml(social) {
+      var out = [];
+      for (var i = 0; i < SOCIAL_ORDER.length; i++) {
+        var key = SOCIAL_ORDER[i];
+        var v = social[key];
+        if (!v) continue;
+        var cfg = SOCIAL_ICONS[key];
+        var href = cfg.href(v);
+        var targetAttrs = cfg.external ? ' target="_blank" rel="noopener"' : '';
+        out.push(
+          '<a href="' + escapeHtml(href) + '" class="social-icon" aria-label="' + cfg.label + '"' + targetAttrs + '>' +
+          cfg.svg + cfg.label +
+          '</a>'
+        );
+      }
+      return out.join('');
+    }
+
+    // ── Renderers ──
+    function renderHero(data) {
+      var name = data.basicInfo.name || '';
+      var nameZh = data.basicInfo.name_zh || '';
+      var titleEl = document.querySelector('.hero-title');
+      if (nameZh) {
+        titleEl.innerHTML = escapeHtml(name) +
+          '<span class="hero-title-sep">·</span>' +
+          '<span class="hero-title-zh">' + escapeHtml(nameZh) + '</span>';
+      } else {
+        titleEl.textContent = name;
+      }
+
+      var affilEl = document.querySelector('.hero-affil');
+      if (affilEl) {
+        var affil = data.basicInfo.affil || '';
+        if (affil) {
+          affilEl.innerHTML = renderInline(affil);
+        } else {
+          affilEl.remove();
+        }
+      }
+
+      var bioPlaceholder = document.querySelector('.bio');
+      if (bioPlaceholder) {
+        if (!data.bio.en.length) {
+          bioPlaceholder.remove();
+        } else {
+          var parent = bioPlaceholder.parentNode;
+          data.bio.en.forEach(function (text) {
+            var p = document.createElement('p');
+            p.className = 'bio';
+            p.innerHTML = renderInline(text);
+            parent.insertBefore(p, bioPlaceholder);
+          });
+          bioPlaceholder.remove();
+        }
+      }
+
+      if (data.basicInfo.photo) {
+        var photoEl = document.querySelector('.hero-photo');
+        photoEl.innerHTML = '<img src="' + escapeHtml(data.basicInfo.photo) + '" alt="' + escapeHtml(name) + '">';
+      }
+
+      document.querySelector('.hero-bottom .social-links').innerHTML = socialLinksHtml(data.social);
+    }
+
+    function renderResearch(research) {
+      var el = document.querySelector('.research-prose');
+      if (!el) return;
+      var section = el.closest('section');
+      var hr = section ? section.previousElementSibling : null;
+
+      if (!research.en.length) {
+        if (section) section.style.display = 'none';
+        if (hr && hr.tagName === 'HR') hr.style.display = 'none';
+        return;
+      }
+
+      el.innerHTML = research.en.map(function (p) {
+        return '<p>' + renderInline(p) + '</p>';
+      }).join('');
+    }
+
+    function renderPubs(pubs) {
+      var container = document.querySelector('.pub-list');
+      if (!container) return;
+      container.innerHTML = pubs.map(function (p) {
+        var thumbHtml = p.thumb
+          ? '<img src="' + escapeHtml(p.thumb) + '" alt="">'
+          : '<div class="pub-thumb-placeholder"></div>';
+
+        var linksOut = [];
+        if (p.paper_url) linksOut.push('<a href="' + escapeHtml(p.paper_url) + '" target="_blank" rel="noopener">Paper</a>');
+        if (p.code_url)  linksOut.push('<a href="' + escapeHtml(p.code_url)  + '" target="_blank" rel="noopener">Code</a>');
+
+        var summaryHtml = p.summary_en
+          ? '<div class="pub-summary">' + renderInline(p.summary_en) + '</div>'
+          : '';
+
+        var pressHtml = '';
+        if (p.coverage && p.coverage.length) {
+          var pressLinks = p.coverage.map(function (c) {
+            return '<a href="' + escapeHtml(c.url) + '" class="pub-press-link" target="_blank" rel="noopener">' + escapeHtml(c.name) + '</a>';
+          }).join('');
+          pressHtml =
+            '<div class="pub-press">' +
+              '<span class="pub-press-label">Coverage</span>' +
+              pressLinks +
+            '</div>';
+        }
+
+        return (
+          '<div class="pub-item">' +
+            '<div class="pub-thumb">' + thumbHtml + '</div>' +
+            '<div class="pub-body">' +
+              '<div class="pub-meta">' +
+                '<span class="pub-venue">' + escapeHtml(p.venue || '') + '</span>' +
+                (linksOut.length ? '<div class="pub-links">' + linksOut.join('') + '</div>' : '') +
+              '</div>' +
+              '<div class="pub-title">' + renderInline(p.title) + '</div>' +
+              '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +
+              summaryHtml +
+              pressHtml +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    function renderInterests(data) {
+      var container = document.querySelector('.interests-list');
+      if (!container) return;
+      var section = document.querySelector('.interests-section');
+      var hr = document.querySelector('.interests-hr');
+
+      var isEmpty = data.kind === 'empty' ||
+        (data.kind === 'list' && !data.items.length) ||
+        (data.kind === 'prose' && !data.paragraphs.length);
+
+      if (isEmpty) {
+        if (section) section.style.display = 'none';
+        if (hr) hr.style.display = 'none';
+        return;
+      }
+
+      container.classList.remove('as-list', 'as-prose');
+
+      if (data.kind === 'list') {
+        container.classList.add('as-list');
+        container.innerHTML = data.items.map(function (it) {
+          return (
+            '<div class="interest-topic">' + renderInline(it.topic) + '</div>' +
+            '<div class="interest-desc">' + (it.desc ? renderInline(it.desc) : '') + '</div>'
+          );
+        }).join('');
+      } else {
+        container.classList.add('as-prose');
+        container.innerHTML = data.paragraphs.map(function (p) {
+          return '<p>' + renderInline(p) + '</p>';
+        }).join('');
+      }
+    }
+
+    function renderLife(items) {
+      var container = document.querySelector('.life-list');
+      if (!container) return;
+      container.innerHTML = items.map(function (item) {
+        return (
+          '<div class="life-item">' +
+            '<div class="life-marker" aria-hidden="true"></div>' +
+            '<div class="life-text">' + renderInline(item.en) + '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    function renderContact(contact, social) {
+      var section = document.querySelector('.contact-section');
+      if (!section) return;
+      var introEn = contact.intro_en || '';
+      var links = socialLinksHtml(social);
+      if (!introEn && !links) {
+        section.style.display = 'none';
+        var prev = section.previousElementSibling;
+        if (prev && prev.tagName === 'HR') prev.style.display = 'none';
+        return;
+      }
+      var intro = section.querySelector('.contact-intro');
+      if (introEn) {
+        intro.innerHTML = renderInline(introEn);
+      } else {
+        intro.remove();
+      }
+      section.querySelector('.contact-socials').innerHTML = links;
+    }
+
+    function render(data) {
+      if (data.basicInfo.name) document.title = data.basicInfo.name;
+      renderHero(data);
+      renderResearch(data.research);
+      renderInterests(data.interests);
+      renderPubs(data.publications);
+      renderLife(data.life);
+      renderContact(data.contact, data.social);
+    }
+
+    function showLoadError(err) {
+      var box = document.createElement('div');
+      box.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#d33;color:#fff;padding:12px 16px;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;z-index:9999;text-align:center;';
+      var msg = (err && err.message) ? err.message : String(err);
+      box.innerHTML =
+        '⚠️ Failed to load <code style="background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:3px;">content.md</code> — ' + escapeHtml(msg) +
+        '. If you opened this file directly (file://), serve the folder via a local HTTP server, e.g. <code style="background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:3px;">python3 -m http.server</code>, then visit http://localhost:8000/.';
+      document.body.prepend(box);
+    }
+
+    fetch('content.md', { cache: 'no-cache' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (md) { render(parseMd(md)); })
+      .catch(showLoadError);
+  })();
 
 </script>
 

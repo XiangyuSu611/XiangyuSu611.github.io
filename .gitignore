@@ -1,7 +1,18 @@
 # Nutstore cloud sync artifacts
 *.nssyncsc
 
+# macOS metadata
+.DS_Store
+
+# Local Claude / editor config
+.claude/settings.local.json
+.claude/settings.json
+
 # Large design / reference assets (kept locally, not tracked)
 day.png
 night.png
 ICRA26_1139_FI.pdf
+
+# Original high-res source photos (use xiangyusu2-web.png instead)
+xiangyusu2.png
+xiangyusu.png
