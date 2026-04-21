@@ -1,0 +1,7 @@
+# Nutstore cloud sync artifacts
+*.nssyncsc
+
+# Large design / reference assets (kept locally, not tracked)
+day.png
+night.png
+ICRA26_1139_FI.pdf
