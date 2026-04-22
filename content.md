@@ -58,39 +58,18 @@ My current research interests center on 🤖 ==Embodied Intelligence==, particul
 # coverage: 外部报道，格式 "名称 | URL"，多条换行，没有则删掉整个字段
 
 [[paper]]
-venue: NeurIPS 2024
-title: Understanding Gradient Flow in Overparameterized Networks
-authors: **Xiangyu Su**, Jane Doe, John Smith   # 用 ** 加粗自己名字
-thumb:
-paper_url: https://arxiv.org/abs/...
-code_url: https://github.com/...
-summary_en: We characterize how gradient signals propagate through depth, identifying a phase transition that explains empirical training instabilities in large-scale models.
-summary_zh: 我们分析了梯度信号在深度网络中的传播规律，发现了一种相变现象，可以解释大规模模型训练中的不稳定性。
+venue: ICRA 2026
+title: IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models
+authors: **Xiangyu Su**, Juzhan Xu, Oliver van Kaick, Kai Xu, Ruizhen Hu
+thumb: imr-llm-teaser.jpg
+paper_url: https://arxiv.org/abs/2603.02669
+code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
+project_url: https://xiangyusu611.github.io/imr-llm/
+summary_en: An algorithm combining LLMs with operations research for industrial multi-robot task planning and program generation.
+summary_zh: 面向工业多机器人的 LLM 驱动任务规划与程序生成框架：用 LLM 构建析取图并通过确定性求解得到高层计划，再用过程树引导 LLM 生成可执行的低层程序；同时发布覆盖三种难度的 IMR-Bench 基准。
+deployed_at: SpeedBot Robotics | https://www.speedbot.com/en/home
 coverage:
-  MIT News | https://news.mit.edu/...
-  The Gradient | https://thegradient.pub/...
-
-[[paper]]
-venue: ICML 2024
-title: Efficient Sparse Inference via Learned Activation Routing
-authors: **Xiangyu Su**, Bob Zhang
-thumb:
-paper_url: https://arxiv.org/abs/...
-code_url: https://github.com/...
-summary_en: A lightweight routing mechanism that selectively activates subnetworks at inference time, achieving 3× speedup with negligible accuracy loss on standard benchmarks.
-summary_zh: 一种轻量级的路由机制，可以在推理时选择性地激活子网络，在基准测试上实现了 3 倍加速，同时精度损失可以忽略不计。
-
-[[paper]]
-venue: ICLR 2023
-title: Calibrating Model Uncertainty for Human-in-the-Loop Decisions
-authors: Jane Doe, **Xiangyu Su**, Alice Chen, Bob Zhang
-thumb:
-paper_url: https://arxiv.org/abs/...
-code_url:
-summary_en: We study how predictive uncertainty estimates influence downstream human judgment in high-stakes settings, proposing a calibration framework grounded in cognitive load theory.
-summary_zh: 我们研究了深度集成与保形预测的不确定性估计如何影响高风险场景中的人类判断，并提出了一种基于认知负荷理论的校准框架。
-coverage:
-  Stanford HAI | https://hai.stanford.edu/...
+  机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc
 
 
 ---

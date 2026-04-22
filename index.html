@@ -444,13 +444,36 @@
           ? '<img src="' + escapeHtml(p.thumb) + '" alt="">'
           : '<div class="pub-thumb-placeholder"></div>';
 
-        var linksOut = [];
-        if (p.paper_url) linksOut.push('<a href="' + escapeHtml(p.paper_url) + '" target="_blank" rel="noopener">Paper</a>');
-        if (p.code_url)  linksOut.push('<a href="' + escapeHtml(p.code_url)  + '" target="_blank" rel="noopener">Code</a>');
+        var toplineItems = [];
+        if (p.venue)       toplineItems.push('<span class="pub-venue">' + escapeHtml(p.venue) + '</span>');
+        if (p.project_url) toplineItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');
+        if (p.paper_url)   toplineItems.push('<a href="' + escapeHtml(p.paper_url)   + '" target="_blank" rel="noopener">Paper</a>');
+        if (p.code_url)    toplineItems.push('<a href="' + escapeHtml(p.code_url)    + '" target="_blank" rel="noopener">Code</a>');
+        var toplineHtml = toplineItems.length
+          ? '<div class="pub-topline">' + toplineItems.join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>'
+          : '';
 
         var summaryHtml = p.summary_en
           ? '<div class="pub-summary">' + renderInline(p.summary_en) + '</div>'
           : '';
+
+        var deployHtml = '';
+        if (p.deployed_at) {
+          var depParts = p.deployed_at.split('|').map(function (s) { return s.trim(); });
+          var depName = depParts[0];
+          var depUrl = depParts[1] || '';
+          if (depName) {
+            var depInner = depUrl
+              ? '<a class="pub-deploy-link" href="' + escapeHtml(depUrl) + '" target="_blank" rel="noopener">' + escapeHtml(depName) + '</a>'
+              : '<span class="pub-deploy-link">' + escapeHtml(depName) + '</span>';
+            deployHtml =
+              '<div class="pub-deploy">' +
+                '<span class="pub-deploy-dot" aria-hidden="true"></span>' +
+                '<span class="pub-deploy-label">In Production</span>' +
+                depInner +
+              '</div>';
+          }
+        }
 
         var pressHtml = '';
         if (p.coverage && p.coverage.length) {
@@ -468,13 +491,11 @@
           '<div class="pub-item">' +
             '<div class="pub-thumb">' + thumbHtml + '</div>' +
             '<div class="pub-body">' +
-              '<div class="pub-meta">' +
-                '<span class="pub-venue">' + escapeHtml(p.venue || '') + '</span>' +
-                (linksOut.length ? '<div class="pub-links">' + linksOut.join('') + '</div>' : '') +
-              '</div>' +
+              toplineHtml +
               '<div class="pub-title">' + renderInline(p.title) + '</div>' +
               '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +
               summaryHtml +
+              deployHtml +
               pressHtml +
             '</div>' +
           '</div>'
