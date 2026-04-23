@@ -564,6 +564,10 @@ hr {
   flex-shrink: 0;
 }
 
+.pub-tag--production .pub-tag-marker {
+  background: var(--accent);
+}
+
 .pub-tag-logo {
   width: 16px;
   height: 16px;
@@ -585,6 +589,10 @@ hr {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-subtle);
+}
+
+.pub-tag--production .pub-tag-label {
+  color: var(--accent);
 }
 
 .pub-tag-sep {
