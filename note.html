@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes · Xiangyu Su</title>
+  <meta name="description" content="Field notes and reading journal by Xiangyu Su." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicons/64.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/512.png" />
+  <link rel="apple-touch-icon" href="assets/favicons/apple-touch.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=42" />
+
+  <script>
+    (function () {
+      var stored = localStorage.getItem('theme');
+      var theme = stored || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body class="notes-page">
+
+<label class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+  <input type="checkbox" id="themeToggle">
+  <span class="icon-sun">☀️</span>
+  <span class="icon-moon">🌙</span>
+</label>
+
+<div class="container notes-container">
+
+  <nav class="notes-breadcrumb">
+    <a href="index.html">Xiangyu Su</a>
+    <span class="divider">⁄</span>
+    <span class="current">Notes</span>
+  </nav>
+
+  <header class="notes-header">
+    <h1 class="notes-title">Notes</h1>
+    <p class="notes-sub">A slow-burn notebook — fragments from reading, design tinkering, research detours, the occasional opinion.</p>
+  </header>
+
+  <main class="notes-stream"></main>
+
+  <footer class="site-footer notes-footer">
+    Xiangyu Su · 2026 · Built with <img class="claude-logo" src="assets/brands/claude-code.png" alt="" aria-hidden="true"><span class="footer-cc">Claude Code</span>
+  </footer>
+
+</div>
+
+<script>
+  var html = document.documentElement;
+
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { html.classList.add('transitions-ready'); });
+  });
+
+  var themeCheckbox = document.getElementById('themeToggle');
+  function applyTheme(t) {
+    html.setAttribute('data-theme', t);
+    themeCheckbox.checked = (t === 'dark');
+  }
+  applyTheme(html.getAttribute('data-theme') || 'dark');
+  themeCheckbox.addEventListener('change', function () {
+    var next = this.checked ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  (function () {
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function renderInline(s) {
+      if (!s) return '';
+      var out = escapeHtml(s);
+      out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (_, text, url) {
+        return '<a href="' + url + '" target="_blank" rel="noopener">' + text + '</a>';
+      });
+      out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      out = out.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+      return out;
+    }
+
+    function parseNotes(text) {
+      if (!text) return [];
+      var blocks = text.split(/\n\[\[note\]\]\s*\n?/);
+      blocks.shift();
+      return blocks.map(function (block) {
+        var note = { meta: {}, body: '' };
+        var lines = block.split('\n');
+        var i = 0;
+        // Metadata: lines like key: value, until `---` separator or blank line
+        for (; i < lines.length; i++) {
+          var line = lines[i];
+          var trimmed = line.trim();
+          if (trimmed === '---' || trimmed === '') { i++; break; }
+          if (trimmed.charAt(0) === '#') continue;
+          var m = trimmed.match(/^([a-z_]+)\s*:\s*(.*)$/i);
+          if (m) note.meta[m[1].toLowerCase()] = m[2].trim();
+        }
+        // Body: everything after, until end of block or next header
+        var bodyLines = [];
+        for (; i < lines.length; i++) {
+          var bl = lines[i];
+          if (bl.indexOf('[[note]]') === 0) break;
+          bodyLines.push(bl);
+        }
+        note.body = bodyLines.join('\n').trim();
+        return note;
+      }).filter(function (n) { return n.meta.title; });
+    }
+
+    function formatDate(str) {
+      if (!str) return '';
+      var m = str.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
+      if (!m) return str;
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var y = m[1], mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
+      return months[mo - 1] + ' ' + d + ', ' + y;
+    }
+
+    function renderBody(body) {
+      var paras = body.split(/\n\s*\n/).map(function (p) { return p.replace(/\n/g, ' ').trim(); }).filter(Boolean);
+      return paras.map(function (p, idx) {
+        if (p.charAt(0) === '>') {
+          var q = p.replace(/^>\s?/gm, '').trim();
+          return '<blockquote>' + renderInline(q) + '</blockquote>';
+        }
+        var cls = idx === 0 ? ' class="lede"' : '';
+        return '<p' + cls + '>' + renderInline(p) + '</p>';
+      }).join('');
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function renderNotes(notes) {
+      var container = document.querySelector('.notes-stream');
+      if (!notes.length) {
+        container.innerHTML = '<p class="notes-empty">No notes yet. Edit <code>notes.md</code> to add entries.</p>';
+        return;
+      }
+      // sort newest-first by date
+      notes.sort(function (a, b) {
+        return (b.meta.date || '').localeCompare(a.meta.date || '');
+      });
+      var html = notes.map(function (n, idx) {
+        var num = '№ ' + pad(notes.length - idx);
+        var date = formatDate(n.meta.date);
+        var tags = n.meta.tags ? '<span class="note-tags">' + escapeHtml(n.meta.tags) + '</span>' : '';
+        var delay = (idx * 80) + 'ms';
+        return '' +
+          '<article class="note" style="--stagger:' + delay + '">' +
+            '<aside class="note-index">' + num + '</aside>' +
+            '<div class="note-meta">' +
+              (date ? '<span class="note-date">' + date + '</span>' : '') +
+              (date && tags ? '<span class="note-meta-dot"></span>' : '') +
+              tags +
+            '</div>' +
+            '<h2 class="note-title">' + renderInline(n.meta.title) + '</h2>' +
+            '<div class="note-body">' + renderBody(n.body) + '</div>' +
+          '</article>';
+      }).join('');
+      container.innerHTML = html;
+    }
+
+    fetch('notes.md', { cache: 'no-cache' })
+      .then(function (r) { return r.text(); })
+      .then(function (text) {
+        try { renderNotes(parseNotes(text)); }
+        catch (e) {
+          document.querySelector('.notes-stream').innerHTML =
+            '<p class="notes-empty">Failed to parse notes.md — ' + escapeHtml(e.message) + '</p>';
+        }
+      })
+      .catch(function () {
+        document.querySelector('.notes-stream').innerHTML =
+          '<p class="notes-empty">No <code>notes.md</code> found yet.</p>';
+      });
+  })();
+</script>
+
+</body>
+</html>
