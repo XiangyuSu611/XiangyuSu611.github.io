@@ -1350,16 +1350,16 @@ hr {
   text-align: right;
 }
 
-/* Editorial rhythm — hero moments alternate with thumbnail bands.
-   Every plate keeps its real aspect; heroes are sized by viewport,
-   thumbs are sized by a fixed row height (the zoom slider). */
+/* Editorial rhythm — compact hero moments alternate with tight thumbnail bands.
+   Every plate keeps its real aspect; heroes scale with viewport height, thumbs
+   share a fixed row height driven by the zoom slider. */
 .gallery-stream {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 14px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
-  --thumb-h: 240px;
+  --thumb-h: 260px;
 }
 
 .thumbs-row {
@@ -1372,7 +1372,7 @@ hr {
 .hero-row {
   display: flex;
   justify-content: center;
-  padding: 8px 0;
+  padding: 0;
 }
 
 .plate {
@@ -1387,32 +1387,21 @@ hr {
   aspect-ratio: var(--ratio, 1.5);
 }
 
-/* Thumbs — uniform height, width tracks aspect, ragged right edge */
 .thumbs-row .plate {
   height: var(--thumb-h);
   width: calc(var(--ratio, 1.5) * var(--thumb-h));
 }
 
-/* Heroes — fill viewport height, width tracks aspect */
 .hero-row .plate {
-  height: 72vh;
-  max-height: 780px;
+  height: 52vh;
+  max-height: 560px;
   width: auto;
   max-width: 100%;
 }
 .hero-row .plate.plate--portrait {
-  height: 86vh;
-  max-height: 900px;
+  height: 68vh;
+  max-height: 700px;
 }
-.hero-row .plate.plate--landscape[style*="--ratio:1.777"],
-.hero-row .plate.plate--landscape[style*="--ratio:1.6"] {
-  /* ultra-wide landscapes could overflow — let max-width constrain */
-  height: auto;
-  width: min(100%, calc(72vh * var(--ratio)));
-}
-
-/* Heroes gently pulse in from a slightly deeper dip */
-.hero-row .plate { transform: translateY(16px); }
 
 /* Image button (clickable) */
 .plate-btn {
@@ -1635,9 +1624,9 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 1200px) {
-  .gallery-stream { --thumb-h: 200px; gap: 24px; }
-  .hero-row .plate { height: 66vh; max-height: 640px; }
-  .hero-row .plate.plate--portrait { height: 80vh; max-height: 800px; }
+  .gallery-stream { --thumb-h: 220px; gap: 12px; }
+  .hero-row .plate { height: 48vh; max-height: 480px; }
+  .hero-row .plate.plate--portrait { height: 62vh; max-height: 620px; }
 }
 
 @media (max-width: 800px) {
@@ -1646,10 +1635,10 @@ body.lightbox-open .theme-toggle {
   .gallery-page .notes-header { margin-bottom: 28px; }
   .gallery-zoom { margin-bottom: 20px; flex-wrap: wrap; }
   .zoom-slider { width: 140px; }
-  .gallery-stream { --thumb-h: 160px; gap: 20px; }
+  .gallery-stream { --thumb-h: 170px; gap: 10px; }
   .thumbs-row { gap: 4px; }
-  .hero-row .plate { height: 56vh; max-height: 560px; }
-  .hero-row .plate.plate--portrait { height: 70vh; max-height: 700px; }
+  .hero-row .plate { height: 42vh; max-height: 440px; }
+  .hero-row .plate.plate--portrait { height: 56vh; max-height: 560px; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
@@ -1657,9 +1646,9 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 500px) {
-  .gallery-stream { --thumb-h: 120px; gap: 16px; }
-  .hero-row .plate { height: 48vh; }
-  .hero-row .plate.plate--portrait { height: 62vh; }
+  .gallery-stream { --thumb-h: 130px; gap: 8px; }
+  .hero-row .plate { height: 38vh; }
+  .hero-row .plate.plate--portrait { height: 50vh; }
 }
 
 @media (hover: none) {
