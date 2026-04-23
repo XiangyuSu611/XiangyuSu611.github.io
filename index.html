@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=25" />
+  <link rel="stylesheet" href="style.css?v=37" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -88,6 +88,16 @@
     <h2 class="section-title">Publications</h2>
 
     <div class="pub-list"></div>
+  </section>
+
+  <hr class="exp-hr" />
+
+  <!-- ======================================================
+       EXPERIENCE
+       ====================================================== -->
+  <section aria-label="Experience" class="exp-section">
+    <h2 class="section-title">Experience</h2>
+    <div class="exp-list"></div>
   </section>
 
   <!-- ======================================================
@@ -244,6 +254,27 @@
       return result;
     }
 
+    function parseExperience(text) {
+      if (!text) return [];
+      var blocks = text.split(/\n\[\[(?:experience|award|internship)\]\]\s*\n?/);
+      blocks.shift();
+      return blocks.map(function (block) {
+        var item = {};
+        var lines = block.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          var stripped = stripInlineComment(lines[i]);
+          var line = stripped.trim();
+          if (!line || line.charAt(0) === '#' || line.indexOf('---') === 0) {
+            if (line.indexOf('---') === 0) break;
+            continue;
+          }
+          var m = stripped.match(/^([a-z_]+)\s*:\s*(.*)$/i);
+          if (m) item[m[1].toLowerCase()] = m[2].trim();
+        }
+        return item;
+      }).filter(function (it) { return it.title; });
+    }
+
     function parseLife(text) {
       if (!text) return [];
       var items = [];
@@ -291,6 +322,7 @@
         research: parseBilingual(s['Research']),
         interests: parseInterests(s['Research Interests']),
         publications: parsePubs(s['Publications']),
+        experience: parseExperience(s['Experience']),
         life: parseLife(s['Life']),
         contact: parseKV(s['Contact'])
       };
@@ -419,13 +451,14 @@
       }).join('');
     }
 
-    function renderPubs(pubs) {
-      var container = document.querySelector('.pub-list');
-      if (!container) return;
-      container.innerHTML = pubs.map(function (p) {
+    function renderPubItem(p) {
         var thumbHtml = p.thumb
           ? '<img src="' + escapeHtml(p.thumb) + '" alt="">'
           : '<div class="pub-thumb-placeholder"></div>';
+
+        var categoryHtml = p.category
+          ? '<div class="pub-category">' + escapeHtml(p.category) + '</div>'
+          : '';
 
         var toplineItems = [];
         if (p.venue)       toplineItems.push('<span class="pub-venue">' + escapeHtml(p.venue) + '</span>');
@@ -459,10 +492,6 @@
           '</' + tag + '>';
         }
         var tagItems = [];
-        if (p.deployed_at) {
-          var depParts = p.deployed_at.split('|').map(function (s) { return s.trim(); });
-          if (depParts[0]) tagItems.push(pubTag('production', 'In Production', depParts[0], depParts[1] || '', depParts[2] || ''));
-        }
         if (p.coverage && p.coverage.length) {
           p.coverage.forEach(function (c) {
             tagItems.push(pubTag('', 'Coverage', c.name, c.url, c.logo));
@@ -476,6 +505,7 @@
           '<div class="pub-item">' +
             '<div class="pub-thumb">' + thumbHtml + '</div>' +
             '<div class="pub-body">' +
+              categoryHtml +
               toplineHtml +
               '<div class="pub-title">' + renderInline(p.title) + '</div>' +
               '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +
@@ -484,7 +514,12 @@
             '</div>' +
           '</div>'
         );
-      }).join('');
+    }
+
+    function renderPubs(pubs) {
+      var container = document.querySelector('.pub-list');
+      if (!container) return;
+      container.innerHTML = pubs.map(renderPubItem).join('');
     }
 
     function renderInterests(data) {
@@ -519,6 +554,55 @@
           return '<p>' + renderInline(p) + '</p>';
         }).join('');
       }
+    }
+
+    function renderExperience(items) {
+      var container = document.querySelector('.exp-list');
+      if (!container) return;
+      var section = document.querySelector('.exp-section');
+      var hr = document.querySelector('.exp-hr');
+      if (!items.length) {
+        if (section) section.style.display = 'none';
+        if (hr) hr.style.display = 'none';
+        return;
+      }
+      var KIND_LABEL = {
+        internship: 'Internship',
+        research: 'Research',
+        visit: 'Visiting',
+        award: 'Award',
+        honor: 'Honor'
+      };
+      container.innerHTML = items.map(function (it) {
+        var kind = (it.kind || '').toLowerCase();
+        var label = KIND_LABEL[kind] || (it.kind || '');
+        var title = it.title || '';
+        var logoHtml = it.logo
+          ? '<img class="exp-org-logo" src="' + escapeHtml(it.logo) + '" alt="" aria-hidden="true">'
+          : '';
+        var orgInner = it.org_url
+          ? '<a href="' + escapeHtml(it.org_url) + '" target="_blank" rel="noopener">' + escapeHtml(it.org || '') + '</a>'
+          : escapeHtml(it.org || '');
+        var orgHtml = it.org ? '<div class="exp-org">' + logoHtml + '<span>' + orgInner + '</span></div>' : '';
+        var noteHtml = it.note ? '<div class="exp-note">' + renderInline(it.note) + '</div>' : '';
+        var periodHtml = it.period ? '<span class="exp-period">' + escapeHtml(it.period) + '</span>' : '';
+        var kindHtml = label
+          ? '<span class="exp-kind' + (kind === 'award' || kind === 'honor' ? ' exp-kind--accent' : '') + '">' + escapeHtml(label) + '</span>'
+          : '';
+        return (
+          '<div class="exp-item">' +
+            kindHtml +
+            '<div class="exp-body">' +
+              '<div class="exp-head">' +
+                '<span class="exp-title">' + escapeHtml(title) + '</span>' +
+                periodHtml +
+              '</div>' +
+              orgHtml +
+              noteHtml +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
     }
 
     function renderLife(items) {
@@ -560,6 +644,7 @@
       renderResearch(data.research);
       renderInterests(data.interests);
       renderPubs(data.publications);
+      renderExperience(data.experience);
       renderLife(data.life);
       renderContact(data.contact, data.social);
     }
