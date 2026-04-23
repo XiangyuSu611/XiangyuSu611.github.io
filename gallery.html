@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notes · Xiangyu Su</title>
-  <meta name="description" content="Field notes and reading journal by Xiangyu Su." />
+  <title>Gallery · Xiangyu Su</title>
+  <meta name="description" content="Photo plates from travels and everyday life by Xiangyu Su." />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/32.png" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicons/64.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/512.png" />
@@ -22,7 +22,7 @@
     })();
   </script>
 </head>
-<body class="notes-page">
+<body class="gallery-page">
 
 <label class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
   <input type="checkbox" id="themeToggle">
@@ -30,24 +30,24 @@
   <span class="icon-moon">🌙</span>
 </label>
 
-<div class="container notes-container">
+<div class="container gallery-container">
 
   <nav class="notes-breadcrumb">
     <a href="index.html">Xiangyu Su</a>
     <span class="divider">⁄</span>
-    <span class="current">Notes</span>
+    <span class="current">Gallery</span>
   </nav>
 
   <header class="notes-header">
-    <h1 class="notes-title">Notes</h1>
-    <p class="notes-sub">A slow-burn notebook — fragments from reading, design tinkering, research detours, the occasional opinion.</p>
+    <h1 class="notes-title">Gallery</h1>
+    <p class="notes-sub">A slow-growing set of plates — places, rooms, weather, and the occasional light worth remembering.</p>
     <div class="notes-placeholder-strip" role="note">
       <span class="notes-placeholder-mark">Placeholder</span>
-      <span class="notes-placeholder-text">Entries below are sample content — real notes will land here soon.</span>
+      <span class="notes-placeholder-text">Plates below are sample content — real photos will land here soon.</span>
     </div>
   </header>
 
-  <main class="notes-stream"></main>
+  <main class="gallery-stream"></main>
 
   <footer class="site-footer notes-footer">
     Xiangyu Su · 2026 · Built with <img class="claude-logo" src="assets/brands/claude-code.png" alt="" aria-hidden="true"><span class="footer-cc">Claude Code</span>
@@ -92,33 +92,33 @@
       return out;
     }
 
-    function parseNotes(text) {
+    function parsePhotos(text) {
       if (!text) return [];
-      var blocks = text.split(/\n\[\[note\]\]\s*\n?/);
+      var blocks = text.split(/\n\[\[photo\]\]\s*\n?/);
       blocks.shift();
       return blocks.map(function (block) {
-        var note = { meta: {}, body: '' };
+        var photo = { meta: {}, body: '' };
         var lines = block.split('\n');
         var i = 0;
-        // Metadata: lines like key: value, until `---` separator or blank line
         for (; i < lines.length; i++) {
           var line = lines[i];
           var trimmed = line.trim();
-          if (trimmed === '---' || trimmed === '') { i++; break; }
+          if (trimmed === '---') { i++; break; }
+          if (trimmed === '' && Object.keys(photo.meta).length) { i++; break; }
+          if (trimmed === '') continue;
           if (trimmed.charAt(0) === '#') continue;
           var m = trimmed.match(/^([a-z_]+)\s*:\s*(.*)$/i);
-          if (m) note.meta[m[1].toLowerCase()] = m[2].trim();
+          if (m) photo.meta[m[1].toLowerCase()] = m[2].trim();
         }
-        // Body: everything after, until end of block or next header
         var bodyLines = [];
         for (; i < lines.length; i++) {
           var bl = lines[i];
-          if (bl.indexOf('[[note]]') === 0) break;
+          if (bl.indexOf('[[photo]]') === 0) break;
           bodyLines.push(bl);
         }
-        note.body = bodyLines.join('\n').trim();
-        return note;
-      }).filter(function (n) { return n.meta.title; });
+        photo.body = bodyLines.join('\n').trim();
+        return photo;
+      }).filter(function (p) { return p.meta.src || p.meta.title || p.meta.caption; });
     }
 
     function formatDate(str) {
@@ -126,69 +126,90 @@
       var m = str.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
       if (!m) return str;
       var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var y = m[1], mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
-      return months[mo - 1] + ' ' + d + ', ' + y;
+      return months[parseInt(m[2],10) - 1] + ' ' + parseInt(m[3],10) + ', ' + m[1];
     }
 
     function renderBody(body) {
       var paras = body.split(/\n\s*\n/).map(function (p) { return p.replace(/\n/g, ' ').trim(); }).filter(Boolean);
-      return paras.map(function (p, idx) {
-        if (p.charAt(0) === '>') {
-          var q = p.replace(/^>\s?/gm, '').trim();
-          return '<blockquote>' + renderInline(q) + '</blockquote>';
-        }
-        var cls = idx === 0 ? ' class="lede"' : '';
-        return '<p' + cls + '>' + renderInline(p) + '</p>';
+      return paras.map(function (p) {
+        return '<p>' + renderInline(p) + '</p>';
       }).join('');
     }
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-    function renderNotes(notes) {
-      var container = document.querySelector('.notes-stream');
-      if (!notes.length) {
-        container.innerHTML = '<p class="notes-empty">No notes yet. Edit <code>notes.md</code> to add entries.</p>';
+    function renderGallery(photos) {
+      var container = document.querySelector('.gallery-stream');
+      if (!photos.length) {
+        container.innerHTML = '<p class="notes-empty">No plates yet. Edit <code>gallery.md</code> to add entries.</p>';
         return;
       }
-      // sort newest-first by date
-      notes.sort(function (a, b) {
+      photos.sort(function (a, b) {
         return (b.meta.date || '').localeCompare(a.meta.date || '');
       });
-      var html = notes.map(function (n, idx) {
-        var num = '№ ' + pad(notes.length - idx);
-        var date = formatDate(n.meta.date);
-        var tags = n.meta.tags ? '<span class="note-tags">' + escapeHtml(n.meta.tags) + '</span>' : '';
-        var isPlaceholder = /^(yes|true|1)$/i.test(n.meta.placeholder || '');
+      var html = photos.map(function (p, idx) {
+        var num = 'Plate ' + pad(idx + 1);
+        var date = formatDate(p.meta.date);
+        var location = p.meta.location ? escapeHtml(p.meta.location) : '';
+        var isPlaceholder = /^(yes|true|1)$/i.test(p.meta.placeholder || '');
         var placeholderTag = isPlaceholder ? '<span class="note-placeholder-tag">Placeholder</span>' : '';
-        var sep1 = (date && (tags || placeholderTag)) ? '<span class="note-meta-dot"></span>' : '';
-        var sep2 = (tags && placeholderTag) ? '<span class="note-meta-dot"></span>' : '';
-        var delay = (idx * 80) + 'ms';
+
+        var src = p.meta.src || '';
+        var imageHtml = src
+          ? '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(p.meta.title || p.meta.caption || 'Photo') + '" loading="lazy" onerror="this.parentNode.classList.add(&quot;plate-image--broken&quot;); this.remove();"/>'
+          : '';
+        var frameHtml =
+          '<div class="plate-image-wrap' + (isPlaceholder && !src ? ' plate-image--broken' : '') + '">' +
+            imageHtml +
+            '<div class="plate-image-placeholder">Image pending</div>' +
+          '</div>';
+
+        var metaBits = [];
+        if (date) metaBits.push('<span class="note-date">' + date + '</span>');
+        if (location) metaBits.push('<span class="plate-location">' + location + '</span>');
+        if (placeholderTag) metaBits.push(placeholderTag);
+        var metaHtml = metaBits.length
+          ? '<div class="note-meta plate-meta">' + metaBits.join('<span class="note-meta-dot"></span>') + '</div>'
+          : '';
+
+        var titleHtml = p.meta.title
+          ? '<h2 class="plate-title">' + renderInline(p.meta.title) + '</h2>'
+          : '';
+        var captionHtml = p.meta.caption
+          ? '<p class="plate-caption">' + renderInline(p.meta.caption) + '</p>'
+          : '';
+        var bodyHtml = p.body
+          ? '<div class="plate-body">' + renderBody(p.body) + '</div>'
+          : '';
+
+        var delay = (idx * 100) + 'ms';
         return '' +
-          '<article class="note' + (isPlaceholder ? ' is-placeholder' : '') + '" style="--stagger:' + delay + '">' +
-            '<aside class="note-index">' + num + '</aside>' +
-            '<div class="note-meta">' +
-              (date ? '<span class="note-date">' + date + '</span>' : '') +
-              sep1 + tags + sep2 + placeholderTag +
-            '</div>' +
-            '<h2 class="note-title">' + renderInline(n.meta.title) + '</h2>' +
-            '<div class="note-body">' + renderBody(n.body) + '</div>' +
-          '</article>';
+          '<figure class="plate' + (isPlaceholder ? ' is-placeholder' : '') + '" style="--stagger:' + delay + '">' +
+            '<aside class="plate-index">' + num + '</aside>' +
+            frameHtml +
+            '<figcaption class="plate-caption-block">' +
+              metaHtml +
+              titleHtml +
+              captionHtml +
+              bodyHtml +
+            '</figcaption>' +
+          '</figure>';
       }).join('');
       container.innerHTML = html;
     }
 
-    fetch('notes.md', { cache: 'no-cache' })
+    fetch('gallery.md', { cache: 'no-cache' })
       .then(function (r) { return r.text(); })
       .then(function (text) {
-        try { renderNotes(parseNotes(text)); }
+        try { renderGallery(parsePhotos(text)); }
         catch (e) {
-          document.querySelector('.notes-stream').innerHTML =
-            '<p class="notes-empty">Failed to parse notes.md — ' + escapeHtml(e.message) + '</p>';
+          document.querySelector('.gallery-stream').innerHTML =
+            '<p class="notes-empty">Failed to parse gallery.md — ' + escapeHtml(e.message) + '</p>';
         }
       })
       .catch(function () {
-        document.querySelector('.notes-stream').innerHTML =
-          '<p class="notes-empty">No <code>notes.md</code> found yet.</p>';
+        document.querySelector('.gallery-stream').innerHTML =
+          '<p class="notes-empty">No <code>gallery.md</code> found yet.</p>';
       });
   })();
 </script>

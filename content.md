@@ -30,6 +30,7 @@ I am looking for internship and full-time opportunities. Feel free to contact me
 email: xiangyv.su@gmail.com
 github: https://github.com/XiangyuSu611
 notes: note.html
+gallery: gallery.html
 # twitter: username
 # scholar: https://scholar.google.com/...
 # cv: cv.pdf
