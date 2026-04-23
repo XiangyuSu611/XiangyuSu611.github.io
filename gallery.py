@@ -17,8 +17,12 @@ What `add` does:
 """
 
 import argparse
+import json
 import re
 import sys
+import time
+import urllib.parse
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -33,8 +37,8 @@ GALLERY_DIR = ROOT / "assets" / "gallery"
 GALLERY_MD = ROOT / "gallery.md"
 INBOX = ROOT / "gallery_inbox"
 
-MAX_LONG_EDGE = 1800
-JPEG_QUALITY = 82
+MAX_LONG_EDGE = 2400
+JPEG_QUALITY = 90
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tif", ".tiff"}
 
 
@@ -203,10 +207,178 @@ def cmd_ingest(args):
     print(f"  Tip: open gallery.md to add title / caption per plate, then git commit.")
 
 
+def cmd_reprocess(args):
+    """Re-encode each plate from its original in ./gallery_inbox at current quality settings."""
+    if not INBOX.exists():
+        sys.exit(f"Inbox folder not found: {INBOX}")
+    inbox_files = sorted(
+        [p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    )
+    dated = []
+    for p in inbox_files:
+        d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
+        dated.append((d, p))
+    dated.sort(key=lambda x: x[0])
+
+    print(f"→ Re-encoding {len(dated)} plate(s) at {MAX_LONG_EDGE}px long edge, JPEG q={JPEG_QUALITY}\n")
+    total_before = 0
+    total_after = 0
+    for i, (_d, src) in enumerate(dated, start=1):
+        dest = GALLERY_DIR / f"plate-{i:02d}.jpg"
+        if not dest.exists():
+            continue
+        before = dest.stat().st_size
+        size = process_image(src, dest)
+        after = dest.stat().st_size
+        total_before += before
+        total_after += after
+        print(f"  ✓ plate-{i:02d}.jpg  ({size[0]}×{size[1]}, {before//1024} → {after//1024} KB)")
+    delta = (total_after - total_before) / 1024 / 1024
+    sign = "+" if delta >= 0 else ""
+    print(f"\n✓ Total {total_before//1024//1024} → {total_after//1024//1024} MB  ({sign}{delta:.1f} MB)")
+
+
 def cmd_list(args):
     for p in sorted(GALLERY_DIR.glob("plate-*.jpg")):
         size_kb = p.stat().st_size // 1024
         print(f"  {p.relative_to(ROOT)}  ({size_kb} KB)")
+
+
+def read_gps(path: Path):
+    try:
+        with Image.open(path) as img:
+            exif = img.getexif()
+            if not exif:
+                return None
+            try:
+                gps = exif.get_ifd(IFD.GPSInfo)
+            except Exception:
+                gps = None
+            if not gps:
+                return None
+            lat_ref = gps.get(1)
+            lat_dms = gps.get(2)
+            lon_ref = gps.get(3)
+            lon_dms = gps.get(4)
+            if not (lat_ref and lat_dms and lon_ref and lon_dms):
+                return None
+            def dms_to_deg(t):
+                try:
+                    d, m, s = [float(x) for x in t]
+                    return d + m / 60 + s / 3600
+                except Exception:
+                    return None
+            lat = dms_to_deg(lat_dms)
+            lon = dms_to_deg(lon_dms)
+            if lat is None or lon is None:
+                return None
+            if str(lat_ref).upper().startswith("S"):
+                lat = -lat
+            if str(lon_ref).upper().startswith("W"):
+                lon = -lon
+            return (round(lat, 6), round(lon, 6))
+    except Exception:
+        return None
+
+
+def reverse_geocode(lat: float, lon: float, lang: str = "en"):
+    params = urllib.parse.urlencode({
+        "format": "json",
+        "lat": f"{lat}",
+        "lon": f"{lon}",
+        "zoom": "10",
+        "accept-language": lang,
+    })
+    url = f"https://nominatim.openstreetmap.org/reverse?{params}"
+    req = urllib.request.Request(url, headers={
+        "User-Agent": "xiangyusu611-gallery/1.0 (personal academic homepage)"
+    })
+    with urllib.request.urlopen(req, timeout=20) as r:
+        data = json.load(r)
+    addr = data.get("address", {}) or {}
+    city = (addr.get("city") or addr.get("town") or addr.get("village")
+            or addr.get("municipality") or addr.get("county")
+            or addr.get("state_district") or addr.get("state"))
+    country = addr.get("country")
+    if city and country:
+        return f"{city} · {country}"
+    return city or country or ""
+
+
+def cmd_geocode(args):
+    """Fill empty location fields from EXIF GPS of original photos in ./gallery_inbox."""
+    if not GALLERY_MD.exists():
+        sys.exit("gallery.md not found")
+
+    # Build ordered list of inbox originals by EXIF date to match plate numbering
+    if not INBOX.exists():
+        sys.exit(f"Inbox folder not found: {INBOX}")
+    inbox_files = sorted(
+        [p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    )
+    if not inbox_files:
+        sys.exit(f"No images in {INBOX}")
+    dated = []
+    for p in inbox_files:
+        d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
+        dated.append((d, p))
+    dated.sort(key=lambda x: x[0])  # same ordering gallery.py ingest used
+
+    # Match each plate-NN to the i-th inbox file
+    plate_to_src = {}
+    for i, (_d, src) in enumerate(dated, start=1):
+        plate_to_src[f"plate-{i:02d}.jpg"] = src
+
+    # Rewrite gallery.md
+    text = GALLERY_MD.read_text(encoding="utf-8")
+    blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
+    header, photo_blocks = blocks[0], blocks[1:]
+
+    filled = 0
+    skipped_no_gps = 0
+    skipped_filled = 0
+    new_blocks = []
+    for i, b in enumerate(photo_blocks):
+        src_m = re.search(r"^src:[ \t]*assets/gallery/(plate-\d+\.jpg)[ \t]*$", b, flags=re.MULTILINE)
+        loc_m = re.search(r"^location:[ \t]*(.*)$", b, flags=re.MULTILINE)
+        plate_file = src_m.group(1) if src_m else None
+        current_loc = (loc_m.group(1).strip() if loc_m else "")
+        if current_loc and not args.force:
+            skipped_filled += 1
+            new_blocks.append(b)
+            continue
+        original = plate_to_src.get(plate_file)
+        if not original or not original.exists():
+            new_blocks.append(b)
+            continue
+        gps = read_gps(original)
+        if not gps:
+            skipped_no_gps += 1
+            print(f"  · {plate_file}  {original.name}  → no GPS")
+            new_blocks.append(b)
+            continue
+        try:
+            label = reverse_geocode(gps[0], gps[1], args.lang)
+        except Exception as e:
+            print(f"  ! {plate_file}  {original.name}  → geocode failed: {e}")
+            new_blocks.append(b)
+            time.sleep(1.0)
+            continue
+        if not label:
+            print(f"  · {plate_file}  {original.name}  → empty result")
+            new_blocks.append(b)
+            time.sleep(1.0)
+            continue
+        # Replace the location line
+        new_b = re.sub(r"^location:[ \t]*.*$", f"location: {label}", b, count=1, flags=re.MULTILINE)
+        new_blocks.append(new_b)
+        filled += 1
+        print(f"  ✓ {plate_file}  {original.name}  → {label}")
+        time.sleep(1.1)  # Nominatim usage policy: <= 1 req/sec
+
+    new_text = header + "".join(new_blocks)
+    GALLERY_MD.write_text(new_text, encoding="utf-8")
+    print(f"\n✓ Filled {filled} location(s); {skipped_no_gps} without GPS, {skipped_filled} already set.")
 
 
 def cmd_backfill_orient(args):
@@ -279,7 +451,14 @@ def main():
     ing_p.set_defaults(func=cmd_ingest)
 
     sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
+    sub.add_parser("reprocess", help="Re-encode all plates from inbox originals at current quality settings").set_defaults(func=cmd_reprocess)
     sub.add_parser("backfill-orient", help="Add orient: to existing gallery.md entries by reading image dimensions").set_defaults(func=cmd_backfill_orient)
+
+    geo_p = sub.add_parser("geocode", help="Fill empty location fields from inbox EXIF GPS via Nominatim")
+    geo_p.add_argument("--lang", default="en", help="Reverse-geocode language (default: en)")
+    geo_p.add_argument("--force", action="store_true", help="Overwrite locations even if already set")
+    geo_p.set_defaults(func=cmd_geocode)
+
     sub.add_parser("clear-placeholders", help="Remove placeholder: yes entries from gallery.md").set_defaults(func=cmd_clear_placeholders)
 
     args = parser.parse_args()

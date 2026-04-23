@@ -12,13 +12,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=48" />
+  <link rel="stylesheet" href="style.css?v=49" />
 
   <script>
+    // Gallery is always dark — photos breathe better on black, independent of the
+    // site-wide theme preference the user picked on other pages.
     (function () {
-      var stored = localStorage.getItem('theme');
-      var theme = stored || 'dark';
-      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute('data-theme', 'dark');
     })();
   </script>
 </head>
@@ -73,11 +73,11 @@
     html.setAttribute('data-theme', t);
     themeCheckbox.checked = (t === 'dark');
   }
-  applyTheme(html.getAttribute('data-theme') || 'dark');
+  applyTheme('dark');
+  // Gallery always stays dark — local toggle flips this session only, does not persist
   themeCheckbox.addEventListener('change', function () {
     var next = this.checked ? 'dark' : 'light';
     html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
   });
 
   (function () {
