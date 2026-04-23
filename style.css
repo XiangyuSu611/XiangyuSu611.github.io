@@ -1356,7 +1356,7 @@ hr {
   opacity: 1;
   transform: translateY(0);
 }
-.plate-overlay-num {
+.plate-overlay-loc {
   color: var(--accent);
   filter: brightness(1.5);
 }
@@ -1452,7 +1452,7 @@ body.lightbox-open .theme-toggle {
   color: var(--text-subtle);
   margin-bottom: 6px;
 }
-.lb-meta .lb-num { color: var(--accent); }
+.lb-meta .lb-loc { color: var(--accent); }
 .lb-meta .lb-dot {
   width: 3px; height: 3px;
   background: var(--border);

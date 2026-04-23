@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=47" />
+  <link rel="stylesheet" href="style.css?v=48" />
 
   <script>
     (function () {
@@ -164,8 +164,12 @@
           ? '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" />'
           : '<div class="plate-image-placeholder">Image pending</div>';
 
-        var overlayMeta = '<div class="plate-overlay"><span class="plate-overlay-num">' + num + '</span>' +
-          (date ? '<span class="plate-overlay-date">' + date + '</span>' : '') + '</div>';
+        var loc = p.meta.location ? escapeHtml(p.meta.location) : '';
+        var primary = loc
+          ? '<span class="plate-overlay-loc">' + loc + '</span>'
+          : (date ? '<span class="plate-overlay-loc">' + date + '</span>' : '');
+        var secondary = (loc && date) ? '<span class="plate-overlay-date">' + date + '</span>' : '';
+        var overlayMeta = '<div class="plate-overlay">' + primary + secondary + '</div>';
 
         var delay = Math.min(idx * 40, 800) + 'ms';
         return '' +
@@ -210,9 +214,8 @@
         img.src = p.meta.src || '';
         img.alt = p.meta.title || p.meta.caption || '';
         var bits = [];
-        bits.push('<span class="lb-num">Plate ' + pad(current + 1) + '</span>');
+        if (p.meta.location) bits.push('<span class="lb-loc">' + escapeHtml(p.meta.location) + '</span>');
         if (p.meta.date) bits.push('<span>' + formatDate(p.meta.date) + '</span>');
-        if (p.meta.location) bits.push('<span>' + escapeHtml(p.meta.location) + '</span>');
         var meta = bits.join('<span class="lb-dot"></span>');
         var title = p.meta.title ? '<div class="lb-title">' + renderInline(p.meta.title) + '</div>' : '';
         var cap = p.meta.caption ? '<div class="lb-caption">' + renderInline(p.meta.caption) + '</div>' : '';
