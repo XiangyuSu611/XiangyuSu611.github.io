@@ -1278,149 +1278,32 @@ hr {
   max-width: 720px;
 }
 
-/* Zoom slider — controls --base-h, the row height scaling factor */
-.gallery-zoom {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
-  font-family: var(--font);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-}
-.zoom-label { color: var(--text-subtle); }
-.zoom-btn {
-  all: unset;
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--text-muted);
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-}
-.zoom-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-}
-.zoom-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 200px;
-  height: 3px;
-  background: var(--border);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-.zoom-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: grab;
-  border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--accent), 0 4px 10px -2px rgba(0, 0, 0, 0.4);
-  transition: transform 0.12s;
-}
-.zoom-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
-.zoom-slider::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: grab;
-  border: 2px solid var(--bg);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.zoom-value {
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-  min-width: 2.5ch;
-  text-align: right;
-}
-
-/* Editorial rhythm — compact hero moments alternate with tight thumbnail bands.
-   Every plate keeps its real aspect; heroes scale with viewport height, thumbs
-   share a fixed row height driven by the zoom slider. */
+/* Asymmetric 3-column masonry — each column has a different flex ratio
+   (1.3 / 0.9 / 1.1) so plate sizes differ by column. Photos keep exact
+   aspect via aspect-ratio, stacked tight within each column. */
 .gallery-stream {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
-  --thumb-h: 260px;
 }
 
-.thumbs-row {
+.gallery-stream .col {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.hero-row {
-  display: flex;
-  justify-content: center;
-  padding: 0;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
 }
 
 .plate {
   position: relative;
-  flex: 0 0 auto;
-  max-width: 100%;
+  width: 100%;
+  aspect-ratio: var(--ratio, 1.5);
+  margin: 0;
   opacity: 0;
   transform: translateY(10px);
   animation: note-enter 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
   animation-delay: var(--stagger, 0ms);
-  margin: 0;
-  aspect-ratio: var(--ratio, 1.5);
-}
-
-.thumbs-row .plate {
-  height: var(--thumb-h);
-  width: calc(var(--ratio, 1.5) * var(--thumb-h));
-}
-
-/* Thumb row size modifiers — give the cycle real rhythm */
-.thumbs-row.is-tight .plate {
-  height: calc(var(--thumb-h) * 0.72);
-  width: calc(var(--ratio, 1.5) * var(--thumb-h) * 0.72);
-}
-.thumbs-row.is-tall .plate {
-  height: calc(var(--thumb-h) * 1.3);
-  width: calc(var(--ratio, 1.5) * var(--thumb-h) * 1.3);
-}
-
-.hero-row .plate {
-  height: 52vh;
-  max-height: 560px;
-  width: auto;
-  max-width: 100%;
-}
-.hero-row .plate.plate--portrait {
-  height: 68vh;
-  max-height: 700px;
-}
-
-/* Hero scale modifier — occasional larger hero heightens the rhythm */
-.hero-row.is-large .plate {
-  height: 68vh;
-  max-height: 720px;
-}
-.hero-row.is-large .plate.plate--portrait {
-  height: 82vh;
-  max-height: 860px;
 }
 
 /* Image button (clickable) */
@@ -1644,25 +1527,18 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 1200px) {
-  .gallery-stream { --thumb-h: 220px; gap: 12px; }
-  .hero-row .plate { height: 48vh; max-height: 480px; }
-  .hero-row .plate.plate--portrait { height: 62vh; max-height: 620px; }
-  .hero-row.is-large .plate { height: 62vh; max-height: 620px; }
-  .hero-row.is-large .plate.plate--portrait { height: 74vh; max-height: 740px; }
+  .gallery-stream { gap: 6px; }
+  .gallery-stream .col { gap: 6px; }
 }
 
 @media (max-width: 800px) {
   .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  .gallery-zoom { margin-bottom: 20px; flex-wrap: wrap; }
-  .zoom-slider { width: 140px; }
-  .gallery-stream { --thumb-h: 170px; gap: 10px; }
-  .thumbs-row { gap: 4px; }
-  .hero-row .plate { height: 42vh; max-height: 440px; }
-  .hero-row .plate.plate--portrait { height: 56vh; max-height: 560px; }
-  .hero-row.is-large .plate { height: 54vh; max-height: 540px; }
-  .hero-row.is-large .plate.plate--portrait { height: 68vh; max-height: 680px; }
+  /* Drop to 2 columns on tablets by merging the narrowest column */
+  .gallery-stream { flex-wrap: wrap; gap: 6px; }
+  .gallery-stream .col { flex: 1 1 calc(50% - 6px) !important; gap: 6px; }
+  .gallery-stream .col:nth-child(3) { flex: 1 1 100% !important; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
@@ -1670,11 +1546,8 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 500px) {
-  .gallery-stream { --thumb-h: 130px; gap: 8px; }
-  .hero-row .plate { height: 38vh; }
-  .hero-row .plate.plate--portrait { height: 50vh; }
-  .hero-row.is-large .plate { height: 48vh; }
-  .hero-row.is-large .plate.plate--portrait { height: 60vh; }
+  .gallery-stream { flex-direction: column; gap: 6px; }
+  .gallery-stream .col { flex: 1 1 auto !important; gap: 6px; }
 }
 
 @media (hover: none) {
