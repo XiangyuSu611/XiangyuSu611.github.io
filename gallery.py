@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""
+Gallery helper — add / list / clean photos on the homepage gallery.
+
+Typical flow:
+    ./gallery.py add ~/Pictures/IMG_1234.jpg --at "Kyoto · Japan" --title "Autumn at Nanzen-ji" --caption "Early morning."
+    ./gallery.py list
+    ./gallery.py clear-placeholders
+
+What `add` does:
+    1. Reads EXIF date (falls back to --date / today)
+    2. Resizes long edge to 1800px, saves as JPEG q=82, strips EXIF
+    3. Copies to assets/gallery/plate-NN.jpg (auto-numbered)
+    4. Appends a [[photo]] entry to gallery.md (top = newest, so new entries are inserted after the header)
+"""
+
+import argparse
+import re
+import sys
+from datetime import datetime
+from pathlib import Path
+
+try:
+    from PIL import Image, ImageOps
+    from PIL.ExifTags import IFD
+except ImportError:
+    sys.exit("Pillow is required. Install with:  pip3 install --user Pillow")
+
+ROOT = Path(__file__).parent.resolve()
+GALLERY_DIR = ROOT / "assets" / "gallery"
+GALLERY_MD = ROOT / "gallery.md"
+
+MAX_LONG_EDGE = 1800
+JPEG_QUALITY = 82
+
+
+def read_exif_date(path: Path):
+    try:
+        img = Image.open(path)
+        exif = img.getexif()
+        if not exif:
+            return None
+        # DateTimeOriginal lives in the Exif IFD (tag 36867)
+        candidates = []
+        try:
+            exif_ifd = exif.get_ifd(IFD.Exif)
+            if exif_ifd.get(36867):
+                candidates.append(exif_ifd[36867])
+        except Exception:
+            pass
+        if exif.get(36867):
+            candidates.append(exif[36867])
+        if exif.get(306):  # DateTime (modification)
+            candidates.append(exif[306])
+        for raw in candidates:
+            try:
+                dt = datetime.strptime(raw, "%Y:%m:%d %H:%M:%S")
+                return dt.strftime("%Y-%m-%d")
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return None
+
+
+def next_plate_number():
+    GALLERY_DIR.mkdir(parents=True, exist_ok=True)
+    nums = []
+    for p in GALLERY_DIR.glob("plate-*.jpg"):
+        m = re.match(r"plate-(\d+)\.jpg$", p.name)
+        if m:
+            nums.append(int(m.group(1)))
+    return (max(nums) if nums else 0) + 1
+
+
+def process_image(src: Path, dest: Path):
+    img = Image.open(src)
+    img = ImageOps.exif_transpose(img)  # honor orientation
+    if img.mode in ("RGBA", "P", "LA"):
+        img = img.convert("RGB")
+    w, h = img.size
+    long_edge = max(w, h)
+    if long_edge > MAX_LONG_EDGE:
+        scale = MAX_LONG_EDGE / long_edge
+        img = img.resize((round(w * scale), round(h * scale)), Image.Resampling.LANCZOS)
+    img.save(dest, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
+    return img.size
+
+
+def format_entry(src_path: str, date: str, location: str, title: str, caption: str) -> str:
+    lines = ["[[photo]]", f"src: {src_path}"]
+    lines.append(f"date: {date or ''}")
+    lines.append(f"location: {location or ''}")
+    lines.append(f"title: {title or ''}")
+    lines.append(f"caption: {caption or ''}")
+    return "\n".join(lines) + "\n"
+
+
+def append_entry(entry: str):
+    existing = GALLERY_MD.read_text(encoding="utf-8") if GALLERY_MD.exists() else ""
+    existing = existing.rstrip() + "\n\n"
+    GALLERY_MD.write_text(existing + entry, encoding="utf-8")
+
+
+def cmd_add(args):
+    src = Path(args.path).expanduser().resolve()
+    if not src.exists():
+        sys.exit(f"Image not found: {src}")
+    if src.is_dir():
+        sys.exit(f"Expected a file, got a directory: {src}")
+
+    plate_num = next_plate_number()
+    dest_name = f"plate-{plate_num:02d}.jpg"
+    dest = GALLERY_DIR / dest_name
+
+    date = args.date or read_exif_date(src) or datetime.today().strftime("%Y-%m-%d")
+    size = process_image(src, dest)
+
+    print(f"✓ Saved {dest.relative_to(ROOT)}  ({size[0]}×{size[1]}, {dest.stat().st_size // 1024} KB)")
+
+    entry = format_entry(
+        src_path=f"assets/gallery/{dest_name}",
+        date=date,
+        location=args.at or "",
+        title=args.title or "",
+        caption=args.caption or "",
+    )
+    append_entry(entry)
+    print(f"✓ Appended [[photo]] block to gallery.md  (date: {date})")
+
+
+def cmd_list(args):
+    for p in sorted(GALLERY_DIR.glob("plate-*.jpg")):
+        size_kb = p.stat().st_size // 1024
+        print(f"  {p.relative_to(ROOT)}  ({size_kb} KB)")
+
+
+def cmd_clear_placeholders(args):
+    if not GALLERY_MD.exists():
+        sys.exit("gallery.md not found")
+    text = GALLERY_MD.read_text(encoding="utf-8")
+    blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
+    header, photo_blocks = blocks[0], blocks[1:]
+    kept = []
+    removed = 0
+    for b in photo_blocks:
+        if re.search(r"^placeholder\s*:\s*(yes|true|1)\s*$", b, flags=re.MULTILINE | re.IGNORECASE):
+            removed += 1
+            continue
+        kept.append(b)
+    new_text = header.rstrip() + "\n\n" + "\n".join(b.rstrip() + "\n" for b in kept)
+    new_text = re.sub(r"\n{3,}", "\n\n", new_text).rstrip() + "\n"
+    GALLERY_MD.write_text(new_text, encoding="utf-8")
+    print(f"✓ Removed {removed} placeholder entr{'y' if removed == 1 else 'ies'}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Gallery helper")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    add_p = sub.add_parser("add", help="Compress a photo and append an entry to gallery.md")
+    add_p.add_argument("path", help="Path to the source image")
+    add_p.add_argument("--at", help="Location, e.g. 'Kyoto · Japan'")
+    add_p.add_argument("--title", help="Title (shown in Fraunces over the caption)")
+    add_p.add_argument("--caption", help="One-line italic caption")
+    add_p.add_argument("--date", help="Override date (YYYY-MM-DD)")
+    add_p.set_defaults(func=cmd_add)
+
+    sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
+    sub.add_parser("clear-placeholders", help="Remove placeholder: yes entries from gallery.md").set_defaults(func=cmd_clear_placeholders)
+
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
