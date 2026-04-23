@@ -564,7 +564,8 @@ hr {
   flex-shrink: 0;
 }
 
-.pub-tag--production .pub-tag-marker {
+.pub-tag--production .pub-tag-marker,
+.pub-tag--coverage .pub-tag-marker {
   background: var(--accent);
 }
 
@@ -591,7 +592,8 @@ hr {
   color: var(--text-subtle);
 }
 
-.pub-tag--production .pub-tag-label {
+.pub-tag--production .pub-tag-label,
+.pub-tag--coverage .pub-tag-label {
   color: var(--accent);
 }
 

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=40" />
+  <link rel="stylesheet" href="style.css?v=41" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -493,7 +493,7 @@
         }
         if (p.coverage && p.coverage.length) {
           p.coverage.forEach(function (c) {
-            tagItems.push(pubTag('', 'Coverage', c.name, c.url, c.logo));
+            tagItems.push(pubTag('coverage', 'Coverage by', c.name, c.url, c.logo));
           });
         }
         var footerHtml = tagItems.length
