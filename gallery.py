@@ -105,11 +105,18 @@ def orient_of(size):
     return "square"
 
 
-def format_entry(src_path: str, date: str, location: str, title: str, caption: str, orient: str = "") -> str:
+def ratio_of(size):
+    w, h = size
+    return f"{w / h:.3f}"
+
+
+def format_entry(src_path: str, date: str, location: str, title: str, caption: str, orient: str = "", ratio: str = "") -> str:
     lines = ["[[photo]]", f"src: {src_path}"]
     lines.append(f"date: {date or ''}")
     if orient:
         lines.append(f"orient: {orient}")
+    if ratio:
+        lines.append(f"ratio: {ratio}")
     lines.append(f"location: {location or ''}")
     lines.append(f"title: {title or ''}")
     lines.append(f"caption: {caption or ''}")
@@ -136,6 +143,7 @@ def cmd_add(args):
     date = args.date or read_exif_date(src) or datetime.today().strftime("%Y-%m-%d")
     size = process_image(src, dest)
     orient = orient_of(size)
+    ratio = ratio_of(size)
 
     print(f"✓ Saved {dest.relative_to(ROOT)}  ({size[0]}×{size[1]}, {orient}, {dest.stat().st_size // 1024} KB)")
 
@@ -146,6 +154,7 @@ def cmd_add(args):
         title=args.title or "",
         caption=args.caption or "",
         orient=orient,
+        ratio=ratio,
     )
     append_entry(entry)
     print(f"✓ Appended [[photo]] block to gallery.md  (date: {date})")
@@ -181,6 +190,7 @@ def cmd_ingest(args):
         dest = GALLERY_DIR / dest_name
         size = process_image(src, dest)
         orient = orient_of(size)
+        ratio = ratio_of(size)
         entry = format_entry(
             src_path=f"assets/gallery/{dest_name}",
             date=date,
@@ -188,6 +198,7 @@ def cmd_ingest(args):
             title="",
             caption="",
             orient=orient,
+            ratio=ratio,
         )
         append_entry(entry)
         kb = dest.stat().st_size // 1024
@@ -381,36 +392,43 @@ def cmd_geocode(args):
     print(f"\n✓ Filled {filled} location(s); {skipped_no_gps} without GPS, {skipped_filled} already set.")
 
 
-def cmd_backfill_orient(args):
-    """Read each plate on disk and inject an `orient:` field into its gallery.md entry."""
+def cmd_backfill_meta(args):
+    """Read each plate on disk and inject/refresh `orient:` and `ratio:` fields."""
     if not GALLERY_MD.exists():
         sys.exit("gallery.md not found")
     text = GALLERY_MD.read_text(encoding="utf-8")
 
+    def set_field(block: str, key: str, value: str, after: str) -> str:
+        pattern = rf"^{key}:\s*.+$"
+        if re.search(pattern, block, flags=re.MULTILINE):
+            return re.sub(pattern, f"{key}: {value}", block, count=1, flags=re.MULTILINE)
+        # insert after the `after` line
+        return re.sub(
+            rf"(^{after}:\s*.*\n)",
+            lambda m: m.group(1) + f"{key}: {value}\n",
+            block,
+            count=1,
+            flags=re.MULTILINE,
+        )
+
     def fix_block(block: str) -> str:
-        src_m = re.search(r"^src:\s*(.+)$", block, flags=re.MULTILINE)
+        src_m = re.search(r"^src:[ \t]*(.+)$", block, flags=re.MULTILINE)
         if not src_m:
             return block
         src_path = ROOT / src_m.group(1).strip()
         if not src_path.exists():
             return block
         with Image.open(src_path) as img:
-            orient = orient_of(img.size)
-        if re.search(r"^orient:\s*.+$", block, flags=re.MULTILINE):
-            return re.sub(r"^orient:\s*.+$", f"orient: {orient}", block, count=1, flags=re.MULTILINE)
-        return re.sub(
-            r"(^src:\s*.+\n^date:\s*.*\n)",
-            lambda m: m.group(1) + f"orient: {orient}\n",
-            block,
-            count=1,
-            flags=re.MULTILINE,
-        )
+            size = img.size
+        block = set_field(block, "orient", orient_of(size), after="date")
+        block = set_field(block, "ratio", ratio_of(size), after="orient")
+        return block
 
     blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
     header, photo_blocks = blocks[0], blocks[1:]
     new_text = header + "".join(fix_block(b) for b in photo_blocks)
     GALLERY_MD.write_text(new_text, encoding="utf-8")
-    print(f"✓ Backfilled orient for {len(photo_blocks)} entr{'y' if len(photo_blocks) == 1 else 'ies'}")
+    print(f"✓ Backfilled orient+ratio for {len(photo_blocks)} entr{'y' if len(photo_blocks) == 1 else 'ies'}")
 
 
 def cmd_clear_placeholders(args):
@@ -452,7 +470,7 @@ def main():
 
     sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
     sub.add_parser("reprocess", help="Re-encode all plates from inbox originals at current quality settings").set_defaults(func=cmd_reprocess)
-    sub.add_parser("backfill-orient", help="Add orient: to existing gallery.md entries by reading image dimensions").set_defaults(func=cmd_backfill_orient)
+    sub.add_parser("backfill-meta", help="Read each plate's dimensions and add/refresh orient+ratio fields").set_defaults(func=cmd_backfill_meta)
 
     geo_p = sub.add_parser("geocode", help="Fill empty location fields from inbox EXIF GPS via Nominatim")
     geo_p.add_argument("--lang", default="en", help="Reverse-geocode language (default: en)")

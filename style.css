@@ -1278,68 +1278,28 @@ hr {
   max-width: 720px;
 }
 
+/* Justified rows — all rows share the same height, widths follow each photo's
+   real aspect ratio so nothing is cropped or stretched. */
 .gallery-stream {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: 6vw;
-  grid-auto-flow: dense;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
+  --row-h: 340px;
 }
 
 .plate {
   position: relative;
+  height: var(--row-h);
+  width: calc(var(--ratio, 1.5) * var(--row-h));
+  flex: 0 0 auto;
+  max-width: 100%;
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(10px);
   animation: note-enter 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
   animation-delay: var(--stagger, 0ms);
   margin: 0;
-}
-
-/* Defaults — most plates land here, varied sizes kick them around */
-.plate--landscape { grid-column: span 4; grid-row: span 3; }
-.plate--portrait  { grid-column: span 3; grid-row: span 5; }
-.plate--square    { grid-column: span 3; grid-row: span 3; }
-
-/* Landscape size variants — each modulo pattern carves out ~10% of landscapes
-   into a different scale, layered so heroes, wide-shorts, talls and thumbs
-   all appear throughout the grid without ever stacking into a single rhythm. */
-.gallery-stream .plate:nth-child(11n+1).plate--landscape {
-  grid-column: span 7;
-  grid-row: span 5;
-}                                                          /* huge hero */
-.gallery-stream .plate:nth-child(13n+4).plate--landscape {
-  grid-column: span 6;
-  grid-row: span 4;
-}                                                          /* medium hero */
-.gallery-stream .plate:nth-child(7n+2).plate--landscape {
-  grid-column: span 5;
-  grid-row: span 3;
-}                                                          /* wide-short */
-.gallery-stream .plate:nth-child(17n+3).plate--landscape {
-  grid-column: span 3;
-  grid-row: span 4;
-}                                                          /* taller */
-.gallery-stream .plate:nth-child(19n+5).plate--landscape {
-  grid-column: span 3;
-  grid-row: span 2;
-}                                                          /* thumb */
-
-/* Portrait variants — rare (only 3 in the set) but each varies */
-.gallery-stream .plate:nth-child(5n+3).plate--portrait {
-  grid-column: span 4;
-  grid-row: span 6;
-}                                                          /* larger portrait */
-.gallery-stream .plate:nth-child(9n+1).plate--portrait {
-  grid-column: span 2;
-  grid-row: span 4;
-}                                                          /* slim tall */
-
-/* Square variants */
-.gallery-stream .plate:nth-child(7n+4).plate--square {
-  grid-column: span 4;
-  grid-row: span 4;
 }
 
 /* Image button (clickable) */
@@ -1562,49 +1522,24 @@ body.lightbox-open .theme-toggle {
   border-color: var(--accent);
 }
 
-/* Responsive: fewer columns on narrower screens, larger cells */
+/* Responsive: shorter rows on narrower screens */
 @media (max-width: 1200px) {
-  .gallery-stream {
-    grid-template-columns: repeat(8, 1fr);
-    grid-auto-rows: 9vw;
-  }
-  .plate--landscape { grid-column: span 3; grid-row: span 2; }
-  .plate--portrait  { grid-column: span 2; grid-row: span 3; }
-  .plate--square    { grid-column: span 2; grid-row: span 2; }
-  .gallery-stream .plate:nth-child(11n+1).plate--landscape { grid-column: span 5; grid-row: span 3; }
-  .gallery-stream .plate:nth-child(13n+4).plate--landscape { grid-column: span 4; grid-row: span 3; }
-  .gallery-stream .plate:nth-child(7n+2).plate--landscape  { grid-column: span 4; grid-row: span 2; }
-  .gallery-stream .plate:nth-child(17n+3).plate--landscape { grid-column: span 2; grid-row: span 2; }
-  .gallery-stream .plate:nth-child(19n+5).plate--landscape { grid-column: span 2; grid-row: span 1; }
-  .gallery-stream .plate:nth-child(5n+3).plate--portrait   { grid-column: span 3; grid-row: span 4; }
-  .gallery-stream .plate:nth-child(7n+4).plate--square     { grid-column: span 3; grid-row: span 3; }
+  .gallery-stream { --row-h: 280px; gap: 6px; }
 }
 
 @media (max-width: 800px) {
   .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  .gallery-stream {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 18vw;
-    gap: 6px;
-  }
-  .plate--landscape { grid-column: span 2; grid-row: span 1; }
-  .plate--portrait  { grid-column: span 2; grid-row: span 2; }
-  .plate--square    { grid-column: span 2; grid-row: span 1; }
-  /* reset variant escalations on mobile — the layout is already tight */
-  .gallery-stream .plate:nth-child(11n+1).plate--landscape,
-  .gallery-stream .plate:nth-child(13n+4).plate--landscape { grid-column: span 4; grid-row: span 2; }
-  .gallery-stream .plate:nth-child(7n+2).plate--landscape  { grid-column: span 4; grid-row: span 1; }
-  .gallery-stream .plate:nth-child(17n+3).plate--landscape,
-  .gallery-stream .plate:nth-child(19n+5).plate--landscape { grid-column: span 2; grid-row: span 1; }
-  .gallery-stream .plate:nth-child(5n+3).plate--portrait,
-  .gallery-stream .plate:nth-child(9n+1).plate--portrait   { grid-column: span 2; grid-row: span 2; }
-  .gallery-stream .plate:nth-child(7n+4).plate--square     { grid-column: span 2; grid-row: span 1; }
+  .gallery-stream { --row-h: 220px; gap: 5px; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
   .lightbox-next { right: 8px; }
+}
+
+@media (max-width: 500px) {
+  .gallery-stream { --row-h: 160px; }
 }
 
 @media (hover: none) {

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=55" />
+  <link rel="stylesheet" href="style.css?v=56" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -147,6 +147,7 @@
     function plateHtml(p, idx) {
       var date = formatDate(p.meta.date);
       var orient = (p.meta.orient || 'landscape').toLowerCase();
+      var ratio = parseFloat(p.meta.ratio) || (orient === 'portrait' ? 0.75 : orient === 'square' ? 1 : 1.5);
       var src = p.meta.src || '';
       var alt = p.meta.title || p.meta.caption || 'Photo';
       var imageHtml = src
@@ -159,8 +160,9 @@
       var secondary = (loc && date) ? '<span class="plate-overlay-date">' + date + '</span>' : '';
       var overlayMeta = '<div class="plate-overlay">' + primary + secondary + '</div>';
       var delay = Math.min(idx * 35, 700) + 'ms';
+      var style = '--stagger:' + delay + '; --ratio:' + ratio.toFixed(3);
       return '' +
-        '<figure class="plate plate--' + orient + '" style="--stagger:' + delay + '" data-idx="' + idx + '">' +
+        '<figure class="plate plate--' + orient + '" style="' + style + '" data-idx="' + idx + '">' +
           '<button class="plate-btn" type="button" aria-label="Open ' + escapeHtml(alt) + '">' +
             imageHtml +
             overlayMeta +
