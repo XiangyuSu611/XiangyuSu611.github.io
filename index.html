@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Xiangyu Su</title>
   <meta name="description" content="Personal homepage of Xiangyu Su, a CS/AI/ML researcher." />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=22" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -112,7 +116,7 @@
        FOOTER
        ====================================================== -->
   <footer class="site-footer">
-    Xiangyu Su · 2026 · Built with <svg class="claude-logo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 C12 8.5 14 10.5 22 12 C14 13.5 12 15.5 12 22 C12 15.5 10 13.5 2 12 C10 10.5 12 8.5 12 2 Z"/></svg><span class="footer-cc">Claude Code</span>
+    Xiangyu Su · 2026 · Built with <img class="claude-logo" src="claude-code-logo.png" alt="" aria-hidden="true"><span class="footer-cc">Claude Code</span>
   </footer>
 
 </div><!-- /.container -->
@@ -246,11 +250,12 @@
             i++;
             var entry = lines[i].trim();
             if (!entry || entry.charAt(0) === '#') continue;
-            var pipe = entry.indexOf('|');
-            if (pipe >= 0) {
+            var covParts = entry.split('|').map(function (s) { return s.trim(); });
+            if (covParts[0]) {
               result.coverage.push({
-                name: entry.slice(0, pipe).trim(),
-                url: entry.slice(pipe + 1).trim()
+                name: covParts[0],
+                url: covParts[1] || '',
+                logo: covParts[2] || ''
               });
             }
           }
@@ -457,35 +462,37 @@
           ? '<div class="pub-summary">' + renderInline(p.summary_en) + '</div>'
           : '';
 
-        var deployHtml = '';
+        function pubTag(modifier, label, name, url, logo) {
+          var tag = 'span', hrefAttr = '';
+          if (url) {
+            tag = 'a';
+            hrefAttr = ' href="' + escapeHtml(url) + '" target="_blank" rel="noopener"';
+          }
+          var iconHtml = logo
+            ? '<img class="pub-tag-logo" src="' + escapeHtml(logo) + '" alt="" aria-hidden="true">'
+            : '<span class="pub-tag-marker" aria-hidden="true"></span>';
+          return '<' + tag + ' class="pub-tag' + (modifier ? ' pub-tag--' + modifier : '') + '"' + hrefAttr + '>' +
+            '<span class="pub-tag-label">' + escapeHtml(label) + '</span>' +
+            '<span class="pub-tag-sep" aria-hidden="true"></span>' +
+            '<span class="pub-tag-brand">' +
+              iconHtml +
+              '<span class="pub-tag-value">' + escapeHtml(name) + '</span>' +
+            '</span>' +
+          '</' + tag + '>';
+        }
+        var tagItems = [];
         if (p.deployed_at) {
           var depParts = p.deployed_at.split('|').map(function (s) { return s.trim(); });
-          var depName = depParts[0];
-          var depUrl = depParts[1] || '';
-          if (depName) {
-            var depInner = depUrl
-              ? '<a class="pub-deploy-link" href="' + escapeHtml(depUrl) + '" target="_blank" rel="noopener">' + escapeHtml(depName) + '</a>'
-              : '<span class="pub-deploy-link">' + escapeHtml(depName) + '</span>';
-            deployHtml =
-              '<div class="pub-deploy">' +
-                '<span class="pub-deploy-dot" aria-hidden="true"></span>' +
-                '<span class="pub-deploy-label">In Production</span>' +
-                depInner +
-              '</div>';
-          }
+          if (depParts[0]) tagItems.push(pubTag('production', 'In Production', depParts[0], depParts[1] || '', depParts[2] || ''));
         }
-
-        var pressHtml = '';
         if (p.coverage && p.coverage.length) {
-          var pressLinks = p.coverage.map(function (c) {
-            return '<a href="' + escapeHtml(c.url) + '" class="pub-press-link" target="_blank" rel="noopener">' + escapeHtml(c.name) + '</a>';
-          }).join('');
-          pressHtml =
-            '<div class="pub-press">' +
-              '<span class="pub-press-label">Coverage</span>' +
-              pressLinks +
-            '</div>';
+          p.coverage.forEach(function (c) {
+            tagItems.push(pubTag('', 'Coverage', c.name, c.url, c.logo));
+          });
         }
+        var footerHtml = tagItems.length
+          ? '<div class="pub-tags">' + tagItems.join('') + '</div>'
+          : '';
 
         return (
           '<div class="pub-item">' +
@@ -495,8 +502,7 @@
               '<div class="pub-title">' + renderInline(p.title) + '</div>' +
               '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +
               summaryHtml +
-              deployHtml +
-              pressHtml +
+              footerHtml +
             '</div>' +
           '</div>'
         );

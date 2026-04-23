@@ -60,16 +60,16 @@ My current research interests center on 🤖 ==Embodied Intelligence==, particul
 [[paper]]
 venue: ICRA 2026
 title: IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models
-authors: **Xiangyu Su**, Juzhan Xu, Oliver van Kaick, Kai Xu, Ruizhen Hu
-thumb: imr-llm-teaser.jpg
+authors: **Xiangyu Su**, [Juzhan Xu](https://juzhan.github.io/), [Oliver van Kaick](https://carleton.ca/scs/people/oliver-van-kaick/), [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
+thumb: imr-llm-teaser.gif
 paper_url: https://arxiv.org/abs/2603.02669
 code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
 project_url: https://xiangyusu611.github.io/imr-llm/
 summary_en: An algorithm combining LLMs with operations research for industrial multi-robot task planning and program generation.
 summary_zh: 面向工业多机器人的 LLM 驱动任务规划与程序生成框架：用 LLM 构建析取图并通过确定性求解得到高层计划，再用过程树引导 LLM 生成可执行的低层程序；同时发布覆盖三种难度的 IMR-Bench 基准。
-deployed_at: SpeedBot Robotics | https://www.speedbot.com/en/home
+deployed_at: SpeedBot Robotics | https://www.speedbot.com/en/home | speedbot-logo.png
 coverage:
-  机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc
+  机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc | jiqizhixin-logo.png
 
 
 ---

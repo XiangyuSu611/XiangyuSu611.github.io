@@ -1,0 +1,32 @@
+Minimalist hand-drawn doodle logo: a small industrial robotic arm
+gently lifting a little wooden chair. The robotic arm is drawn in
+clean thin black ink line-art only — mono-weight strokes, no fill,
+no shading, simple joints, a two-finger gripper clamping the chair
+backrest. The chair uses the same thin black outline but is filled
+with flat cheerful primary colors — yellow seat, red backrest, one
+blue leg and one green leg. Centered composition on a pure white
+background. Whimsical, charming, childlike picture-book sketch
+style. Square 1:1 format, high contrast, isolated subject, no
+extra decoration, favicon-friendly.
+
+---
+
+Adjustment levers:
+
+- More linework feel:
+  add "thin single-weight ink line", "monoline illustration"
+
+- More sketchy / hand-drawn feel:
+  add "loose pencil strokes", "sketchbook feel"
+
+- Different color direction:
+  replace "primary colors" with
+    "pastel palette" / "muji palette" /
+    specific colors like "mustard yellow, terracotta, sage green"
+
+- Midjourney-specific tail:
+  --ar 1:1 --s 250 --no text
+
+- Bolder cartoon style (Keith Haring vibe):
+  replace "thin mono-weight" with
+    "bold rounded line, thick outline, cartoon style"
