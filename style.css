@@ -90,41 +90,13 @@ a:hover {
 /* ============================================================
    WIP BANNER
    ============================================================ */
-.wip-banner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: #1a1a1a;
-  border-bottom: 1px solid rgba(255, 107, 53, 0.4);
-  font-family: var(--font);
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.75);
-  pointer-events: none;
-}
-
-.wip-icon { flex-shrink: 0; }
-.wip-text { line-height: 1.4; }
-
-[data-theme="light"] .wip-banner {
-  background: #fff8f5;
-  border-bottom-color: rgba(255, 107, 53, 0.35);
-  color: #7a4030;
-}
-
 /* ============================================================
    LAYOUT
    ============================================================ */
 .container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 80px 24px 60px;
+  padding: 40px 24px 60px;
 }
 
 hr {
@@ -332,8 +304,7 @@ hr {
   font-weight: 600;
   color: var(--text-muted);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s;
 }
 
 .social-icon svg {
@@ -343,10 +314,18 @@ hr {
   flex-shrink: 0;
 }
 
+.social-label {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
 .social-icon:hover {
   color: var(--accent);
-  border-bottom-color: var(--accent);
   text-decoration: none;
+}
+
+.social-icon:hover .social-label {
+  border-bottom-color: var(--accent);
 }
 
 /* ============================================================
@@ -783,7 +762,7 @@ hr {
 /* ── Tablet ── */
 @media (max-width: 768px) {
   .container {
-    padding: 64px 20px 40px;
+    padding: 28px 20px 40px;
   }
 
   .pub-item {
@@ -809,16 +788,8 @@ hr {
   }
 
   .container {
-    padding: 52px 18px 32px;
+    padding: 20px 18px 32px;
   }
-
-  .wip-banner {
-    padding: 8px 14px;
-    font-size: 11px;
-    gap: 6px;
-  }
-
-  .wip-text { line-height: 1.3; }
 
   .hero-title {
     font-size: clamp(1.4rem, 6.5vw, 1.9rem);

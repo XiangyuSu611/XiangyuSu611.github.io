@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=38" />
+  <link rel="stylesheet" href="style.css?v=39" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -24,11 +24,6 @@
   </script>
 </head>
 <body>
-
-<div class="wip-banner">
-  <span class="wip-icon">🚧</span>
-  <span class="wip-text">This site is under construction — all content is placeholder and will be updated soon.</span>
-</div>
 
 <label class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
   <input type="checkbox" id="themeToggle">
@@ -380,7 +375,7 @@
         var targetAttrs = cfg.external ? ' target="_blank" rel="noopener"' : '';
         out.push(
           '<a href="' + escapeHtml(href) + '" class="social-icon" aria-label="' + cfg.label + '"' + targetAttrs + '>' +
-          cfg.svg + cfg.label +
+          cfg.svg + '<span class="social-label">' + cfg.label + '</span>' +
           '</a>'
         );
       }
