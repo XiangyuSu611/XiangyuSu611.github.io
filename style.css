@@ -1278,40 +1278,12 @@ hr {
   max-width: 720px;
 }
 
-/* ─── Layout switcher ─── */
-.gallery-modes {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-bottom: 40px;
-  font-family: var(--font);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-  flex-wrap: wrap;
-}
-.gallery-modes .modes-label {
-  margin-right: 14px;
-  color: var(--text-subtle);
-}
-.gallery-modes button {
-  all: unset;
-  cursor: pointer;
-  padding: 5px 10px;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-.gallery-modes button:hover { color: var(--text); }
-.gallery-modes button.is-active {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-}
-
 .gallery-stream {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 12vw;
+  grid-auto-flow: dense;
+  gap: 10px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
 }
@@ -1325,142 +1297,24 @@ hr {
   margin: 0;
 }
 
-.plate-label {
-  display: none;  /* surfaced per mode */
-}
+.plate--landscape { grid-column: span 2; grid-row: span 2; }
+.plate--portrait  { grid-column: span 1; grid-row: span 2; }
+.plate--square    { grid-column: span 1; grid-row: span 1; }
 
-/* ─── Classic: steady editorial masonry ─── */
-.stream--classic {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: 14vw;
-  grid-auto-flow: dense;
-  gap: 14px;
-}
-.stream--classic .plate--landscape { grid-column: span 2; grid-row: span 2; }
-.stream--classic .plate--portrait  { grid-column: span 1; grid-row: span 2; }
-.stream--classic .plate--square    { grid-column: span 1; grid-row: span 1; }
-
-/* ═══ Year: chronological scrollbook — big Fraunces year on the left ═══ */
-.stream--year {
-  display: flex;
-  flex-direction: column;
-  gap: 80px;
-}
-.stream--year .year-section {
-  display: grid;
-  grid-template-columns: minmax(180px, 220px) 1fr;
-  gap: 48px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-}
-.stream--year .year-section:first-child { border-top: none; padding-top: 0; }
-.stream--year .year-marker {
-  position: sticky;
-  top: 48px;
-  align-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: fit-content;
-}
-.stream--year .year-numeral {
-  font-family: var(--font-display);
-  font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 1;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(5rem, 10vw, 9rem);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  color: var(--text);
-}
-.stream--year .year-count {
-  font-family: var(--font);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.stream--year .year-plates {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 16vw;
-  grid-auto-flow: dense;
-  gap: 10px;
-}
-.stream--year .plate--landscape { grid-column: span 2; grid-row: span 2; }
-.stream--year .plate--portrait  { grid-column: span 1; grid-row: span 2; }
-.stream--year .plate--square    { grid-column: span 1; grid-row: span 1; }
-/* Every 6th landscape explodes — breaks the rhythm on longer years */
-.stream--year .year-plates .plate--landscape:nth-of-type(6n+1) {
-  grid-column: span 4;
-  grid-row: span 3;
-}
-
-/* ═══ Atlas: geographic index — huge location chapter titles ═══ */
-.stream--atlas {
-  display: flex;
-  flex-direction: column;
-  gap: 140px;
-}
-.stream--atlas .atlas-section { position: relative; }
-.stream--atlas .atlas-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 36px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-}
-.stream--atlas .atlas-title {
-  font-family: var(--font-display);
-  font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 1;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(4rem, 13vw, 12rem);
-  line-height: 0.82;
-  letter-spacing: -0.035em;
-  color: var(--text);
-  margin: 0;
-  /* subtle accent gradient through the text */
-  background: linear-gradient(180deg, var(--text) 40%, color-mix(in srgb, var(--accent) 60%, var(--text)) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.stream--atlas .atlas-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  padding-bottom: 14px;
-  font-family: var(--font);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-  white-space: nowrap;
-}
-.stream--atlas .atlas-count { color: var(--accent); }
-.stream--atlas .atlas-plates {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: 12vw;
-  grid-auto-flow: dense;
-  gap: 10px;
-}
-.stream--atlas .plate--landscape { grid-column: span 2; grid-row: span 2; }
-.stream--atlas .plate--portrait  { grid-column: span 1; grid-row: span 2; }
-.stream--atlas .plate--square    { grid-column: span 1; grid-row: span 1; }
-/* First plate of each atlas section becomes a hero */
-.stream--atlas .atlas-plates .plate:first-child.plate--landscape {
+/* Periodic heroes — break the rhythm so it doesn't look like a uniform grid */
+.gallery-stream .plate:nth-child(11n+1).plate--landscape {
   grid-column: span 3;
   grid-row: span 3;
 }
-.stream--atlas .atlas-plates .plate:first-child.plate--portrait {
+.gallery-stream .plate:nth-child(11n+1).plate--portrait {
+  grid-column: span 2;
+  grid-row: span 3;
+}
+.gallery-stream .plate:nth-child(17n+5).plate--landscape {
+  grid-column: span 3;
+  grid-row: span 2;
+}
+.gallery-stream .plate:nth-child(23n+9).plate--portrait {
   grid-column: span 2;
   grid-row: span 3;
 }
@@ -1687,16 +1541,7 @@ body.lightbox-open .theme-toggle {
 
 /* Responsive: fewer columns on narrower screens, larger cells */
 @media (max-width: 1200px) {
-  .stream--classic {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 20vw;
-    gap: 12px;
-  }
-  .stream--year .year-plates {
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 21vw;
-  }
-  .stream--atlas .atlas-plates {
+  .gallery-stream {
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: 18vw;
   }
@@ -1706,54 +1551,18 @@ body.lightbox-open .theme-toggle {
   .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  .stream--classic {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 42vw;
-    gap: 10px;
-  }
-  .stream--year { gap: 56px; }
-  .stream--year .year-section {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding-top: 28px;
-  }
-  .stream--year .year-marker {
-    position: static;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 14px;
-  }
-  .stream--year .year-numeral { font-size: clamp(3rem, 14vw, 5rem); }
-  .stream--year .year-plates {
+  .gallery-stream {
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 42vw;
     gap: 8px;
   }
-  .stream--atlas { gap: 88px; }
-  .stream--atlas .atlas-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding-bottom: 18px;
-    margin-bottom: 22px;
-  }
-  .stream--atlas .atlas-title { font-size: clamp(2.8rem, 18vw, 5.5rem); }
-  .stream--atlas .atlas-meta {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 14px;
-    padding-bottom: 0;
-  }
-  .stream--atlas .atlas-plates {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 42vw;
-    gap: 8px;
-  }
-  .stream--atlas .atlas-plates .plate:first-child.plate--landscape {
+  .gallery-stream .plate:nth-child(11n+1).plate--landscape,
+  .gallery-stream .plate:nth-child(17n+5).plate--landscape {
     grid-column: span 2;
     grid-row: span 2;
   }
-  .stream--atlas .atlas-plates .plate:first-child.plate--portrait {
+  .gallery-stream .plate:nth-child(11n+1).plate--portrait,
+  .gallery-stream .plate:nth-child(23n+9).plate--portrait {
     grid-column: span 1;
     grid-row: span 2;
   }

@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=52" />
+  <link rel="stylesheet" href="style.css?v=53" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -41,13 +41,6 @@
   <header class="notes-header">
     <h1 class="notes-title">Gallery</h1>
   </header>
-
-  <nav class="gallery-modes" aria-label="Layout">
-    <span class="modes-label">Layout</span>
-    <button type="button" data-mode="classic">Classic</button>
-    <button type="button" data-mode="year">Year</button>
-    <button type="button" data-mode="atlas">Atlas</button>
-  </nav>
 
   <main class="gallery-stream"></main>
 
@@ -175,89 +168,15 @@
         '</figure>';
     }
 
-    function renderClassic(photos) {
-      return photos.map(function (p, i) { return plateHtml(p, i); }).join('');
-    }
-
-    function renderYear(photos) {
-      var groups = {};
-      photos.forEach(function (p, i) {
-        var y = (p.meta.date || '').slice(0, 4) || 'Undated';
-        (groups[y] = groups[y] || []).push({ p: p, idx: i });
-      });
-      var years = Object.keys(groups).sort().reverse();
-      return years.map(function (y) {
-        var plates = groups[y].map(function (e) { return plateHtml(e.p, e.idx); }).join('');
-        return '' +
-          '<section class="year-section" data-year="' + escapeHtml(y) + '">' +
-            '<aside class="year-marker"><span class="year-numeral">' + escapeHtml(y) + '</span><span class="year-count">' + groups[y].length + ' plates</span></aside>' +
-            '<div class="year-plates">' + plates + '</div>' +
-          '</section>';
-      }).join('');
-    }
-
-    function renderAtlas(photos) {
-      var groups = {};
-      photos.forEach(function (p, i) {
-        var loc = (p.meta.location || '').split(' · ')[0].trim() || 'Undocumented';
-        (groups[loc] = groups[loc] || []).push({ p: p, idx: i });
-      });
-      // sort by count desc, keeping Undocumented at the end
-      var locs = Object.keys(groups).sort(function (a, b) {
-        if (a === 'Undocumented') return 1;
-        if (b === 'Undocumented') return -1;
-        return groups[b].length - groups[a].length;
-      });
-      return locs.map(function (loc) {
-        var plates = groups[loc].map(function (e) { return plateHtml(e.p, e.idx); }).join('');
-        var years = groups[loc].map(function (e) { return (e.p.meta.date || '').slice(0, 4); }).filter(Boolean);
-        var yRange = years.length
-          ? (Math.min.apply(null, years) === Math.max.apply(null, years)
-              ? Math.min.apply(null, years)
-              : Math.min.apply(null, years) + '–' + Math.max.apply(null, years))
-          : '—';
-        return '' +
-          '<section class="atlas-section">' +
-            '<header class="atlas-head">' +
-              '<h2 class="atlas-title">' + escapeHtml(loc) + '</h2>' +
-              '<div class="atlas-meta">' +
-                '<span class="atlas-count">' + groups[loc].length + ' plates</span>' +
-                '<span class="atlas-years">' + yRange + '</span>' +
-              '</div>' +
-            '</header>' +
-            '<div class="atlas-plates">' + plates + '</div>' +
-          '</section>';
-      }).join('');
-    }
-
-    function renderGallery(photos, mode) {
+    function renderGallery(photos) {
       var container = document.querySelector('.gallery-stream');
       if (!photos || !photos.length) {
         container.innerHTML = '<p class="notes-empty">No plates yet. Edit <code>gallery.md</code> to add entries.</p>';
         return;
       }
-      mode = mode || 'classic';
-      if (mode === 'year') container.innerHTML = renderYear(photos);
-      else if (mode === 'atlas') container.innerHTML = renderAtlas(photos);
-      else container.innerHTML = renderClassic(photos);
+      container.innerHTML = photos.map(function (p, i) { return plateHtml(p, i); }).join('');
     }
 
-    function toRoman(n) {
-      var map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
-      var out = '';
-      for (var i = 0; i < map.length; i++) {
-        while (n >= map[i][1]) { out += map[i][0]; n -= map[i][1]; }
-      }
-      return out;
-    }
-
-    function formatDateLong(str) {
-      if (!str) return '';
-      var m = str.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
-      if (!m) return str;
-      var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-      return m[1] + ' · ' + months[parseInt(m[2],10) - 1] + ' · ' + m[3];
-    }
 
     fetch('gallery.md', { cache: 'no-cache' })
       .then(function (r) { return r.text(); })
@@ -266,7 +185,7 @@
           var photos = parsePhotos(text);
           photos.sort(function (a, b) { return (b.meta.date || '').localeCompare(a.meta.date || ''); });
           window.__galleryPhotos = photos;
-          setupModes();
+          renderGallery(photos);
           setupLightbox();
         } catch (e) {
           document.querySelector('.gallery-stream').innerHTML =
@@ -277,29 +196,6 @@
         document.querySelector('.gallery-stream').innerHTML =
           '<p class="notes-empty">No <code>gallery.md</code> found yet.</p>';
       });
-
-    // ── Layout modes ─────────────────────────────────────────
-    var MODES = ['classic', 'year', 'atlas'];
-    function setupModes() {
-      var stored = localStorage.getItem('gallery-mode');
-      var mode = MODES.indexOf(stored) >= 0 ? stored : 'classic';
-      applyMode(mode);
-      document.querySelectorAll('.gallery-modes button').forEach(function (btn) {
-        btn.addEventListener('click', function () { applyMode(btn.dataset.mode); });
-      });
-    }
-    function applyMode(mode) {
-      if (MODES.indexOf(mode) < 0) mode = 'classic';
-      localStorage.setItem('gallery-mode', mode);
-      var body = document.body;
-      body.className = body.className.replace(/\bmode-\w+\b/g, '').trim() + ' mode-' + mode;
-      var stream = document.querySelector('.gallery-stream');
-      stream.className = 'gallery-stream stream--' + mode;
-      renderGallery(window.__galleryPhotos || [], mode);
-      document.querySelectorAll('.gallery-modes button').forEach(function (b) {
-        b.classList.toggle('is-active', b.dataset.mode === mode);
-      });
-    }
 
     // ── Lightbox ─────────────────────────────────────────────
     function setupLightbox() {
