@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=42" />
+  <link rel="stylesheet" href="style.css?v=43" />
 
   <script>
     (function () {
@@ -41,6 +41,10 @@
   <header class="notes-header">
     <h1 class="notes-title">Notes</h1>
     <p class="notes-sub">A slow-burn notebook — fragments from reading, design tinkering, research detours, the occasional opinion.</p>
+    <div class="notes-placeholder-strip" role="note">
+      <span class="notes-placeholder-mark">Placeholder</span>
+      <span class="notes-placeholder-text">Entries below are sample content — real notes will land here soon.</span>
+    </div>
   </header>
 
   <main class="notes-stream"></main>
@@ -154,14 +158,17 @@
         var num = '№ ' + pad(notes.length - idx);
         var date = formatDate(n.meta.date);
         var tags = n.meta.tags ? '<span class="note-tags">' + escapeHtml(n.meta.tags) + '</span>' : '';
+        var isPlaceholder = /^(yes|true|1)$/i.test(n.meta.placeholder || '');
+        var placeholderTag = isPlaceholder ? '<span class="note-placeholder-tag">Placeholder</span>' : '';
+        var sep1 = (date && (tags || placeholderTag)) ? '<span class="note-meta-dot"></span>' : '';
+        var sep2 = (tags && placeholderTag) ? '<span class="note-meta-dot"></span>' : '';
         var delay = (idx * 80) + 'ms';
         return '' +
-          '<article class="note" style="--stagger:' + delay + '">' +
+          '<article class="note' + (isPlaceholder ? ' is-placeholder' : '') + '" style="--stagger:' + delay + '">' +
             '<aside class="note-index">' + num + '</aside>' +
             '<div class="note-meta">' +
               (date ? '<span class="note-date">' + date + '</span>' : '') +
-              (date && tags ? '<span class="note-meta-dot"></span>' : '') +
-              tags +
+              sep1 + tags + sep2 + placeholderTag +
             '</div>' +
             '<h2 class="note-title">' + renderInline(n.meta.title) + '</h2>' +
             '<div class="note-body">' + renderBody(n.body) + '</div>' +
