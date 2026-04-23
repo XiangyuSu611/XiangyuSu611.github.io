@@ -1350,24 +1350,33 @@ hr {
   text-align: right;
 }
 
-/* Justified rows — every plate's width = its real aspect × row height so
-   no image is ever cropped. Per-plate row height varies on a prime-offset
-   pattern so rows break rhythm naturally. */
+/* Editorial rhythm — hero moments alternate with thumbnail bands.
+   Every plate keeps its real aspect; heroes are sized by viewport,
+   thumbs are sized by a fixed row height (the zoom slider). */
 .gallery-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-bottom: 72px;
+  transition: filter 0.35s ease, opacity 0.35s ease;
+  --thumb-h: 240px;
+}
+
+.thumbs-row {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 72px;
-  transition: filter 0.35s ease, opacity 0.35s ease;
-  --base-h: 340px;
+  gap: 6px;
+}
+
+.hero-row {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
 }
 
 .plate {
   position: relative;
-  --row-h: var(--base-h);
-  height: var(--row-h);
-  width: calc(var(--ratio, 1.5) * var(--row-h));
   flex: 0 0 auto;
   max-width: 100%;
   opacity: 0;
@@ -1375,14 +1384,35 @@ hr {
   animation: note-enter 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
   animation-delay: var(--stagger, 0ms);
   margin: 0;
+  aspect-ratio: var(--ratio, 1.5);
 }
 
-/* Varied per-plate heights — prime offsets ensure they never fall into a repeating pattern */
-.gallery-stream .plate:nth-child(7n+1)  { --row-h: calc(var(--base-h) * 1.4); }
-.gallery-stream .plate:nth-child(5n+3)  { --row-h: calc(var(--base-h) * 0.7); }
-.gallery-stream .plate:nth-child(11n+2) { --row-h: calc(var(--base-h) * 1.18); }
-.gallery-stream .plate:nth-child(13n+6) { --row-h: calc(var(--base-h) * 0.85); }
-.gallery-stream .plate:nth-child(17n+4) { --row-h: calc(var(--base-h) * 1.6); }
+/* Thumbs — uniform height, width tracks aspect, ragged right edge */
+.thumbs-row .plate {
+  height: var(--thumb-h);
+  width: calc(var(--ratio, 1.5) * var(--thumb-h));
+}
+
+/* Heroes — fill viewport height, width tracks aspect */
+.hero-row .plate {
+  height: 72vh;
+  max-height: 780px;
+  width: auto;
+  max-width: 100%;
+}
+.hero-row .plate.plate--portrait {
+  height: 86vh;
+  max-height: 900px;
+}
+.hero-row .plate.plate--landscape[style*="--ratio:1.777"],
+.hero-row .plate.plate--landscape[style*="--ratio:1.6"] {
+  /* ultra-wide landscapes could overflow — let max-width constrain */
+  height: auto;
+  width: min(100%, calc(72vh * var(--ratio)));
+}
+
+/* Heroes gently pulse in from a slightly deeper dip */
+.hero-row .plate { transform: translateY(16px); }
 
 /* Image button (clickable) */
 .plate-btn {
@@ -1604,9 +1634,10 @@ body.lightbox-open .theme-toggle {
   border-color: var(--accent);
 }
 
-/* Responsive: shorter base rows on narrower screens (may still be overridden by localStorage via JS) */
 @media (max-width: 1200px) {
-  .gallery-stream { --base-h: 280px; gap: 6px; }
+  .gallery-stream { --thumb-h: 200px; gap: 24px; }
+  .hero-row .plate { height: 66vh; max-height: 640px; }
+  .hero-row .plate.plate--portrait { height: 80vh; max-height: 800px; }
 }
 
 @media (max-width: 800px) {
@@ -1615,7 +1646,10 @@ body.lightbox-open .theme-toggle {
   .gallery-page .notes-header { margin-bottom: 28px; }
   .gallery-zoom { margin-bottom: 20px; flex-wrap: wrap; }
   .zoom-slider { width: 140px; }
-  .gallery-stream { --base-h: 220px; gap: 5px; }
+  .gallery-stream { --thumb-h: 160px; gap: 20px; }
+  .thumbs-row { gap: 4px; }
+  .hero-row .plate { height: 56vh; max-height: 560px; }
+  .hero-row .plate.plate--portrait { height: 70vh; max-height: 700px; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
@@ -1623,7 +1657,9 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 500px) {
-  .gallery-stream { --base-h: 160px; }
+  .gallery-stream { --thumb-h: 120px; gap: 16px; }
+  .hero-row .plate { height: 48vh; }
+  .hero-row .plate.plate--portrait { height: 62vh; }
 }
 
 @media (hover: none) {

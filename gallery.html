@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=57" />
+  <link rel="stylesheet" href="style.css?v=58" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -42,12 +42,12 @@
     <h1 class="notes-title">Gallery</h1>
   </header>
 
-  <nav class="gallery-zoom" aria-label="Zoom">
-    <span class="zoom-label">Size</span>
+  <nav class="gallery-zoom" aria-label="Thumbnail size">
+    <span class="zoom-label">Thumb</span>
     <button class="zoom-btn" data-step="-1" aria-label="Smaller" type="button">−</button>
-    <input class="zoom-slider" type="range" min="180" max="520" step="10" aria-label="Zoom" />
+    <input class="zoom-slider" type="range" min="140" max="400" step="10" aria-label="Thumbnail size" />
     <button class="zoom-btn" data-step="1" aria-label="Bigger" type="button">+</button>
-    <span class="zoom-value">340</span>
+    <span class="zoom-value">240</span>
   </nav>
 
   <main class="gallery-stream"></main>
@@ -152,7 +152,7 @@
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-    function plateHtml(p, idx) {
+    function plateHtml(p, idx, isHero) {
       var date = formatDate(p.meta.date);
       var orient = (p.meta.orient || 'landscape').toLowerCase();
       var ratio = parseFloat(p.meta.ratio) || (orient === 'portrait' ? 0.75 : orient === 'square' ? 1 : 1.5);
@@ -169,8 +169,9 @@
       var overlayMeta = '<div class="plate-overlay">' + primary + secondary + '</div>';
       var delay = Math.min(idx * 35, 700) + 'ms';
       var style = '--stagger:' + delay + '; --ratio:' + ratio.toFixed(3);
+      var cls = 'plate plate--' + orient + (isHero ? ' plate--hero' : '');
       return '' +
-        '<figure class="plate plate--' + orient + '" style="' + style + '" data-idx="' + idx + '">' +
+        '<figure class="' + cls + '" style="' + style + '" data-idx="' + idx + '">' +
           '<button class="plate-btn" type="button" aria-label="Open ' + escapeHtml(alt) + '">' +
             imageHtml +
             overlayMeta +
@@ -178,13 +179,27 @@
         '</figure>';
     }
 
+    var HERO_EVERY = 5; // hero followed by 4 thumbs, cycle repeats
+
     function renderGallery(photos) {
       var container = document.querySelector('.gallery-stream');
       if (!photos || !photos.length) {
         container.innerHTML = '<p class="notes-empty">No plates yet. Edit <code>gallery.md</code> to add entries.</p>';
         return;
       }
-      container.innerHTML = photos.map(function (p, i) { return plateHtml(p, i); }).join('');
+      var out = [];
+      var inThumbs = false;
+      photos.forEach(function (p, i) {
+        if (i % HERO_EVERY === 0) {
+          if (inThumbs) { out.push('</div>'); inThumbs = false; }
+          out.push('<div class="hero-row">' + plateHtml(p, i, true) + '</div>');
+        } else {
+          if (!inThumbs) { out.push('<div class="thumbs-row">'); inThumbs = true; }
+          out.push(plateHtml(p, i, false));
+        }
+      });
+      if (inThumbs) out.push('</div>');
+      container.innerHTML = out.join('');
     }
 
 
@@ -220,8 +235,8 @@
       var MIN = parseInt(slider.min, 10);
       var MAX = parseInt(slider.max, 10);
       var STEP = parseInt(slider.step, 10);
-      var stored = parseInt(localStorage.getItem('gallery-zoom') || '340', 10);
-      if (isNaN(stored) || stored < MIN || stored > MAX) stored = 340;
+      var stored = parseInt(localStorage.getItem('gallery-zoom') || '240', 10);
+      if (isNaN(stored) || stored < MIN || stored > MAX) stored = 240;
       apply(stored);
       slider.addEventListener('input', function () { apply(parseInt(this.value, 10)); });
       document.querySelectorAll('.zoom-btn').forEach(function (btn) {
@@ -234,7 +249,7 @@
         px = Math.max(MIN, Math.min(MAX, px));
         slider.value = px;
         valueEl.textContent = px;
-        stream.style.setProperty('--base-h', px + 'px');
+        stream.style.setProperty('--thumb-h', px + 'px');
         localStorage.setItem('gallery-zoom', px);
       }
     }
