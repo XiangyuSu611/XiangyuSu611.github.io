@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=56" />
+  <link rel="stylesheet" href="style.css?v=57" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -41,6 +41,14 @@
   <header class="notes-header">
     <h1 class="notes-title">Gallery</h1>
   </header>
+
+  <nav class="gallery-zoom" aria-label="Zoom">
+    <span class="zoom-label">Size</span>
+    <button class="zoom-btn" data-step="-1" aria-label="Smaller" type="button">−</button>
+    <input class="zoom-slider" type="range" min="180" max="520" step="10" aria-label="Zoom" />
+    <button class="zoom-btn" data-step="1" aria-label="Bigger" type="button">+</button>
+    <span class="zoom-value">340</span>
+  </nav>
 
   <main class="gallery-stream"></main>
 
@@ -193,6 +201,7 @@
           window.__galleryPhotos = photos;
           renderGallery(photos);
           setupLightbox();
+          setupZoom();
         } catch (e) {
           document.querySelector('.gallery-stream').innerHTML =
             '<p class="notes-empty">Failed to parse gallery.md — ' + escapeHtml(e.message) + '</p>';
@@ -202,6 +211,33 @@
         document.querySelector('.gallery-stream').innerHTML =
           '<p class="notes-empty">No <code>gallery.md</code> found yet.</p>';
       });
+
+    // ── Zoom control ─────────────────────────────────────────
+    function setupZoom() {
+      var slider = document.querySelector('.zoom-slider');
+      var valueEl = document.querySelector('.zoom-value');
+      var stream = document.querySelector('.gallery-stream');
+      var MIN = parseInt(slider.min, 10);
+      var MAX = parseInt(slider.max, 10);
+      var STEP = parseInt(slider.step, 10);
+      var stored = parseInt(localStorage.getItem('gallery-zoom') || '340', 10);
+      if (isNaN(stored) || stored < MIN || stored > MAX) stored = 340;
+      apply(stored);
+      slider.addEventListener('input', function () { apply(parseInt(this.value, 10)); });
+      document.querySelectorAll('.zoom-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var step = parseInt(btn.getAttribute('data-step'), 10);
+          apply(parseInt(slider.value, 10) + step * STEP);
+        });
+      });
+      function apply(px) {
+        px = Math.max(MIN, Math.min(MAX, px));
+        slider.value = px;
+        valueEl.textContent = px;
+        stream.style.setProperty('--base-h', px + 'px');
+        localStorage.setItem('gallery-zoom', px);
+      }
+    }
 
     // ── Lightbox ─────────────────────────────────────────────
     function setupLightbox() {

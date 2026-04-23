@@ -1278,19 +1278,94 @@ hr {
   max-width: 720px;
 }
 
-/* Justified rows — all rows share the same height, widths follow each photo's
-   real aspect ratio so nothing is cropped or stretched. */
+/* Zoom slider — controls --base-h, the row height scaling factor */
+.gallery-zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  font-family: var(--font);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.zoom-label { color: var(--text-subtle); }
+.zoom-btn {
+  all: unset;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-muted);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.zoom-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.zoom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: grab;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 10px -2px rgba(0, 0, 0, 0.4);
+  transition: transform 0.12s;
+}
+.zoom-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+.zoom-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: grab;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.zoom-value {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5ch;
+  text-align: right;
+}
+
+/* Justified rows — every plate's width = its real aspect × row height so
+   no image is ever cropped. Per-plate row height varies on a prime-offset
+   pattern so rows break rhythm naturally. */
 .gallery-stream {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
-  --row-h: 340px;
+  --base-h: 340px;
 }
 
 .plate {
   position: relative;
+  --row-h: var(--base-h);
   height: var(--row-h);
   width: calc(var(--ratio, 1.5) * var(--row-h));
   flex: 0 0 auto;
@@ -1301,6 +1376,13 @@ hr {
   animation-delay: var(--stagger, 0ms);
   margin: 0;
 }
+
+/* Varied per-plate heights — prime offsets ensure they never fall into a repeating pattern */
+.gallery-stream .plate:nth-child(7n+1)  { --row-h: calc(var(--base-h) * 1.4); }
+.gallery-stream .plate:nth-child(5n+3)  { --row-h: calc(var(--base-h) * 0.7); }
+.gallery-stream .plate:nth-child(11n+2) { --row-h: calc(var(--base-h) * 1.18); }
+.gallery-stream .plate:nth-child(13n+6) { --row-h: calc(var(--base-h) * 0.85); }
+.gallery-stream .plate:nth-child(17n+4) { --row-h: calc(var(--base-h) * 1.6); }
 
 /* Image button (clickable) */
 .plate-btn {
@@ -1522,16 +1604,18 @@ body.lightbox-open .theme-toggle {
   border-color: var(--accent);
 }
 
-/* Responsive: shorter rows on narrower screens */
+/* Responsive: shorter base rows on narrower screens (may still be overridden by localStorage via JS) */
 @media (max-width: 1200px) {
-  .gallery-stream { --row-h: 280px; gap: 6px; }
+  .gallery-stream { --base-h: 280px; gap: 6px; }
 }
 
 @media (max-width: 800px) {
   .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  .gallery-stream { --row-h: 220px; gap: 5px; }
+  .gallery-zoom { margin-bottom: 20px; flex-wrap: wrap; }
+  .zoom-slider { width: 140px; }
+  .gallery-stream { --base-h: 220px; gap: 5px; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
@@ -1539,7 +1623,7 @@ body.lightbox-open .theme-toggle {
 }
 
 @media (max-width: 500px) {
-  .gallery-stream { --row-h: 160px; }
+  .gallery-stream { --base-h: 160px; }
 }
 
 @media (hover: none) {
