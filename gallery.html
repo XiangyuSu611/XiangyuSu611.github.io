@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=44" />
+  <link rel="stylesheet" href="style.css?v=45" />
 
   <script>
     (function () {
@@ -164,14 +164,6 @@
             '<div class="plate-image-placeholder">Image pending</div>' +
           '</div>';
 
-        var metaBits = [];
-        if (date) metaBits.push('<span class="note-date">' + date + '</span>');
-        if (location) metaBits.push('<span class="plate-location">' + location + '</span>');
-        if (placeholderTag) metaBits.push(placeholderTag);
-        var metaHtml = metaBits.length
-          ? '<div class="note-meta plate-meta">' + metaBits.join('<span class="note-meta-dot"></span>') + '</div>'
-          : '';
-
         var titleHtml = p.meta.title
           ? '<h2 class="plate-title">' + renderInline(p.meta.title) + '</h2>'
           : '';
@@ -182,13 +174,19 @@
           ? '<div class="plate-body">' + renderBody(p.body) + '</div>'
           : '';
 
-        var delay = (idx * 100) + 'ms';
+        var metaLine = [];
+        metaLine.push('<span class="plate-index-inline">' + num + '</span>');
+        if (date) metaLine.push('<span class="note-date">' + date + '</span>');
+        if (location) metaLine.push('<span class="plate-location">' + location + '</span>');
+        if (placeholderTag) metaLine.push(placeholderTag);
+        var compactMetaHtml = '<div class="note-meta plate-meta">' + metaLine.join('<span class="note-meta-dot"></span>') + '</div>';
+
+        var delay = (idx * 90) + 'ms';
         return '' +
           '<figure class="plate' + (isPlaceholder ? ' is-placeholder' : '') + '" style="--stagger:' + delay + '">' +
-            '<aside class="plate-index">' + num + '</aside>' +
             frameHtml +
             '<figcaption class="plate-caption-block">' +
-              metaHtml +
+              compactMetaHtml +
               titleHtml +
               captionHtml +
               bodyHtml +
