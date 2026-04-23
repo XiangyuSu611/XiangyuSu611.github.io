@@ -4,6 +4,8 @@ Gallery helper — add / list / clean photos on the homepage gallery.
 
 Typical flow:
     ./gallery.py add ~/Pictures/IMG_1234.jpg --at "Kyoto · Japan" --title "Autumn at Nanzen-ji" --caption "Early morning."
+    ./gallery.py ingest                 # batch-process every image dropped into ./gallery_inbox/
+    ./gallery.py ingest ~/Some/Folder   # or any other folder
     ./gallery.py list
     ./gallery.py clear-placeholders
 
@@ -29,9 +31,11 @@ except ImportError:
 ROOT = Path(__file__).parent.resolve()
 GALLERY_DIR = ROOT / "assets" / "gallery"
 GALLERY_MD = ROOT / "gallery.md"
+INBOX = ROOT / "gallery_inbox"
 
 MAX_LONG_EDGE = 1800
 JPEG_QUALITY = 82
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tif", ".tiff"}
 
 
 def read_exif_date(path: Path):
@@ -129,6 +133,60 @@ def cmd_add(args):
     print(f"✓ Appended [[photo]] block to gallery.md  (date: {date})")
 
 
+def cmd_ingest(args):
+    src_dir = Path(args.path).expanduser().resolve() if args.path else INBOX
+    if not src_dir.exists():
+        sys.exit(f"Folder not found: {src_dir}")
+    if not src_dir.is_dir():
+        sys.exit(f"Expected a directory, got a file: {src_dir}")
+
+    photos = sorted(
+        [p for p in src_dir.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    )
+    if not photos:
+        sys.exit(f"No images found in {src_dir}")
+
+    # Sort chronologically by EXIF date when available so plate numbers follow real-world order
+    dated = []
+    for p in photos:
+        d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
+        dated.append((d, p))
+    dated.sort(key=lambda x: x[0])
+
+    print(f"→ Processing {len(dated)} image(s) from {src_dir.relative_to(ROOT) if src_dir.is_relative_to(ROOT) else src_dir}\n")
+
+    default_location = args.at or ""
+    added = []
+    for date, src in dated:
+        plate_num = next_plate_number()
+        dest_name = f"plate-{plate_num:02d}.jpg"
+        dest = GALLERY_DIR / dest_name
+        size = process_image(src, dest)
+        entry = format_entry(
+            src_path=f"assets/gallery/{dest_name}",
+            date=date,
+            location=default_location,
+            title="",
+            caption="",
+        )
+        append_entry(entry)
+        kb = dest.stat().st_size // 1024
+        print(f"  ✓ {src.name}  →  {dest_name}  ({size[0]}×{size[1]}, {kb} KB, {date})")
+        added.append((src, dest))
+
+    # Optionally remove the originals after a successful pass
+    if args.delete:
+        for src, _ in added:
+            try:
+                src.unlink()
+            except Exception as e:
+                print(f"  ! Could not delete {src}: {e}")
+        print(f"\n✓ Removed {len(added)} source file(s)")
+
+    print(f"\n✓ Appended {len(added)} entr{'y' if len(added) == 1 else 'ies'} to gallery.md")
+    print(f"  Tip: open gallery.md to add title / caption per plate, then git commit.")
+
+
 def cmd_list(args):
     for p in sorted(GALLERY_DIR.glob("plate-*.jpg")):
         size_kb = p.stat().st_size // 1024
@@ -165,6 +223,12 @@ def main():
     add_p.add_argument("--caption", help="One-line italic caption")
     add_p.add_argument("--date", help="Override date (YYYY-MM-DD)")
     add_p.set_defaults(func=cmd_add)
+
+    ing_p = sub.add_parser("ingest", help="Batch-process every image in a folder (default: ./gallery_inbox)")
+    ing_p.add_argument("path", nargs="?", help="Folder to ingest from (default: ./gallery_inbox)")
+    ing_p.add_argument("--at", help="Location applied to every ingested plate")
+    ing_p.add_argument("--delete", action="store_true", help="Delete source files after ingesting")
+    ing_p.set_defaults(func=cmd_ingest)
 
     sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
     sub.add_parser("clear-placeholders", help="Remove placeholder: yes entries from gallery.md").set_defaults(func=cmd_clear_placeholders)
