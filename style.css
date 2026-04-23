@@ -1266,9 +1266,10 @@ hr {
    Flush-left full viewport; plates click into a lightbox overlay.
    ============================================================ */
 .gallery-page .container {
+  --page-pad: 40px;
   max-width: none;
   margin: 0;
-  padding: 32px 40px 80px;
+  padding: 32px var(--page-pad) 80px;
 }
 
 .gallery-page .notes-breadcrumb { margin-bottom: 28px; }
@@ -1277,12 +1278,40 @@ hr {
   max-width: 720px;
 }
 
+/* ─── Layout switcher ─── */
+.gallery-modes {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 40px;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  flex-wrap: wrap;
+}
+.gallery-modes .modes-label {
+  margin-right: 14px;
+  color: var(--text-subtle);
+}
+.gallery-modes button {
+  all: unset;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.gallery-modes button:hover { color: var(--text); }
+.gallery-modes button.is-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
 .gallery-stream {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: 14vw;
-  grid-auto-flow: dense;
-  gap: 14px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
 }
@@ -1296,9 +1325,204 @@ hr {
   margin: 0;
 }
 
-.plate--landscape { grid-column: span 2; grid-row: span 2; }
-.plate--portrait  { grid-column: span 1; grid-row: span 2; }
-.plate--square    { grid-column: span 1; grid-row: span 1; }
+.plate-label {
+  display: none;  /* surfaced per mode */
+}
+
+/* ─── Mode A: Grid (editorial masonry) ─── */
+.stream--grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 14vw;
+  grid-auto-flow: dense;
+  gap: 14px;
+}
+.stream--grid .plate--landscape { grid-column: span 2; grid-row: span 2; }
+.stream--grid .plate--portrait  { grid-column: span 1; grid-row: span 2; }
+.stream--grid .plate--square    { grid-column: span 1; grid-row: span 1; }
+
+/* ─── Mode B: Contact sheet ─── */
+.stream--contact {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  padding: 18px;
+  background: color-mix(in srgb, var(--surface) 60%, #000);
+  border: 1px solid var(--border);
+}
+.stream--contact .plate {
+  aspect-ratio: 3 / 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stream--contact .plate-btn {
+  flex: 1;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.stream--contact .plate-overlay { display: none; }
+.stream--contact .plate-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stream--contact .plate-label-num {
+  color: var(--accent);
+  font-weight: 700;
+}
+.stream--contact .plate-label-roman,
+.stream--contact .plate-label-loc { display: none; }
+.stream--contact .plate-label-date { font-size: 8.5px; color: var(--text-subtle); }
+
+/* ─── Mode C: Catalog (one spread per viewport) ─── */
+.stream--catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scroll-snap-type: y mandatory;
+  margin-left: calc(-1 * var(--page-pad, 40px));
+  margin-right: calc(-1 * var(--page-pad, 40px));
+}
+.stream--catalog .plate {
+  min-height: 92vh;
+  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 1.6fr;
+  gap: 72px;
+  padding: 80px var(--page-pad, 40px);
+  align-items: center;
+  border-top: 1px solid var(--border);
+}
+.stream--catalog .plate:first-child { border-top: none; }
+.stream--catalog .plate-btn {
+  order: 2;
+  align-self: center;
+  justify-self: start;
+  width: 100%;
+  max-height: 80vh;
+  cursor: zoom-in;
+}
+.stream--catalog .plate-btn img {
+  object-fit: contain;
+  max-height: 80vh;
+  background: #000;
+}
+.stream--catalog .plate-overlay { display: none; }
+.stream--catalog .plate-label {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-self: center;
+  padding-right: 24px;
+  border-left: 1px solid var(--border);
+  padding-left: 22px;
+}
+.stream--catalog .plate-label-num { display: none; }
+.stream--catalog .plate-label-roman {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 96, 'SOFT' 40, 'WONK' 1;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5.6vw, 4rem);
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.015em;
+}
+.stream--catalog .plate-label-date {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+}
+.stream--catalog .plate-label-loc {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 24;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+/* ─── Mode D: Filmstrip (horizontal scroll) ─── */
+.stream--strip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 26px 0;
+  margin-left: calc(-1 * var(--page-pad, 40px));
+  margin-right: calc(-1 * var(--page-pad, 40px));
+  padding-left: var(--page-pad, 40px);
+  padding-right: var(--page-pad, 40px);
+  scroll-snap-type: x proximity;
+  background:
+    linear-gradient(to bottom,
+      transparent 0,
+      transparent 16px,
+      #0a0a0a 16px,
+      #0a0a0a calc(100% - 16px),
+      transparent calc(100% - 16px),
+      transparent 100%),
+    repeating-linear-gradient(to right,
+      rgba(255,255,255,0.12) 0 4px,
+      transparent 4px 18px);
+  background-repeat: no-repeat, repeat-x;
+  background-position: center, top, bottom;
+  background-size: 100% 100%, 18px 6px;
+}
+.stream--strip::before,
+.stream--strip::after {
+  content: "";
+  position: sticky;
+  top: 0;
+  height: 0;
+  pointer-events: none;
+}
+.stream--strip .plate {
+  flex: 0 0 auto;
+  height: 70vh;
+  scroll-snap-align: center;
+}
+.stream--strip .plate--landscape { aspect-ratio: 3 / 2; }
+.stream--strip .plate--portrait  { aspect-ratio: 2 / 3; }
+.stream--strip .plate--square    { aspect-ratio: 1 / 1; }
+.stream--strip .plate .plate-btn {
+  width: auto;
+  height: 100%;
+  aspect-ratio: inherit;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 20px 60px -30px rgba(0,0,0,0.6);
+}
+.stream--strip .plate-overlay { background: linear-gradient(to top, rgba(0,0,0,0.55), transparent); padding: 10px 14px; border-radius: 0; }
+.stream--strip .plate-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.stream--strip .plate-label-num { color: #d4a155; font-weight: 700; }
+.stream--strip .plate-label-roman { display: none; }
+.stream--strip .plate-label-loc { color: var(--text-muted); }
+body.mode-strip .gallery-stream { scrollbar-width: thin; }
+body.mode-strip .gallery-stream::-webkit-scrollbar { height: 8px; }
+body.mode-strip .gallery-stream::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* Image button (clickable) */
 .plate-btn {
@@ -1522,22 +1746,33 @@ body.lightbox-open .theme-toggle {
 
 /* Responsive: fewer columns on narrower screens, larger cells */
 @media (max-width: 1200px) {
-  .gallery-stream {
+  .stream--grid {
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: 20vw;
     gap: 12px;
   }
+  .stream--contact { grid-template-columns: repeat(5, 1fr); }
 }
 
 @media (max-width: 800px) {
-  .gallery-page .container { padding: 28px 20px 56px; }
+  .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  .gallery-stream {
+  .stream--grid {
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 42vw;
     gap: 10px;
   }
+  .stream--contact { grid-template-columns: repeat(3, 1fr); padding: 12px; gap: 6px; }
+  .stream--catalog .plate {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    min-height: auto;
+    padding: 56px var(--page-pad);
+  }
+  .stream--catalog .plate-label { order: 2; border-left: none; padding-left: 0; }
+  .stream--catalog .plate-btn { order: 1; }
+  .stream--strip .plate { height: 55vh; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }

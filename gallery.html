@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=49" />
+  <link rel="stylesheet" href="style.css?v=50" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -41,6 +41,14 @@
   <header class="notes-header">
     <h1 class="notes-title">Gallery</h1>
   </header>
+
+  <nav class="gallery-modes" aria-label="Layout">
+    <span class="modes-label">Layout</span>
+    <button type="button" data-mode="grid">Grid</button>
+    <button type="button" data-mode="contact">Contact</button>
+    <button type="button" data-mode="catalog">Catalog</button>
+    <button type="button" data-mode="strip">Filmstrip</button>
+  </nav>
 
   <main class="gallery-stream"></main>
 
@@ -154,8 +162,10 @@
         return (b.meta.date || '').localeCompare(a.meta.date || '');
       });
       var html = photos.map(function (p, idx) {
-        var num = 'Plate ' + pad(idx + 1);
+        var num = pad(idx + 1);
+        var roman = toRoman(idx + 1);
         var date = formatDate(p.meta.date);
+        var dateLong = formatDateLong(p.meta.date);
         var orient = (p.meta.orient || 'landscape').toLowerCase();
         var src = p.meta.src || '';
         var alt = p.meta.title || p.meta.caption || 'Photo';
@@ -171,6 +181,15 @@
         var secondary = (loc && date) ? '<span class="plate-overlay-date">' + date + '</span>' : '';
         var overlayMeta = '<div class="plate-overlay">' + primary + secondary + '</div>';
 
+        // Per-mode visible label — CSS decides which fields to show
+        var labelHtml =
+          '<figcaption class="plate-label">' +
+            '<span class="plate-label-num">' + num + '</span>' +
+            '<span class="plate-label-roman">Plate ' + roman + '</span>' +
+            '<span class="plate-label-date">' + (dateLong || '—') + '</span>' +
+            (loc ? '<span class="plate-label-loc">' + loc + '</span>' : '') +
+          '</figcaption>';
+
         var delay = Math.min(idx * 40, 800) + 'ms';
         return '' +
           '<figure class="plate plate--' + orient + '" style="--stagger:' + delay + '" data-idx="' + idx + '">' +
@@ -178,16 +197,34 @@
               imageHtml +
               overlayMeta +
             '</button>' +
+            labelHtml +
           '</figure>';
       }).join('');
       container.innerHTML = html;
       window.__galleryPhotos = photos;
     }
 
+    function toRoman(n) {
+      var map = [['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]];
+      var out = '';
+      for (var i = 0; i < map.length; i++) {
+        while (n >= map[i][1]) { out += map[i][0]; n -= map[i][1]; }
+      }
+      return out;
+    }
+
+    function formatDateLong(str) {
+      if (!str) return '';
+      var m = str.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
+      if (!m) return str;
+      var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      return m[1] + ' · ' + months[parseInt(m[2],10) - 1] + ' · ' + m[3];
+    }
+
     fetch('gallery.md', { cache: 'no-cache' })
       .then(function (r) { return r.text(); })
       .then(function (text) {
-        try { renderGallery(parsePhotos(text)); setupLightbox(); }
+        try { renderGallery(parsePhotos(text)); setupModes(); setupLightbox(); }
         catch (e) {
           document.querySelector('.gallery-stream').innerHTML =
             '<p class="notes-empty">Failed to parse gallery.md — ' + escapeHtml(e.message) + '</p>';
@@ -197,6 +234,28 @@
         document.querySelector('.gallery-stream').innerHTML =
           '<p class="notes-empty">No <code>gallery.md</code> found yet.</p>';
       });
+
+    // ── Layout modes ─────────────────────────────────────────
+    var MODES = ['grid', 'contact', 'catalog', 'strip'];
+    function setupModes() {
+      var stored = localStorage.getItem('gallery-mode');
+      var mode = MODES.indexOf(stored) >= 0 ? stored : 'grid';
+      applyMode(mode);
+      document.querySelectorAll('.gallery-modes button').forEach(function (btn) {
+        btn.addEventListener('click', function () { applyMode(btn.dataset.mode); });
+      });
+    }
+    function applyMode(mode) {
+      if (MODES.indexOf(mode) < 0) mode = 'grid';
+      localStorage.setItem('gallery-mode', mode);
+      var body = document.body;
+      body.className = body.className.replace(/\bmode-\w+\b/g, '').trim() + ' mode-' + mode;
+      var stream = document.querySelector('.gallery-stream');
+      stream.className = 'gallery-stream stream--' + mode;
+      document.querySelectorAll('.gallery-modes button').forEach(function (b) {
+        b.classList.toggle('is-active', b.dataset.mode === mode);
+      });
+    }
 
     // ── Lightbox ─────────────────────────────────────────────
     function setupLightbox() {
