@@ -1392,6 +1392,16 @@ hr {
   width: calc(var(--ratio, 1.5) * var(--thumb-h));
 }
 
+/* Thumb row size modifiers — give the cycle real rhythm */
+.thumbs-row.is-tight .plate {
+  height: calc(var(--thumb-h) * 0.72);
+  width: calc(var(--ratio, 1.5) * var(--thumb-h) * 0.72);
+}
+.thumbs-row.is-tall .plate {
+  height: calc(var(--thumb-h) * 1.3);
+  width: calc(var(--ratio, 1.5) * var(--thumb-h) * 1.3);
+}
+
 .hero-row .plate {
   height: 52vh;
   max-height: 560px;
@@ -1401,6 +1411,16 @@ hr {
 .hero-row .plate.plate--portrait {
   height: 68vh;
   max-height: 700px;
+}
+
+/* Hero scale modifier — occasional larger hero heightens the rhythm */
+.hero-row.is-large .plate {
+  height: 68vh;
+  max-height: 720px;
+}
+.hero-row.is-large .plate.plate--portrait {
+  height: 82vh;
+  max-height: 860px;
 }
 
 /* Image button (clickable) */
@@ -1627,6 +1647,8 @@ body.lightbox-open .theme-toggle {
   .gallery-stream { --thumb-h: 220px; gap: 12px; }
   .hero-row .plate { height: 48vh; max-height: 480px; }
   .hero-row .plate.plate--portrait { height: 62vh; max-height: 620px; }
+  .hero-row.is-large .plate { height: 62vh; max-height: 620px; }
+  .hero-row.is-large .plate.plate--portrait { height: 74vh; max-height: 740px; }
 }
 
 @media (max-width: 800px) {
@@ -1639,6 +1661,8 @@ body.lightbox-open .theme-toggle {
   .thumbs-row { gap: 4px; }
   .hero-row .plate { height: 42vh; max-height: 440px; }
   .hero-row .plate.plate--portrait { height: 56vh; max-height: 560px; }
+  .hero-row.is-large .plate { height: 54vh; max-height: 540px; }
+  .hero-row.is-large .plate.plate--portrait { height: 68vh; max-height: 680px; }
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
@@ -1649,6 +1673,8 @@ body.lightbox-open .theme-toggle {
   .gallery-stream { --thumb-h: 130px; gap: 8px; }
   .hero-row .plate { height: 38vh; }
   .hero-row .plate.plate--portrait { height: 50vh; }
+  .hero-row.is-large .plate { height: 48vh; }
+  .hero-row.is-large .plate.plate--portrait { height: 60vh; }
 }
 
 @media (hover: none) {

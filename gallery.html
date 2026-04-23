@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=59" />
+  <link rel="stylesheet" href="style.css?v=60" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -179,7 +179,16 @@
         '</figure>';
     }
 
-    var HERO_EVERY = 5; // hero followed by 4 thumbs, cycle repeats
+    // Non-uniform cycles: thumb count, thumb band height, hero scale all vary.
+    // Cycle sum = 23 thumbs + 6 heroes ≈ 29 per pass; total 32 → 7 heroes.
+    var PATTERN = [
+      { thumbs: 3, thumbClass: '',      heroClass: ''      },
+      { thumbs: 5, thumbClass: 'tall',  heroClass: 'large' },
+      { thumbs: 2, thumbClass: 'tight', heroClass: ''      },
+      { thumbs: 4, thumbClass: '',      heroClass: ''      },
+      { thumbs: 6, thumbClass: 'tall',  heroClass: ''      },
+      { thumbs: 3, thumbClass: 'tight', heroClass: 'large' }
+    ];
 
     function renderGallery(photos) {
       var container = document.querySelector('.gallery-stream');
@@ -188,17 +197,24 @@
         return;
       }
       var out = [];
-      var inThumbs = false;
-      photos.forEach(function (p, i) {
-        if (i % HERO_EVERY === 0) {
-          if (inThumbs) { out.push('</div>'); inThumbs = false; }
-          out.push('<div class="hero-row">' + plateHtml(p, i, true) + '</div>');
-        } else {
-          if (!inThumbs) { out.push('<div class="thumbs-row">'); inThumbs = true; }
-          out.push(plateHtml(p, i, false));
+      var i = 0;
+      var pIdx = 0;
+      while (i < photos.length) {
+        var cfg = PATTERN[pIdx % PATTERN.length];
+        pIdx++;
+        var heroClass = cfg.heroClass ? ' is-' + cfg.heroClass : '';
+        out.push('<div class="hero-row' + heroClass + '">' + plateHtml(photos[i], i, true) + '</div>');
+        i++;
+        if (i >= photos.length) break;
+        var thumbs = [];
+        for (var j = 0; j < cfg.thumbs && i < photos.length; j++, i++) {
+          thumbs.push(plateHtml(photos[i], i, false));
         }
-      });
-      if (inThumbs) out.push('</div>');
+        if (thumbs.length) {
+          var thumbClass = cfg.thumbClass ? ' is-' + cfg.thumbClass : '';
+          out.push('<div class="thumbs-row' + thumbClass + '">' + thumbs.join('') + '</div>');
+        }
+      }
       container.innerHTML = out.join('');
     }
 
