@@ -17,5 +17,12 @@ ICRA26_1139_FI.pdf
 xiangyusu2.png
 xiangyusu.png
 
-# Logo source (use favicon-*.png / apple-touch-icon.png instead)
+# Logo source (use assets/favicons/*.png / assets/brands/* instead)
 page-logo.png
+
+# Publication teaser source (use assets/publications/tmt.jpg instead)
+图片 1.jpg
+
+# Large publication source files (PDFs, raw videos) — kept locally
+assets/publications/*.pdf
+assets/publications/*.mp4
