@@ -1278,32 +1278,54 @@ hr {
   max-width: 720px;
 }
 
-/* Asymmetric 3-column masonry — each column has a different flex ratio
-   (1.3 / 0.9 / 1.1) so plate sizes differ by column. Photos keep exact
-   aspect via aspect-ratio, stacked tight within each column. */
+/* Chapter-row editorial layout — alternating hero / flat rows drive rhythm.
+   hero-left + flat-row + hero-right + flat-row cycles consume photos in
+   groups of 18; widest photo in each 5-photo hero chunk earns the big slot. */
 .gallery-stream {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 72px;
   transition: filter 0.35s ease, opacity 0.35s ease;
 }
 
-.gallery-stream .col {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+.chapter {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
+/* Same 4-col track for every chapter so vertical gutters line up across
+   the whole gallery. Hero size comes from spanning 2 cols + 2 rows. */
+.chapter.hero-left  > .plate-hero { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+.chapter.hero-right > .plate-hero { grid-column: 3 / span 2; grid-row: 1 / span 2; }
 
 .plate {
   position: relative;
   width: 100%;
-  aspect-ratio: var(--ratio, 1.5);
   margin: 0;
+  overflow: hidden;
   opacity: 0;
   transform: translateY(10px);
   animation: note-enter 0.7s cubic-bezier(0.2, 0.65, 0.3, 1) forwards;
   animation-delay: var(--stagger, 0ms);
+}
+/* Only thumbs declare an aspect-ratio. Hero gets its size from spanning
+   2 thumb rows + the gap — so thumb heights stay identical across hero
+   rows and flat rows, and the gutters line up across chapters regardless
+   of gap size. */
+.plate-thumb { aspect-ratio: 4 / 3; }
+
+/* Hover focus: when one plate is held, others desaturate + blur. */
+.gallery-stream.has-focus .plate {
+  transition: filter 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+  filter: blur(5px) brightness(0.55);
+  opacity: 0.85;
+}
+.gallery-stream.has-focus .plate.plate-focused {
+  filter: none;
+  opacity: 1;
+  transform: scale(1.015);
+  z-index: 2;
 }
 
 /* Image button (clickable) */
@@ -1336,37 +1358,45 @@ hr {
 }
 .plate-btn:hover img { transform: scale(1.03); }
 
-/* Overlay meta — shown on hover only */
+/* Overlay meta — shown on hover or when plate is focused. Each chip has its
+   own translucent pill so the text stays readable on any background. */
 .plate-overlay {
   position: absolute;
   left: 10px;
   bottom: 10px;
   right: 10px;
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
   align-items: center;
   font-family: var(--font);
   font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 0.2s, transform 0.25s;
   pointer-events: none;
 }
 .plate-btn:hover .plate-overlay,
-.plate-btn:focus-visible .plate-overlay {
+.plate-btn:focus-visible .plate-overlay,
+.plate.plate-focused .plate-overlay {
   opacity: 1;
   transform: translateY(0);
 }
-.plate-overlay-loc {
-  color: var(--accent);
-  filter: brightness(1.5);
+.plate-overlay-loc,
+.plate-overlay-date {
+  padding: 4px 9px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  line-height: 1;
 }
-.plate-overlay-date { color: rgba(255, 255, 255, 0.85); }
+.plate-overlay-loc { color: var(--accent); }
+.plate-overlay-date { color: #ffffff; }
 
 .plate-image-placeholder {
   width: 100%;
@@ -1425,6 +1455,11 @@ body.lightbox-open .theme-toggle {
   max-width: 100%;
   max-height: 100%;
 }
+.lightbox-frame {
+  display: inline-block;
+  line-height: 0;
+  animation: lb-zoom 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
 .lightbox-img {
   max-width: min(1400px, 92vw);
   max-height: 80vh;
@@ -1434,7 +1469,6 @@ body.lightbox-open .theme-toggle {
   object-fit: contain;
   box-shadow: 0 32px 80px -20px rgba(0, 0, 0, 0.45);
   border-radius: 2px;
-  animation: lb-zoom 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
 @keyframes lb-zoom {
   from { opacity: 0; transform: scale(0.98); }
@@ -1526,32 +1560,84 @@ body.lightbox-open .theme-toggle {
   border-color: var(--accent);
 }
 
-@media (max-width: 1200px) {
-  .gallery-stream { gap: 6px; }
-  .gallery-stream .col { gap: 6px; }
+@media (max-width: 1100px) {
+  /* Tablet landscape: shrink gutters a touch so thumbs don't get cramped */
+  .chapter { gap: 8px; }
+  .gallery-stream { gap: 8px; }
 }
 
 @media (max-width: 800px) {
   .gallery-page .container { --page-pad: 20px; padding: 28px var(--page-pad) 56px; }
   .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
   .gallery-page .notes-header { margin-bottom: 28px; }
-  /* Drop to 2 columns on tablets by merging the narrowest column */
-  .gallery-stream { flex-wrap: wrap; gap: 6px; }
-  .gallery-stream .col { flex: 1 1 calc(50% - 6px) !important; gap: 6px; }
-  .gallery-stream .col:nth-child(3) { flex: 1 1 100% !important; }
+  .gallery-stream { margin-bottom: 56px; }
+
+  /* Below 800px: drop to 2-col base. Hero spans full width as its own row,
+     thumbs fill 2×2 below. Consistent grid across all chapter types so
+     vertical gutters still line up. */
+  .chapter {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .gallery-stream { gap: 6px; }
+  .chapter.hero-left  > .plate-hero,
+  .chapter.hero-right > .plate-hero {
+    grid-column: 1 / span 2;
+    grid-row: auto;
+    aspect-ratio: 3 / 2;
+  }
+
   .lightbox { padding: 16px; }
   .lightbox-close { top: 14px; right: 14px; }
   .lightbox-prev { left: 8px; }
   .lightbox-next { right: 8px; }
+  .lightbox-img { max-height: 72vh; }
+  .lightbox-stage { gap: 14px; }
 }
 
 @media (max-width: 500px) {
-  .gallery-stream { flex-direction: column; gap: 6px; }
-  .gallery-stream .col { flex: 1 1 auto !important; gap: 6px; }
+  .gallery-page .container { padding-top: 20px; padding-bottom: 44px; }
+  .gallery-page .notes-header { margin-bottom: 22px; }
+  .gallery-stream { margin-bottom: 40px; }
+
+  /* Phone: single column, portrait-friendly. Keep aspect ratios so all
+     images stay uncropped vertically. */
+  .chapter {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .gallery-stream { gap: 5px; }
+  .chapter.hero-left  > .plate-hero,
+  .chapter.hero-right > .plate-hero {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .plate-overlay { left: 8px; right: 8px; bottom: 8px; }
+  .plate-overlay-loc,
+  .plate-overlay-date {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+
+  .lightbox-close { top: 10px; right: 10px; width: 40px; height: 40px; font-size: 22px; }
+  .lightbox-nav { width: 40px; height: 40px; font-size: 22px; }
+  .lightbox-img { max-height: 62vh; max-width: 96vw; }
+}
+
+@media (hover: hover) {
+  .gallery-stream .plate { transition: filter 0.35s ease, transform 0.35s ease; }
 }
 
 @media (hover: none) {
-  /* Touch devices: show overlay meta permanently, disable zoom-on-hover */
+  /* Touch devices: show overlay permanently, disable hover-based effects */
   .plate-overlay { opacity: 1; transform: none; }
   .plate-btn:hover img { transform: none; }
+  .gallery-stream.has-focus .plate {
+    filter: none;
+    opacity: 1;
+  }
+  .gallery-stream.has-focus .plate.plate-focused {
+    transform: none;
+  }
 }

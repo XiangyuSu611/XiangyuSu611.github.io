@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=61" />
+  <link rel="stylesheet" href="style.css?v=69" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -56,7 +56,9 @@
   <button class="lightbox-nav lightbox-prev" aria-label="Previous" type="button">&lsaquo;</button>
   <button class="lightbox-nav lightbox-next" aria-label="Next" type="button">&rsaquo;</button>
   <div class="lightbox-stage">
-    <img class="lightbox-img" alt="" />
+    <div class="lightbox-frame">
+      <img class="lightbox-img" alt="" />
+    </div>
     <div class="lightbox-caption"></div>
   </div>
 </div>
@@ -144,10 +146,8 @@
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-    function plateHtml(p, idx) {
+    function plateHtml(p, idx, role) {
       var date = formatDate(p.meta.date);
-      var orient = (p.meta.orient || 'landscape').toLowerCase();
-      var ratio = parseFloat(p.meta.ratio) || (orient === 'portrait' ? 0.75 : orient === 'square' ? 1 : 1.5);
       var src = p.meta.src || '';
       var alt = p.meta.title || p.meta.caption || 'Photo';
       var imageHtml = src
@@ -160,9 +160,8 @@
       var secondary = (loc && date) ? '<span class="plate-overlay-date">' + date + '</span>' : '';
       var overlayMeta = '<div class="plate-overlay">' + primary + secondary + '</div>';
       var delay = Math.min(idx * 25, 600) + 'ms';
-      var style = '--stagger:' + delay + '; --ratio:' + ratio.toFixed(3);
       return '' +
-        '<figure class="plate plate--' + orient + '" style="' + style + '" data-idx="' + idx + '">' +
+        '<figure class="plate ' + role + '" style="--stagger:' + delay + '" data-idx="' + idx + '">' +
           '<button class="plate-btn" type="button" aria-label="Open ' + escapeHtml(alt) + '">' +
             imageHtml +
             overlayMeta +
@@ -174,29 +173,61 @@
       var container = document.querySelector('.gallery-stream');
       if (!photos || !photos.length) {
         container.innerHTML = '<p class="notes-empty">No plates yet. Edit <code>gallery.md</code> to add entries.</p>';
-        return;
+        return [];
       }
-      // Height-balanced packing into 3 asymmetric columns — each plate goes
-      // into whichever column currently has the shortest visual height, so
-      // columns end up roughly level regardless of mix.
-      var FLEX = [1.3, 0.9, 1.1];  // asymmetric column widths
-      var cols = [[], [], []];
-      var heights = [0, 0, 0];
-      photos.forEach(function (p, idx) {
-        // Visual height contribution = (1 / ratio) / flex (narrower columns accumulate height faster)
-        var ratio = parseFloat(p.meta.ratio) || 1.5;
-        var bestCol = 0, bestH = heights[0];
-        for (var c = 1; c < 3; c++) {
-          if (heights[c] < bestH) { bestH = heights[c]; bestCol = c; }
+      // Chapter sequence: hero-left (5) → flat-row (4) → hero-right (5) → flat-row (4),
+      // repeated. 32 photos = 18 + 14 = exact cycle plus a trailing partial cycle
+      // that ends on hero-right, so every chapter is complete.
+      var CHAPTER_SEQ = ['hero-left', 'flat-row', 'hero-right', 'flat-row'];
+      var CHAPTER_SIZE = { 'hero-left': 5, 'flat-row': 4, 'hero-right': 5 };
+
+      var html = '';
+      var cursor = 0;
+      var cycleIdx = 0;
+      // renderOrder matches the DOM's visual order, so plate[data-idx=n] maps
+      // exactly to renderOrder[n]. The lightbox uses this to look up the
+      // clicked photo — the hero-reorder inside hero chunks would otherwise
+      // mean the shuffled photos[] index drifts from the visible plate.
+      var renderOrder = [];
+
+      function emit(p, role) {
+        var idx = renderOrder.length;
+        renderOrder.push(p);
+        return plateHtml(p, idx, role);
+      }
+
+      while (cursor < photos.length) {
+        var type = CHAPTER_SEQ[cycleIdx % CHAPTER_SEQ.length];
+        var size = CHAPTER_SIZE[type];
+        var chunk = photos.slice(cursor, cursor + size);
+        if (!chunk.length) break;
+
+        html += '<div class="chapter ' + type + '">';
+
+        if (type === 'flat-row') {
+          chunk.forEach(function (p) { html += emit(p, 'plate-thumb'); });
+        } else {
+          // Pick widest photo in this 5-chunk as hero; portraits never win.
+          var heroPick = 0, heroRatio = -Infinity;
+          chunk.forEach(function (p, k) {
+            var r = parseFloat(p.meta.ratio) || 1;
+            if (r > heroRatio) { heroRatio = r; heroPick = k; }
+          });
+          // DOM order: hero first (grid-column positions it). Then thumbs in
+          // their original chunk order, skipping the hero's index.
+          html += emit(chunk[heroPick], 'plate-hero');
+          chunk.forEach(function (p, k) {
+            if (k !== heroPick) html += emit(p, 'plate-thumb');
+          });
         }
-        cols[bestCol].push({ p: p, idx: idx });
-        heights[bestCol] += (1 / ratio) / FLEX[bestCol];
-      });
-      container.innerHTML = cols.map(function (col, ci) {
-        return '<div class="col" style="flex:' + FLEX[ci] + '">' +
-          col.map(function (e) { return plateHtml(e.p, e.idx); }).join('') +
-        '</div>';
-      }).join('');
+
+        html += '</div>';
+        cursor += size;
+        cycleIdx++;
+      }
+
+      container.innerHTML = html;
+      return renderOrder;
     }
 
 
@@ -210,9 +241,11 @@
             var j = Math.floor(Math.random() * (i + 1));
             var tmp = photos[i]; photos[i] = photos[j]; photos[j] = tmp;
           }
-          window.__galleryPhotos = photos;
-          renderGallery(photos);
+          // Use the render-order array so plate[data-idx=n] → lightbox photo
+          // index n stays consistent even though hero chunks reorder internally.
+          window.__galleryPhotos = renderGallery(photos);
           setupLightbox();
+          setupHoverFocus();
         } catch (e) {
           document.querySelector('.gallery-stream').innerHTML =
             '<p class="notes-empty">Failed to parse gallery.md — ' + escapeHtml(e.message) + '</p>';
@@ -280,6 +313,69 @@
         if (e.key === 'Escape') close();
         else if (e.key === 'ArrowLeft') step(-1);
         else if (e.key === 'ArrowRight') step(1);
+      });
+    }
+
+    // ── Hover focus ──────────────────────────────────────────
+    // Holding the cursor on a plate for 1s focuses it — the rest of the
+    // gallery blurs out. As soon as the cursor moves off the focused plate
+    // (to a gutter, another plate, or out of the stream), the blur clears.
+    function setupHoverFocus() {
+      var stream = document.querySelector('.gallery-stream');
+      if (!stream) return;
+      var HOLD_MS = 1000;
+      var timer = null;
+      var focused = null;
+
+      function unfocus() {
+        clearTimeout(timer);
+        timer = null;
+        if (focused) focused.classList.remove('plate-focused');
+        focused = null;
+        stream.classList.remove('has-focus');
+      }
+      function onEnter(plate) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          if (focused && focused !== plate) focused.classList.remove('plate-focused');
+          plate.classList.add('plate-focused');
+          focused = plate;
+          stream.classList.add('has-focus');
+        }, HOLD_MS);
+      }
+      function onLeave(plate) {
+        clearTimeout(timer);
+        timer = null;
+        // If the leaving plate is the currently-focused one, clear focus
+        // immediately so the gallery stops being blurred the moment the
+        // cursor drifts off it.
+        if (focused === plate) {
+          focused.classList.remove('plate-focused');
+          focused = null;
+          stream.classList.remove('has-focus');
+        }
+      }
+
+      stream.addEventListener('mouseover', function (e) {
+        var plate = e.target.closest('.plate');
+        if (!plate) return;
+        if (e.relatedTarget && plate.contains(e.relatedTarget)) return;
+        onEnter(plate);
+      });
+      stream.addEventListener('mouseout', function (e) {
+        var plate = e.target.closest('.plate');
+        if (!plate) return;
+        if (e.relatedTarget && plate.contains(e.relatedTarget)) return;
+        onLeave(plate);
+      });
+      stream.addEventListener('mouseleave', unfocus);
+      window.addEventListener('scroll', unfocus, { passive: true });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') unfocus();
+      });
+      // Opening the lightbox should tear down focus state
+      stream.addEventListener('click', function (e) {
+        if (e.target.closest('.plate-btn')) unfocus();
       });
     }
   })();

@@ -29,3 +29,6 @@ assets/publications/*.mp4
 
 # Gallery inbox — drop raw photos here, `./gallery.py ingest` processes them
 gallery_inbox/
+
+# Superpowers brainstorming session files (mockups, state)
+.superpowers/
