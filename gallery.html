@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=50" />
+  <link rel="stylesheet" href="style.css?v=51" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -44,10 +44,9 @@
 
   <nav class="gallery-modes" aria-label="Layout">
     <span class="modes-label">Layout</span>
-    <button type="button" data-mode="grid">Grid</button>
-    <button type="button" data-mode="contact">Contact</button>
-    <button type="button" data-mode="catalog">Catalog</button>
-    <button type="button" data-mode="strip">Filmstrip</button>
+    <button type="button" data-mode="classic">Classic</button>
+    <button type="button" data-mode="mosaic">Mosaic</button>
+    <button type="button" data-mode="bands">Bands</button>
   </nav>
 
   <main class="gallery-stream"></main>
@@ -236,17 +235,17 @@
       });
 
     // ── Layout modes ─────────────────────────────────────────
-    var MODES = ['grid', 'contact', 'catalog', 'strip'];
+    var MODES = ['classic', 'mosaic', 'bands'];
     function setupModes() {
       var stored = localStorage.getItem('gallery-mode');
-      var mode = MODES.indexOf(stored) >= 0 ? stored : 'grid';
+      var mode = MODES.indexOf(stored) >= 0 ? stored : 'classic';
       applyMode(mode);
       document.querySelectorAll('.gallery-modes button').forEach(function (btn) {
         btn.addEventListener('click', function () { applyMode(btn.dataset.mode); });
       });
     }
     function applyMode(mode) {
-      if (MODES.indexOf(mode) < 0) mode = 'grid';
+      if (MODES.indexOf(mode) < 0) mode = 'classic';
       localStorage.setItem('gallery-mode', mode);
       var body = document.body;
       body.className = body.className.replace(/\bmode-\w+\b/g, '').trim() + ' mode-' + mode;
