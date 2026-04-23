@@ -91,9 +91,21 @@ def process_image(src: Path, dest: Path):
     return img.size
 
 
-def format_entry(src_path: str, date: str, location: str, title: str, caption: str) -> str:
+def orient_of(size):
+    w, h = size
+    r = w / h
+    if r > 1.1:
+        return "landscape"
+    if r < 0.9:
+        return "portrait"
+    return "square"
+
+
+def format_entry(src_path: str, date: str, location: str, title: str, caption: str, orient: str = "") -> str:
     lines = ["[[photo]]", f"src: {src_path}"]
     lines.append(f"date: {date or ''}")
+    if orient:
+        lines.append(f"orient: {orient}")
     lines.append(f"location: {location or ''}")
     lines.append(f"title: {title or ''}")
     lines.append(f"caption: {caption or ''}")
@@ -119,8 +131,9 @@ def cmd_add(args):
 
     date = args.date or read_exif_date(src) or datetime.today().strftime("%Y-%m-%d")
     size = process_image(src, dest)
+    orient = orient_of(size)
 
-    print(f"✓ Saved {dest.relative_to(ROOT)}  ({size[0]}×{size[1]}, {dest.stat().st_size // 1024} KB)")
+    print(f"✓ Saved {dest.relative_to(ROOT)}  ({size[0]}×{size[1]}, {orient}, {dest.stat().st_size // 1024} KB)")
 
     entry = format_entry(
         src_path=f"assets/gallery/{dest_name}",
@@ -128,6 +141,7 @@ def cmd_add(args):
         location=args.at or "",
         title=args.title or "",
         caption=args.caption or "",
+        orient=orient,
     )
     append_entry(entry)
     print(f"✓ Appended [[photo]] block to gallery.md  (date: {date})")
@@ -162,16 +176,18 @@ def cmd_ingest(args):
         dest_name = f"plate-{plate_num:02d}.jpg"
         dest = GALLERY_DIR / dest_name
         size = process_image(src, dest)
+        orient = orient_of(size)
         entry = format_entry(
             src_path=f"assets/gallery/{dest_name}",
             date=date,
             location=default_location,
             title="",
             caption="",
+            orient=orient,
         )
         append_entry(entry)
         kb = dest.stat().st_size // 1024
-        print(f"  ✓ {src.name}  →  {dest_name}  ({size[0]}×{size[1]}, {kb} KB, {date})")
+        print(f"  ✓ {src.name}  →  {dest_name}  ({size[0]}×{size[1]}, {orient}, {kb} KB, {date})")
         added.append((src, dest))
 
     # Optionally remove the originals after a successful pass
@@ -191,6 +207,38 @@ def cmd_list(args):
     for p in sorted(GALLERY_DIR.glob("plate-*.jpg")):
         size_kb = p.stat().st_size // 1024
         print(f"  {p.relative_to(ROOT)}  ({size_kb} KB)")
+
+
+def cmd_backfill_orient(args):
+    """Read each plate on disk and inject an `orient:` field into its gallery.md entry."""
+    if not GALLERY_MD.exists():
+        sys.exit("gallery.md not found")
+    text = GALLERY_MD.read_text(encoding="utf-8")
+
+    def fix_block(block: str) -> str:
+        src_m = re.search(r"^src:\s*(.+)$", block, flags=re.MULTILINE)
+        if not src_m:
+            return block
+        src_path = ROOT / src_m.group(1).strip()
+        if not src_path.exists():
+            return block
+        with Image.open(src_path) as img:
+            orient = orient_of(img.size)
+        if re.search(r"^orient:\s*.+$", block, flags=re.MULTILINE):
+            return re.sub(r"^orient:\s*.+$", f"orient: {orient}", block, count=1, flags=re.MULTILINE)
+        return re.sub(
+            r"(^src:\s*.+\n^date:\s*.*\n)",
+            lambda m: m.group(1) + f"orient: {orient}\n",
+            block,
+            count=1,
+            flags=re.MULTILINE,
+        )
+
+    blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
+    header, photo_blocks = blocks[0], blocks[1:]
+    new_text = header + "".join(fix_block(b) for b in photo_blocks)
+    GALLERY_MD.write_text(new_text, encoding="utf-8")
+    print(f"✓ Backfilled orient for {len(photo_blocks)} entr{'y' if len(photo_blocks) == 1 else 'ies'}")
 
 
 def cmd_clear_placeholders(args):
@@ -231,6 +279,7 @@ def main():
     ing_p.set_defaults(func=cmd_ingest)
 
     sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
+    sub.add_parser("backfill-orient", help="Add orient: to existing gallery.md entries by reading image dimensions").set_defaults(func=cmd_backfill_orient)
     sub.add_parser("clear-placeholders", help="Remove placeholder: yes entries from gallery.md").set_defaults(func=cmd_clear_placeholders)
 
     args = parser.parse_args()

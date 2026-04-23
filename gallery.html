@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=46" />
+  <link rel="stylesheet" href="style.css?v=47" />
 
   <script>
     (function () {
@@ -40,7 +40,6 @@
 
   <header class="notes-header">
     <h1 class="notes-title">Gallery</h1>
-    <p class="notes-sub">A slow-growing set of plates — places, rooms, weather, and the occasional light worth remembering.</p>
   </header>
 
   <main class="gallery-stream"></main>
@@ -49,6 +48,17 @@
     Xiangyu Su · 2026 · Built with <img class="claude-logo" src="assets/brands/claude-code.png" alt="" aria-hidden="true"><span class="footer-cc">Claude Code</span>
   </footer>
 
+</div>
+
+<!-- Lightbox overlay -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lightbox-close" aria-label="Close" type="button">&times;</button>
+  <button class="lightbox-nav lightbox-prev" aria-label="Previous" type="button">&lsaquo;</button>
+  <button class="lightbox-nav lightbox-next" aria-label="Next" type="button">&rsaquo;</button>
+  <div class="lightbox-stage">
+    <img class="lightbox-img" alt="" />
+    <div class="lightbox-caption"></div>
+  </div>
 </div>
 
 <script>
@@ -146,56 +156,34 @@
       var html = photos.map(function (p, idx) {
         var num = 'Plate ' + pad(idx + 1);
         var date = formatDate(p.meta.date);
-        var location = p.meta.location ? escapeHtml(p.meta.location) : '';
-        var isPlaceholder = /^(yes|true|1)$/i.test(p.meta.placeholder || '');
-        var placeholderTag = isPlaceholder ? '<span class="note-placeholder-tag">Placeholder</span>' : '';
-
+        var orient = (p.meta.orient || 'landscape').toLowerCase();
         var src = p.meta.src || '';
+        var alt = p.meta.title || p.meta.caption || 'Photo';
+
         var imageHtml = src
-          ? '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(p.meta.title || p.meta.caption || 'Photo') + '" loading="lazy" onerror="this.parentNode.classList.add(&quot;plate-image--broken&quot;); this.remove();"/>'
-          : '';
-        var frameHtml =
-          '<div class="plate-image-wrap' + (isPlaceholder && !src ? ' plate-image--broken' : '') + '">' +
-            imageHtml +
-            '<div class="plate-image-placeholder">Image pending</div>' +
-          '</div>';
+          ? '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" />'
+          : '<div class="plate-image-placeholder">Image pending</div>';
 
-        var titleHtml = p.meta.title
-          ? '<h2 class="plate-title">' + renderInline(p.meta.title) + '</h2>'
-          : '';
-        var captionHtml = p.meta.caption
-          ? '<p class="plate-caption">' + renderInline(p.meta.caption) + '</p>'
-          : '';
-        var bodyHtml = p.body
-          ? '<div class="plate-body">' + renderBody(p.body) + '</div>'
-          : '';
+        var overlayMeta = '<div class="plate-overlay"><span class="plate-overlay-num">' + num + '</span>' +
+          (date ? '<span class="plate-overlay-date">' + date + '</span>' : '') + '</div>';
 
-        var metaLine = [];
-        metaLine.push('<span class="plate-index-inline">' + num + '</span>');
-        if (date) metaLine.push('<span class="note-date">' + date + '</span>');
-        if (location) metaLine.push('<span class="plate-location">' + location + '</span>');
-        if (placeholderTag) metaLine.push(placeholderTag);
-        var compactMetaHtml = '<div class="note-meta plate-meta">' + metaLine.join('<span class="note-meta-dot"></span>') + '</div>';
-
-        var delay = (idx * 90) + 'ms';
+        var delay = Math.min(idx * 40, 800) + 'ms';
         return '' +
-          '<figure class="plate' + (isPlaceholder ? ' is-placeholder' : '') + '" style="--stagger:' + delay + '">' +
-            frameHtml +
-            '<figcaption class="plate-caption-block">' +
-              compactMetaHtml +
-              titleHtml +
-              captionHtml +
-              bodyHtml +
-            '</figcaption>' +
+          '<figure class="plate plate--' + orient + '" style="--stagger:' + delay + '" data-idx="' + idx + '">' +
+            '<button class="plate-btn" type="button" aria-label="Open ' + escapeHtml(alt) + '">' +
+              imageHtml +
+              overlayMeta +
+            '</button>' +
           '</figure>';
       }).join('');
       container.innerHTML = html;
+      window.__galleryPhotos = photos;
     }
 
     fetch('gallery.md', { cache: 'no-cache' })
       .then(function (r) { return r.text(); })
       .then(function (text) {
-        try { renderGallery(parsePhotos(text)); }
+        try { renderGallery(parsePhotos(text)); setupLightbox(); }
         catch (e) {
           document.querySelector('.gallery-stream').innerHTML =
             '<p class="notes-empty">Failed to parse gallery.md — ' + escapeHtml(e.message) + '</p>';
@@ -205,6 +193,66 @@
         document.querySelector('.gallery-stream').innerHTML =
           '<p class="notes-empty">No <code>gallery.md</code> found yet.</p>';
       });
+
+    // ── Lightbox ─────────────────────────────────────────────
+    function setupLightbox() {
+      var box = document.getElementById('lightbox');
+      var img = box.querySelector('.lightbox-img');
+      var caption = box.querySelector('.lightbox-caption');
+      var stream = document.querySelector('.gallery-stream');
+      var current = -1;
+
+      function open(idx) {
+        var photos = window.__galleryPhotos || [];
+        if (!photos.length) return;
+        current = (idx + photos.length) % photos.length;
+        var p = photos[current];
+        img.src = p.meta.src || '';
+        img.alt = p.meta.title || p.meta.caption || '';
+        var bits = [];
+        bits.push('<span class="lb-num">Plate ' + pad(current + 1) + '</span>');
+        if (p.meta.date) bits.push('<span>' + formatDate(p.meta.date) + '</span>');
+        if (p.meta.location) bits.push('<span>' + escapeHtml(p.meta.location) + '</span>');
+        var meta = bits.join('<span class="lb-dot"></span>');
+        var title = p.meta.title ? '<div class="lb-title">' + renderInline(p.meta.title) + '</div>' : '';
+        var cap = p.meta.caption ? '<div class="lb-caption">' + renderInline(p.meta.caption) + '</div>' : '';
+        caption.innerHTML = '<div class="lb-meta">' + meta + '</div>' + title + cap;
+        document.body.classList.add('lightbox-open');
+        box.setAttribute('aria-hidden', 'false');
+      }
+
+      function close() {
+        document.body.classList.remove('lightbox-open');
+        box.setAttribute('aria-hidden', 'true');
+        current = -1;
+      }
+
+      function step(dir) {
+        if (current < 0) return;
+        open(current + dir);
+      }
+
+      stream.addEventListener('click', function (e) {
+        var btn = e.target.closest('.plate-btn');
+        if (!btn) return;
+        var plate = btn.closest('.plate');
+        var idx = parseInt(plate.getAttribute('data-idx'), 10);
+        if (!isNaN(idx)) open(idx);
+      });
+
+      box.querySelector('.lightbox-close').addEventListener('click', close);
+      box.querySelector('.lightbox-prev').addEventListener('click', function (e) { e.stopPropagation(); step(-1); });
+      box.querySelector('.lightbox-next').addEventListener('click', function (e) { e.stopPropagation(); step(1); });
+      box.addEventListener('click', function (e) {
+        if (e.target === box || e.target.classList.contains('lightbox-stage')) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (!document.body.classList.contains('lightbox-open')) return;
+        if (e.key === 'Escape') close();
+        else if (e.key === 'ArrowLeft') step(-1);
+        else if (e.key === 'ArrowRight') step(1);
+      });
+    }
   })();
 </script>
 
