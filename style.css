@@ -1260,25 +1260,21 @@ hr {
 
 /* ============================================================
    GALLERY PAGE — Photo Plates (full-width masonry)
-   Header / breadcrumb / footer stay in the narrow container;
-   the stream itself breaks out to the full viewport width.
+   Everything flush-left; the whole page uses full viewport width.
    ============================================================ */
 .gallery-page .container {
-  max-width: 820px;
-  padding-top: 44px;
-  padding-bottom: 80px;
+  max-width: none;
+  margin: 0;
+  padding: 32px 40px 80px;
 }
 
-/* Break the stream out of the 820px container into a full-bleed band */
+.gallery-page .notes-breadcrumb { margin-bottom: 28px; }
+.gallery-page .notes-header {
+  margin-bottom: 48px;
+  max-width: 720px;
+}
+
 .gallery-stream {
-  position: relative;
-  left: 50%;
-  right: 50%;
-  width: 100vw;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  padding: 0 40px;
-  box-sizing: border-box;
   columns: 3;
   column-gap: 32px;
   margin-bottom: 72px;
@@ -1421,21 +1417,22 @@ hr {
 
 /* Tablet: 2 columns */
 @media (max-width: 1100px) {
+  .gallery-page .container { padding: 28px 28px 64px; }
   .gallery-stream {
     columns: 2;
     column-gap: 24px;
-    padding: 0 28px;
   }
   .plate { margin-bottom: 40px; }
 }
 
 /* Mobile: 1 column */
 @media (max-width: 680px) {
+  .gallery-page .container { padding: 20px 20px 56px; }
+  .gallery-page .notes-breadcrumb { margin-bottom: 20px; }
+  .gallery-page .notes-header { margin-bottom: 36px; }
   .gallery-stream {
     columns: 1;
-    padding: 0 20px;
     margin-bottom: 56px;
   }
   .plate { margin-bottom: 40px; }
-  .gallery-page .container { padding-top: 32px; }
 }
