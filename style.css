@@ -965,10 +965,18 @@ hr {
    NOTES PAGE — Reading Notebook
    ============================================================ */
 .notes-page .container {
-  max-width: 720px;
-  padding-top: 44px;
-  padding-bottom: 80px;
+  max-width: none;
+  margin: 0;
+  padding: 32px 40px 80px;
 }
+
+.notes-page .notes-breadcrumb { margin-bottom: 28px; }
+.notes-page .notes-header {
+  margin-bottom: 64px;
+  max-width: 720px;
+}
+.notes-page .notes-stream { max-width: 680px; }
+.notes-page .notes-footer { max-width: 720px; }
 
 /* Breadcrumb */
 .notes-breadcrumb {
@@ -1054,14 +1062,13 @@ hr {
 }
 
 .note-index {
-  position: absolute;
-  left: -118px;
-  top: 4px;
+  display: block;
+  margin-bottom: 10px;
   font-family: var(--font);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  color: var(--text-subtle);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -1233,22 +1240,18 @@ hr {
   margin-top: 40px;
 }
 
-/* Tablet — index number falls inline */
+/* Tablet */
 @media (max-width: 900px) {
-  .notes-page .container { padding-top: 32px; }
-  .notes-header { margin-bottom: 64px; }
+  .notes-page .container { padding: 28px 28px 64px; }
+  .notes-page .notes-header { margin-bottom: 52px; }
   .notes-stream { gap: 80px; }
-  .note-index {
-    position: static;
-    display: block;
-    margin-bottom: 8px;
-  }
 }
 
 /* Mobile */
 @media (max-width: 600px) {
-  .notes-breadcrumb { margin-bottom: 48px; }
-  .notes-header { margin-bottom: 52px; }
+  .notes-page .container { padding: 20px 20px 56px; }
+  .notes-page .notes-breadcrumb { margin-bottom: 20px; }
+  .notes-page .notes-header { margin-bottom: 40px; }
   .notes-title {
     font-size: clamp(2.6rem, 12vw, 3.6rem);
   }
