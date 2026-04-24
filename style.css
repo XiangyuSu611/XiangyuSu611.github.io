@@ -1620,9 +1620,21 @@ body.lightbox-open .theme-toggle {
     padding: 3px 7px;
   }
 
+  /* Phone lightbox: image fills most of the viewport, prev/next sit in a
+     horizontal pair at the bottom instead of overlapping the photo. */
+  .lightbox { padding: 16px 12px 88px; }
   .lightbox-close { top: 10px; right: 10px; width: 40px; height: 40px; font-size: 22px; }
-  .lightbox-nav { width: 40px; height: 40px; font-size: 22px; }
-  .lightbox-img { max-height: 62vh; max-width: 96vw; }
+  .lightbox-img { max-width: calc(100vw - 24px); max-height: 58vh; }
+  .lightbox-nav {
+    top: auto;
+    bottom: 20px;
+    transform: none;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+  .lightbox-prev { left: calc(50% - 58px); right: auto; }
+  .lightbox-next { right: calc(50% - 58px); left: auto; }
 }
 
 @media (hover: hover) {
