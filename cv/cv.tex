@@ -1,0 +1,188 @@
+% Xiangyu Su — Curriculum Vitae
+% Compile with: xelatex cv.tex   (or lualatex cv.tex)
+% Fonts: falls back to Libertinus Serif if Fraunces is not installed.
+
+\documentclass[11pt,a4paper]{article}
+
+% ------------------------------------------------------------------
+% Geometry & packages
+% ------------------------------------------------------------------
+\usepackage[margin=0.85in,top=0.7in,bottom=0.7in]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{array}
+\usepackage{ragged2e}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% ------------------------------------------------------------------
+% Fonts — XeLaTeX / LuaLaTeX
+% Libertinus is widely available on TeX Live / MacTeX. To match the web
+% page more closely, install Fraunces and Instrument Sans, then swap the
+% font names below.
+% ------------------------------------------------------------------
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\newfontfamily\headingfont{Libertinus Serif}[Numbers={OldStyle}]
+\newfontfamily\labelfont{Libertinus Sans}
+
+% ------------------------------------------------------------------
+% Colors (mirror the site's light-theme accent + neutral greys)
+% ------------------------------------------------------------------
+\definecolor{ink}{HTML}{1A1A1A}
+\definecolor{accent}{HTML}{2563EB}
+\definecolor{muted}{HTML}{6B727A}
+\definecolor{rule}{HTML}{D5D9DE}
+
+\color{ink}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=accent,
+  citecolor=accent,
+  pdftitle={Xiangyu Su — CV},
+  pdfauthor={Xiangyu Su}
+}
+
+% ------------------------------------------------------------------
+% Section styling
+% ------------------------------------------------------------------
+\titleformat{\section}
+  {\headingfont\large\bfseries\color{ink}}
+  {}{0pt}
+  {\MakeUppercase}
+  [\vspace{2pt}{\textcolor{rule}{\rule{\linewidth}{0.4pt}}}]
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+
+\titleformat{\subsection}
+  {\labelfont\small\bfseries\color{muted}}
+  {}{0pt}{}
+\titlespacing*{\subsection}{0pt}{8pt}{2pt}
+
+% ------------------------------------------------------------------
+% Custom list / item macros
+% ------------------------------------------------------------------
+% Two-column row: left block flows, right block right-aligned in muted.
+\newcommand{\entry}[2]{%
+  \noindent
+  \begin{minipage}[t]{0.76\textwidth}\RaggedRight #1\end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.22\textwidth}\RaggedLeft{\small\color{muted}#2}\end{minipage}%
+  \par\vspace{3pt}
+}
+
+% Publication entry: venue tag · title · authors · url · summary
+\newcommand{\pub}[5]{%
+  \entry{%
+    {\footnotesize\labelfont\color{accent}#1}\\[1pt]
+    \textbf{#2}\\[1pt]
+    {\small #3}\\[1pt]
+    {\footnotesize\color{muted}#4}%
+  }{#5}%
+  \vspace{4pt}%
+}
+
+% Role entry (experience / internship)
+\newcommand{\role}[4]{%
+  \entry{\textbf{#1}, #2\\[1pt]{\small\color{muted}\textit{#3}}}{#4}%
+}
+
+% Honor entry (award)
+\newcommand{\honor}[3]{%
+  \entry{\textbf{#1} — #2}{#3}%
+}
+
+% ------------------------------------------------------------------
+% Document
+% ------------------------------------------------------------------
+\begin{document}
+
+% ----- HEADER -------------------------------------------------------
+\begin{center}
+  {\headingfont\Huge\bfseries Xiangyu Su}\\[4pt]
+  {\small\color{muted}PhD Student \, $\cdot$ \, Visual Computing Research Center \, $\cdot$ \, Shenzhen University}\\[6pt]
+  {\footnotesize
+    \href{mailto:xiangyv.su@gmail.com}{xiangyv.su@gmail.com}
+    \textcolor{rule}{\,|\,}
+    \href{https://github.com/XiangyuSu611}{github.com/XiangyuSu611}
+    \textcolor{rule}{\,|\,}
+    \href{https://xiangyusu611.github.io}{xiangyusu611.github.io}
+  }
+\end{center}
+\vspace{2pt}
+
+% ----- ABOUT / RESEARCH INTERESTS -----------------------------------
+\section*{Research Interests}
+My research centers on \textbf{Embodied Intelligence}, particularly task planning for
+digital humans in household scenarios and for multi-robot systems on industrial
+production lines. I also have a background in \textbf{Computer Graphics}, with a focus
+on material transfer from photographs to 3D models.
+
+% ----- EDUCATION ----------------------------------------------------
+\section*{Education}
+
+\role{Ph.D.\ in Computer Science}{Shenzhen University}%
+  {Visual Computing Research Center, advised by \href{https://csse.szu.edu.cn/staff/ruizhenhu/}{Prof.\ Ruizhen Hu}}%
+  {Sep 2023 -- Present}
+
+% If you'd like to include Bachelor / Master, add \role{...}{...}{...}{...} lines here.
+
+% ----- PUBLICATIONS -------------------------------------------------
+\section*{Publications}
+
+\pub{ICRA 2026 \, · \, Embodied Intelligence}%
+    {IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models}%
+    {\underline{Xiangyu Su}, Juzhan Xu, Oliver van Kaick, Kai Xu, Ruizhen Hu}%
+    {\href{https://arxiv.org/abs/2603.02669}{arXiv} \,|\, \href{https://github.com/XiangyuSu611/IMR-LLM-Code}{code} \,|\, \href{https://xiangyusu611.github.io/imr-llm/}{project page} \,|\, \textit{Deployed at SpeedBot Robotics}}%
+    {2026}
+
+\pub{Preprint 2025 \, · \, Embodied Intelligence}%
+    {Human Activity Program Generation with Correction-by-Summarization}%
+    {\underline{Xiangyu Su}, Jintian Lin, Juntao Jian, Hao Wang, Kai Xu, Ruizhen Hu}%
+    {Summarizes error-correction experiences into executable code rules for fixing non-executable instructions before execution.}%
+    {2025}
+
+\pub{CVM 2025 \, · \, Computer Graphics}%
+    {MTScan: Material Transfer from Partial Scans to CAD Models}%
+    {\underline{Xiangyu Su}, Sida Peng, Oliver van Kaick, Hui Huang, Ruizhen Hu}%
+    {\href{https://dl.acm.org/doi/10.1007/978-981-96-5812-1_8}{paper}}%
+    {2025}
+
+\pub{SIGGRAPH 2022 \, · \, Computer Graphics}%
+    {Photo-to-Shape Material Transfer for Diverse Structures}%
+    {Ruizhen Hu, \underline{Xiangyu Su}, Xiangkai Chen, Oliver van Kaick, Hui Huang}%
+    {\href{https://arxiv.org/abs/2205.04018}{arXiv} \,|\, \href{https://github.com/XiangyuSu611/TMT}{code} \,|\, \href{https://vcc.tech/research/2022/TMT}{project page}}%
+    {2022}
+
+% ----- EXPERIENCE ---------------------------------------------------
+\section*{Experience}
+
+\role{Research Intern}{\href{https://www.speedbot.com/en/home}{SpeedBot Robotics}}%
+  {Low-code automatic program generation for industrial robots.}%
+  {Jun 2025 -- Sep 2025}
+
+\role{Research Intern}{\href{https://www.tencent.com/zh-cn/}{Tencent AI Lab}}%
+  {Material transfer from photographs to 3D models.}%
+  {Aug 2022 -- Feb 2023}
+
+% ----- HONORS & AWARDS ---------------------------------------------
+\section*{Honors \& Awards}
+
+\honor{Outstanding Innovative PhD Talent Scholarship}{Shenzhen University}{Nov 2025}
+\honor{Outstanding Student Scholarship}{Shenzhen University}{Nov 2022}
+\honor{Outstanding Student Scholarship}{Shenzhen University}{Nov 2021}
+
+% ----- FOOTER / TIMESTAMP (optional) --------------------------------
+\vfill
+\begin{center}
+  {\footnotesize\color{muted}Updated \today\, · \href{https://xiangyusu611.github.io}{xiangyusu611.github.io}}
+\end{center}
+
+\end{document}
