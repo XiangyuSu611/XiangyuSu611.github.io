@@ -32,3 +32,30 @@ gallery_inbox/
 
 # Superpowers brainstorming session files (mockups, state)
 .superpowers/
+
+# LaTeX build artifacts (cv/)
+cv/*.aux
+cv/*.bbl
+cv/*.bcf
+cv/*.blg
+cv/*.fdb_latexmk
+cv/*.fls
+cv/*.log
+cv/*.out
+cv/*.run.xml
+cv/*.synctex.gz
+cv/*.toc
+cv/missfont.log
+
+# Reference CV (kept locally, large binary)
+cv/CV_20230113.pdf
+
+# Generated CV PDF (build output)
+cv/main.pdf
+
+# Unused altacv template assets (only 1.png is referenced)
+cv/2.png
+cv/G.jpg
+cv/Globe_High.png
+cv/Xiangyu Su.jpg
+cv/nicethings_icons_readme.txt

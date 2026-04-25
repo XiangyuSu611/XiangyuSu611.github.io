@@ -1,33 +1,33 @@
-# CV
+# AltaCV, yet another LaTeX CV/Résumé class
 
-Source for Xiangyu Su's curriculum vitae.
+v1.1.4 (27 July 2018), by LianTze Lim (liantze@gmail.com)
 
-## Build
+(Thanks to [Nur](https://github.com/nurh) for the name.)
 
-Requires a LaTeX distribution with the Libertinus fonts (TeX Live 2020+,
-MacTeX). Compile with `xelatex` (or `lualatex`) — `pdflatex` will not work
-because the file uses `fontspec`.
+It all started with this:
 
-```bash
-cd cv
-xelatex cv.tex
-```
+[<img src="tweet-that-started-this.png" width="500px">]
+(https://twitter.com/Leonduck/status/764281546408923136)
 
-Output: `cv.pdf`.
+Leonardo was talking about a [résumé of Marissa Mayer that Business Insider put together](http://www.businessinsider.my/a-sample-resume-for-marissa-mayer-2016-7/) using [enhancv.com](https://enhancv.com).
+I _knew_ I had to do something about it. And so AltaCV was born.
 
-## Fonts
+## Samples
 
-The default fonts are `Libertinus Serif` and `Libertinus Sans`, which are
-available in most modern TeX distributions. To match the website more
-closely, install
-[Fraunces](https://fonts.google.com/specimen/Fraunces) and
-[Instrument Sans](https://fonts.google.com/specimen/Instrument+Sans),
-then edit the `\setmainfont` / `\setsansfont` / `\newfontfamily` lines near
-the top of `cv.tex`.
+This is how the re-created résumé looks like ([view/open on Overleaf](https://www.overleaf.com/read/gtqfpbwncfvp)):
 
-## Editing
+<img src="mmayer.png" alt="Marissa Mayer's résumé, re-created with AltaCV" width="600px">
 
-The content mirrors the homepage's `content.md` — when you update a
-publication, internship, or award there, sync the corresponding entry in
-`cv.tex`. Each block is wrapped in a single macro (`\pub`, `\role`,
-`\honor`) to keep the source tidy.
+Though if you're creating your own CV/résumé, you'd probably prefer using the basic template ([view/open on Overleaf](https://www.overleaf.com/read/trgqjpwnmtgv)):
+
+<img src="sample.png" alt="sample barebones AltaCV template" width="600px">
+
+
+## Requirements and Compilation
+
+* pdflatex + biber + pdflatex
+* AltaCV uses [`fontawesome`](http://www.ctan.org/pkg/fontawesome) and [`academicons`](http://www.ctan.org/pkg/academicons); they're included in both TeX Live 2016 and MikTeX 2.9.
+* Loading `academicons` is optional: enable it by adding the `academicons` option to `\documentclass`.
+* Can now be compiled with pdflatex, XeLaTeX and LuaLaTeX!
+* However if you're using `academicons`, you _must_ use either XeLaTeX or LuaLaTeX. If the doc then compiles but the icons don't show up in the output PDF, try compiling with LuaLaTeX instead.
+* The samples here use the [Lato](http://www.latofonts.com/lato-free-fonts/) font.
