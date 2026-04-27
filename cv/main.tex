@@ -15,12 +15,10 @@
 \usepackage[UTF8]{ctex}
 
 \definecolor{Mulberry}{HTML}{72243D}
-\definecolor{SlateGrey}{HTML}{2E2E2E}
-\definecolor{LightGrey}{HTML}{666666}
 \colorlet{heading}{Sepia}
 \colorlet{accent}{Mulberry}
-\colorlet{emphasis}{SlateGrey}
-\colorlet{body}{LightGrey}
+\colorlet{emphasis}{black}
+\colorlet{body}{black}
 
 \renewcommand{\itemmarker}{{\small\textbullet}}
 \renewcommand{\ratingmarker}{\faCircle}
@@ -28,18 +26,55 @@
 \addbibresource{sample.bib}
 
 \usepackage[colorlinks]{hyperref}
+\usepackage{ragged2e}
+
+% Publication entry: \pub{title}{authors}{venue}
+\definecolor{authorgrey}{HTML}{555555}
+
+\newcommand{\pub}[3]{%
+  \begin{minipage}[t]{0.72\linewidth}\raggedright\textbf{#1}\end{minipage}\hfill\begin{minipage}[t]{0.27\linewidth}\raggedleft\textit{#3}\end{minipage}\par
+  \vspace{5pt}
+  {\color{authorgrey}#2}\par\vspace{10pt}
+}
+
+% Internship entry: \role{org}{date}{description}
+\newcommand{\role}[3]{%
+  \begin{minipage}[t]{0.72\linewidth}\raggedright\textbf{#1}\end{minipage}\hfill\begin{minipage}[t]{0.27\linewidth}\raggedleft\textit{#2}\end{minipage}\par
+  \vspace{5pt}
+  {#3}\par\vspace{10pt}
+}
+
+% Education entry: \edu{school}{date}{degree}{extra (italic, use \\ for line breaks; pass {} to skip)}
+\newcommand{\edu}[4]{%
+  \begin{minipage}[t]{0.72\linewidth}\raggedright\textbf{#1}\end{minipage}\hfill\begin{minipage}[t]{0.27\linewidth}\raggedleft\textit{#2}\end{minipage}\par
+  \vspace{5pt}
+  {#3}\par
+  \ifstrequal{#4}{}{}{\textit{#4}\par}
+  \vspace{10pt}
+}
+
+% Award entry: \award{name}{org}{date}
+\newcommand{\award}[3]{%
+  \begin{minipage}[t]{0.72\linewidth}\raggedright\textbf{#1}\end{minipage}\hfill\begin{minipage}[t]{0.27\linewidth}\raggedleft\textit{#3}\end{minipage}\par
+  \vspace{5pt}
+  {#2}\par\vspace{10pt}
+}
 
 \begin{document}
 
 \name{Xiangyu Su}
-\tagline{PhD Candidate · Visual Computing Research Center · Shenzhen University}
-\photo{3.5cm}{1.png}
+\tagline{\normalsize PhD Candidate · Visual Computing Research Center · Shenzhen University}
+\photo{3.5cm}{证件照_白色_padded.jpg}
 \personalinfo{%
-  \email{xiangyv.su@gmail.com}
-  \phone{+86 151 1231 4526}\\
-  \mailaddress{Visual Computing Research Center, Shenzhen University}
+  \small
+  \begin{minipage}[t]{0.40\linewidth}
+  \phone{+86 151 1231 4526}\\[3pt]
   \homepage{\href{https://xiangyusu611.github.io/}{\textcolor{black}{xiangyusu611.github.io}}}
+  \end{minipage}%
+  \begin{minipage}[t]{0.50\linewidth}
+  \email{xiangyv.su@gmail.com}\\[3pt]
   \github{\href{https://github.com/XiangyuSu611}{\textcolor{black}{XiangyuSu611}}}
+  \end{minipage}
 }
 
 \begin{fullwidth}
@@ -49,77 +84,93 @@
 
 \cvsection{Research Interests}
 
-My research focuses on \textbf{Embodied Intelligence}, particularly task planning for digital humans in household scenarios and for multi-robot systems on industrial production lines. I also work on \textbf{Computer Graphics}, with emphasis on material transfer from photographs to 3D models.
+{\justifying My current research interests center on \textbf{Embodied Intelligence}, particularly task planning for digital humans in household scenarios, and for multi-robot systems on industrial production lines. I also have a research background in \textbf{Computer Graphics}, with a focus on material transfer from photographs to 3D models.\par}
 
+\vspace{12pt}
 
 \cvsection{Publications}
 
-\cvevent{\textbf{IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models}}{\footnotesize{\textcolor[rgb]{0.4,0.4,0.4}{\textbf{Xiangyu Su}, Juzhan Xu, Oliver van Kaick, Kai Xu, Ruizhen Hu}} \\ ICRA 2026}{2026}{}
-\begin{itemize}
-\item Combines LLMs with operations research for industrial multi-robot task planning and program generation. Deployed at SpeedBot Robotics; covered by \emph{机器之心}.
-\end{itemize}
+\pub
+  {IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models}
+  {\textbf{Xiangyu Su}, Juzhan Xu, Oliver van Kaick, Kai Xu, Ruizhen Hu}
+  {ICRA 2026}
 
-\divider
+\pub
+  {Human Activity Program Generation with Correction-by-Summarization}
+  {\textbf{Xiangyu Su}, Jintian Lin, Juntao Jian, Hao Wang, Kai Xu, Ruizhen Hu}
+  {Preprint 2025}
 
-\cvevent{\textbf{Human Activity Program Generation with Correction-by-Summarization}}{\footnotesize{\textcolor[rgb]{0.4,0.4,0.4}{\textbf{Xiangyu Su}, Jintian Lin, Juntao Jian, Hao Wang, Kai Xu, Ruizhen Hu}} \\ Preprint}{2025}{}
-\begin{itemize}
-\item Summarizes error-correction experiences into executable code rules to fix non-executable instructions before execution.
-\end{itemize}
+\pub
+  {MTScan: Material Transfer from Partial Scans to CAD Models}
+  {\textbf{Xiangyu Su}, Sida Peng, Oliver van Kaick, Hui Huang, Ruizhen Hu}
+  {CVM 2025}
 
-\divider
-
-\cvevent{\textbf{MTScan: Material Transfer from Partial Scans to CAD Models}}{\footnotesize{\textcolor[rgb]{0.4,0.4,0.4}{\textbf{Xiangyu Su}, Sida Peng, Oliver van Kaick, Hui Huang, Ruizhen Hu}} \\ CVM 2025}{2025}{}
-\begin{itemize}
-\item Transfers material information from a partial real-world scan to a CAD model via dense correspondence, combining a material decomposition network with geometry correspondence.
-\end{itemize}
-
-\divider
-
-\cvevent{\textbf{Photo-to-Shape Material Transfer for Diverse Structures}}{\footnotesize{\textcolor[rgb]{0.4,0.4,0.4}{Ruizhen Hu, \textbf{Xiangyu Su}, Xiangkai Chen, Oliver van Kaick, Hui Huang}} \\ ACM TOG (SIGGRAPH 2022)}{2022}{}
-\begin{itemize}
-\item Image translation + material prediction networks for transferring photorealistic, relightable materials from a single photo exemplar to 3D shapes with diverse structures.
-\end{itemize}
+\pub
+  {Photo-to-Shape Material Transfer for Diverse Structures}
+  {Ruizhen Hu, \textbf{Xiangyu Su}, Xiangkai Chen, Oliver van Kaick, Hui Huang}
+  {ACM TOG / SIGGRAPH 2022}
 
 
-\cvsection{Internships}
+\cvsection{Internship Experience}
 
-\cvevent{\textbf{Research Intern}}{SpeedBot Robotics}{2025.06 -- 2025.09}{}
-\begin{itemize}
-\item Low-code automatic program generation for industrial robots.
-\end{itemize}
+\role
+  {SpeedBot Robotics}
+  {Jun 2025 -- Sep 2025}
+  {Focused on low-code automatic program generation for industrial robots.}
 
-\divider
-
-\cvevent{\textbf{Research Intern}}{Tencent AI Lab, Visual Computing Group}{2022.08 -- 2023.02}{}
-\begin{itemize}
-\item Material transfer from photographs to 3D models.
-\end{itemize}
-
-
-\cvsection{Awards}
-
-\cvevent{\textbf{Outstanding Innovative PhD Talent Scholarship}}{Shenzhen University}{2025.11}{}
-
-\divider
-
-\cvevent{\textbf{Outstanding Student Scholarship}}{Shenzhen University}{2022.11}{}
-
-\divider
-
-\cvevent{\textbf{Outstanding Student Scholarship}}{Shenzhen University}{2021.11}{}
+\role
+  {Visual Computing Group, Tencent AI Lab}
+  {Aug 2022 -- Feb 2023}
+  {Focused on material transfer from real-world photographs to 3D models.}
 
 
 \cvsection{Education}
 
-\cvevent{\textbf{PhD in Computer Science and Technology}}{Shenzhen University \enspace · \enspace Advisor: Prof. Ruizhen Hu}{2023.09 -- Present}{Shenzhen}
+\edu
+  {Shenzhen University}
+  {Sept 2023 -- Present}
+  {Ph.D. in Computer Science and Technology}
+  {Lab: Visual Computing Research Center\\Supervisor: Prof. Ruizhen Hu}
 
-\divider
+\edu
+  {Shenzhen University}
+  {Sept 2020 -- Jul 2023}
+  {M.Sc. in Computer Technology}
+  {Supervisor: Prof. Ruizhen Hu}
 
-\cvevent{\textbf{MSc in Computer Technology}}{Shenzhen University}{2020.09 -- 2023.07}{Shenzhen}
+\edu
+  {Shenyang Jianzhu University}
+  {Sept 2015 -- Jul 2019}
+  {B.Sc. in Computer Science and Technology}
+  {}
 
-\divider
 
-\cvevent{\textbf{BSc in Computer Science and Technology}}{Shenyang Jianzhu University}{2015.09 -- 2019.07}{Shenyang}
+\cvsection{Awards}
+
+\award
+  {Outstanding Innovative PhD Talent Scholarship}
+  {Shenzhen University}
+  {Nov 2025}
+
+\award
+  {Outstanding Student Scholarship}
+  {Shenzhen University}
+  {Nov 2022}
+
+\award
+  {Outstanding Student Scholarship}
+  {Shenzhen University}
+  {Nov 2021}
+
+
+\cvsection{Professional Skills}
+
+\begin{itemize}
+\item \textbf{Harness engineering for LLM/VLM agents:} integrating memory, skills, and protocols
+\item \textbf{Vibe coding:} rapid prototyping with AI coding assistants (Claude Code, Cursor)
+\item \textbf{Programming languages:} Python, MATLAB, C/C++, Golang, Markdown, LaTeX
+\item \textbf{Languages:} Mandarin (native), English (fluent)
+\end{itemize}
 
 
 \end{document}

@@ -27,13 +27,13 @@ I am looking for internship and full-time opportunities. Feel free to contact me
 # Supported fields: email / github / twitter / scholar / cv / website
 # Leave blank or delete a line to hide it.
 
+cv: cv/main.pdf
 email: xiangyv.su@gmail.com
 github: https://github.com/XiangyuSu611
 notes: note.html
 gallery: gallery.html
 # twitter: username
 # scholar: https://scholar.google.com/...
-# cv: cv.pdf
 
 
 

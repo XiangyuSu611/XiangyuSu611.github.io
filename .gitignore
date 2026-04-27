@@ -50,12 +50,13 @@ cv/missfont.log
 # Reference CV (kept locally, large binary)
 cv/CV_20230113.pdf
 
-# Generated CV PDF (build output)
-cv/main.pdf
-
 # Unused altacv template assets (only 1.png is referenced)
 cv/2.png
 cv/G.jpg
 cv/Globe_High.png
 cv/Xiangyu Su.jpg
 cv/nicethings_icons_readme.txt
+
+# Photo source / intermediate (only *_padded.jpg is referenced by main.tex)
+cv/证件照_白色.jpg
+cv/证件照_白色_square.jpg
