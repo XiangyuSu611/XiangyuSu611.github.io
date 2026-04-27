@@ -57,6 +57,6 @@ cv/Globe_High.png
 cv/Xiangyu Su.jpg
 cv/nicethings_icons_readme.txt
 
-# Photo source / intermediate (only *_padded.jpg is referenced by main.tex)
+# Photo source / intermediate (only *_padded.jpg is referenced by the .tex)
 cv/证件照_白色.jpg
 cv/证件照_白色_square.jpg
