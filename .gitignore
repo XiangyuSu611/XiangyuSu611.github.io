@@ -8,21 +8,6 @@
 .claude/settings.local.json
 .claude/settings.json
 
-# Large design / reference assets (kept locally, not tracked)
-day.png
-night.png
-ICRA26_1139_FI.pdf
-
-# Original high-res source photos (use xiangyusu2-web.png instead)
-xiangyusu2.png
-xiangyusu.png
-
-# Logo source (use assets/favicons/*.png / assets/brands/* instead)
-page-logo.png
-
-# Publication teaser source (use assets/publications/tmt.jpg instead)
-图片 1.jpg
-
 # Large publication source files (PDFs, raw videos) — kept locally
 assets/publications/*.pdf
 assets/publications/*.mp4
@@ -46,17 +31,3 @@ cv/*.run.xml
 cv/*.synctex.gz
 cv/*.toc
 cv/missfont.log
-
-# Reference CV (kept locally, large binary)
-cv/CV_20230113.pdf
-
-# Unused altacv template assets (only 1.png is referenced)
-cv/2.png
-cv/G.jpg
-cv/Globe_High.png
-cv/Xiangyu Su.jpg
-cv/nicethings_icons_readme.txt
-
-# Photo source / intermediate (only *_padded.jpg is referenced by the .tex)
-cv/证件照_白色.jpg
-cv/证件照_白色_square.jpg
