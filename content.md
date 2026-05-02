@@ -62,7 +62,7 @@ thumb: assets/publications/imr-llm.gif
 paper_url: https://arxiv.org/abs/2603.02669
 code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
 project_url: https://xiangyusu611.github.io/imr-llm/
-summary_en: An algorithm combining LLMs with operations research for industrial multi-robot task planning and program generation.
+summary_en: An LLM Agent that leverages operations research algorithms to generate efficient task plans and deployable execution code.
 deployed_at: SpeedBot Robotics | https://mp.weixin.qq.com/s/GMKHI9hd4Lk22fpMeaUCYg | assets/brands/speedbot.png
 coverage:
   机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc | assets/brands/jiqizhixin.png
