@@ -62,7 +62,7 @@ thumb: assets/publications/imr-llm.gif
 paper_url: https://arxiv.org/abs/2603.02669
 code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
 project_url: https://xiangyusu611.github.io/imr-llm/
-summary_en: An LLM Agent that leverages operations research algorithms to generate efficient task plans and deployable execution code.
+summary_en: An LLM Agent that leverages operations research algorithms to generate efficient task plans and deployable execution code, validated on industrial multi-robot production lines.
 deployed_at: SpeedBot Robotics | https://mp.weixin.qq.com/s/GMKHI9hd4Lk22fpMeaUCYg | assets/brands/speedbot.png
 coverage:
   机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc | assets/brands/jiqizhixin.png
@@ -76,7 +76,7 @@ thumb: assets/publications/hapg.gif
 paper_url:
 code_url:
 project_url:
-summary_en: A method for human activity program generation that summarizes error-correction experiences into executable code rules, building a procedural corrector that fixes non-executable instructions before execution.
+summary_en: A self-evolving LLM Agent that distills past error-correction experiences into reusable code rules to fix non-executable instructions on the fly, validated on household and construction tasks.
 
 [[paper]]
 category: Computer Graphics
