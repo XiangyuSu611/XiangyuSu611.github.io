@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=70" />
+  <link rel="stylesheet" href="style.css?v=73" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -266,6 +266,14 @@
       });
 
 
+    function captionFromSrc(src) {
+      if (!src) return '';
+      var name = src.split('/').pop().replace(/\.[^.]+$/, '');
+      try { name = decodeURIComponent(name); } catch (_) {}
+      if (/^plate-\d+$/i.test(name)) return '';
+      return name;
+    }
+
     // ── Lightbox ─────────────────────────────────────────────
     function setupLightbox() {
       var box = document.getElementById('lightbox');
@@ -286,8 +294,9 @@
         if (p.meta.date) bits.push('<span>' + formatDate(p.meta.date) + '</span>');
         var meta = bits.join('<span class="lb-dot"></span>');
         var title = p.meta.title ? '<div class="lb-title">' + renderInline(p.meta.title) + '</div>' : '';
-        var cap = p.meta.caption ? '<div class="lb-caption">' + renderInline(p.meta.caption) + '</div>' : '';
-        caption.innerHTML = '<div class="lb-meta">' + meta + '</div>' + title + cap;
+        var capText = p.meta.caption || captionFromSrc(p.meta.src);
+        var cap = capText ? '<div class="lb-caption">' + renderInline(capText) + '</div>' : '';
+        caption.innerHTML = title + cap + '<div class="lb-meta">' + meta + '</div>';
         document.body.classList.add('lightbox-open');
         box.setAttribute('aria-hidden', 'false');
       }

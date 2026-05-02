@@ -265,7 +265,7 @@ title:
 caption:
 
 [[photo]]
-src: assets/gallery/plate-30.jpg
+src: assets/gallery/Fengzi.jpg
 date: 2025-12-19
 orient: landscape
 ratio: 1.333
@@ -274,7 +274,7 @@ title:
 caption:
 
 [[photo]]
-src: assets/gallery/plate-31.jpg
+src: assets/gallery/Taopaojihua.jpg
 date: 2025-12-31
 orient: landscape
 ratio: 1.778
@@ -283,7 +283,7 @@ title:
 caption:
 
 [[photo]]
-src: assets/gallery/plate-32.jpg
+src: assets/gallery/Dudu.jpg
 date: 2026-02-14
 orient: portrait
 ratio: 0.750
