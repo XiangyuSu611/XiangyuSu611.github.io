@@ -11,7 +11,7 @@ Typical flow:
 
 What `add` does:
     1. Reads EXIF date (falls back to --date / today)
-    2. Resizes long edge to 1800px, saves as JPEG q=82, strips EXIF
+    2. Resizes long edge to MAX_LONG_EDGE (default 3200px), saves as JPEG q=JPEG_QUALITY, strips EXIF
     3. Copies to assets/gallery/plate-NN.jpg (auto-numbered)
     4. Appends a [[photo]] entry to gallery.md (top = newest, so new entries are inserted after the header)
 """
@@ -37,7 +37,7 @@ GALLERY_DIR = ROOT / "assets" / "gallery"
 GALLERY_MD = ROOT / "gallery.md"
 INBOX = ROOT / "gallery_inbox"
 
-MAX_LONG_EDGE = 2400
+MAX_LONG_EDGE = 3200
 JPEG_QUALITY = 90
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tif", ".tiff"}
 
@@ -219,7 +219,11 @@ def cmd_ingest(args):
 
 
 def cmd_reprocess(args):
-    """Re-encode each plate from its original in ./gallery_inbox at current quality settings."""
+    """Re-encode each plate from its original in ./gallery_inbox at current quality settings.
+
+    Inbox is sorted chronologically and paired 1:1 with gallery.md entries in
+    document order — so renamed plates (e.g. Dudu.jpg) get re-processed too.
+    """
     if not INBOX.exists():
         sys.exit(f"Inbox folder not found: {INBOX}")
     inbox_files = sorted(
@@ -231,19 +235,33 @@ def cmd_reprocess(args):
         dated.append((d, p))
     dated.sort(key=lambda x: x[0])
 
+    md_srcs = []
+    if GALLERY_MD.exists():
+        for line in GALLERY_MD.read_text(encoding="utf-8").splitlines():
+            m = re.match(r"^src:\s*(.+?)\s*$", line)
+            if m:
+                md_srcs.append(m.group(1))
+
+    if len(md_srcs) != len(dated):
+        sys.exit(
+            f"Inbox count ({len(dated)}) does not match gallery.md src count ({len(md_srcs)}); "
+            f"reprocess expects 1:1 chronological pairing."
+        )
+
     print(f"→ Re-encoding {len(dated)} plate(s) at {MAX_LONG_EDGE}px long edge, JPEG q={JPEG_QUALITY}\n")
     total_before = 0
     total_after = 0
-    for i, (_d, src) in enumerate(dated, start=1):
-        dest = GALLERY_DIR / f"plate-{i:02d}.jpg"
+    for (_d, src), md_src in zip(dated, md_srcs):
+        dest = ROOT / md_src
         if not dest.exists():
+            print(f"  ! Skip {md_src} (not found on disk)")
             continue
         before = dest.stat().st_size
         size = process_image(src, dest)
         after = dest.stat().st_size
         total_before += before
         total_after += after
-        print(f"  ✓ plate-{i:02d}.jpg  ({size[0]}×{size[1]}, {before//1024} → {after//1024} KB)")
+        print(f"  ✓ {dest.name}  ({size[0]}×{size[1]}, {before//1024} → {after//1024} KB)")
     delta = (total_after - total_before) / 1024 / 1024
     sign = "+" if delta >= 0 else ""
     print(f"\n✓ Total {total_before//1024//1024} → {total_after//1024//1024} MB  ({sign}{delta:.1f} MB)")
