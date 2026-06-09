@@ -462,6 +462,14 @@ hr {
   margin-bottom: 10px;
 }
 
+.pub-topline--venue {
+  margin-bottom: 6px;
+}
+
+.pub-topline--links {
+  margin-bottom: 14px;
+}
+
 .pub-topline .pub-venue {
   font-family: var(--font);
   font-size: var(--text-xs);
@@ -470,6 +478,16 @@ hr {
   text-transform: uppercase;
   color: var(--accent);
   margin-right: 2px;
+}
+
+.pub-venue-trophy {
+  display: inline-block;
+  margin-right: 0.45em;
+  color: #d99a16;
+  font-size: 1.05em;
+  letter-spacing: 0;
+  text-transform: none;
+  transform: translateY(-0.04em);
 }
 
 .pub-topline a {

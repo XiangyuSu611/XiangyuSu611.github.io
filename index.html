@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=48" />
+  <link rel="stylesheet" href="style.css?v=51" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -527,19 +527,28 @@
         var thumbHtml = p.thumb
           ? '<img src="' + escapeHtml(p.thumb) + '" alt="">'
           : '<div class="pub-thumb-placeholder"></div>';
-
         var categoryHtml = p.category
           ? '<div class="pub-category">' + escapeHtml(p.category) + '</div>'
           : '';
 
+        var isAwardVenue = p.venue && /award/i.test(p.venue);
         var toplineItems = [];
-        if (p.venue)       toplineItems.push('<span class="pub-venue">' + escapeHtml(p.venue) + '</span>');
-        if (p.project_url) toplineItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');
-        if (p.paper_url)   toplineItems.push('<a href="' + escapeHtml(p.paper_url)   + '" target="_blank" rel="noopener">Paper</a>');
-        if (p.code_url)    toplineItems.push('<a href="' + escapeHtml(p.code_url)    + '" target="_blank" rel="noopener">Code</a>');
-        var toplineHtml = toplineItems.length
-          ? '<div class="pub-topline">' + toplineItems.join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>'
-          : '';
+        if (p.venue) {
+          var awardIcon = isAwardVenue
+            ? '<span class="pub-venue-trophy" aria-hidden="true">🏆</span>'
+            : '';
+          toplineItems.push('<span class="pub-venue">' + awardIcon + escapeHtml(p.venue) + '</span>');
+        }
+        var linkItems = [];
+        if (p.project_url) linkItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');
+        if (p.paper_url)   linkItems.push('<a href="' + escapeHtml(p.paper_url)   + '" target="_blank" rel="noopener">Paper</a>');
+        if (p.code_url)    linkItems.push('<a href="' + escapeHtml(p.code_url)    + '" target="_blank" rel="noopener">Code</a>');
+        var toplineHtml = isAwardVenue
+          ? '<div class="pub-topline pub-topline--venue">' + toplineItems.join('') + '</div>' +
+            (linkItems.length ? '<div class="pub-topline pub-topline--links">' + linkItems.join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>' : '')
+          : (toplineItems.concat(linkItems).length
+            ? '<div class="pub-topline">' + toplineItems.concat(linkItems).join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>'
+            : '');
 
         var summaryHtml = p.summary_en
           ? '<div class="pub-summary">' + renderInline(p.summary_en) + '</div>'
