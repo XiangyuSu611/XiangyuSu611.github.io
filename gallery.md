@@ -289,4 +289,175 @@ orient: portrait
 ratio: 0.750
 location: Changyuan · China
 title: 
-caption: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-30.jpg
+date: 2026-06-01
+orient: portrait
+ratio: 0.750
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-31.jpg
+date: 2026-06-01
+orient: portrait
+ratio: 0.750
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-32.jpg
+date: 2026-06-01
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-33.jpg
+date: 2026-06-02
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-34.jpg
+date: 2026-06-02
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-35.jpg
+date: 2026-06-02
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-36.jpg
+date: 2026-06-02
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-37.jpg
+date: 2026-06-03
+orient: portrait
+ratio: 0.750
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-38.jpg
+date: 2026-06-03
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-39.jpg
+date: 2026-06-03
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-40.jpg
+date: 2026-06-03
+orient: portrait
+ratio: 0.750
+location: Vienna · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-41.jpg
+date: 2026-06-04
+orient: landscape
+ratio: 1.333
+location: Traunkirchen · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-42.jpg
+date: 2026-06-05
+orient: landscape
+ratio: 1.333
+location: Bad Goisern · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-43.jpg
+date: 2026-06-05
+orient: landscape
+ratio: 1.333
+location: Hallstatt · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-44.jpg
+date: 2026-06-05
+orient: landscape
+ratio: 1.333
+location: Hallstatt · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-45.jpg
+date: 2026-06-05
+orient: landscape
+ratio: 1.333
+location: Hallstatt · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-46.jpg
+date: 2026-06-05
+orient: landscape
+ratio: 1.333
+location: Hallstatt · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-47.jpg
+date: 2026-06-05
+orient: portrait
+ratio: 0.750
+location: Gosau · Austria
+title: 
+caption:
+
+[[photo]]
+src: assets/gallery/plate-48.jpg
+date: 2026-06-01
+orient: landscape
+ratio: 1.333
+location: Vienna · Austria
+title: 
+caption:
