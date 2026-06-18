@@ -534,10 +534,7 @@
         var isAwardVenue = p.venue && /award/i.test(p.venue);
         var toplineItems = [];
         if (p.venue) {
-          var awardIcon = isAwardVenue
-            ? '<span class="pub-venue-trophy" aria-hidden="true">🏆</span>'
-            : '';
-          toplineItems.push('<span class="pub-venue' + (isAwardVenue ? ' pub-venue--award' : '') + '">' + awardIcon + escapeHtml(p.venue) + '</span>');
+          toplineItems.push('<span class="pub-venue' + (isAwardVenue ? ' pub-venue--award' : '') + '">' + escapeHtml(p.venue) + '</span>');
         }
         var linkItems = [];
         if (p.project_url) linkItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');

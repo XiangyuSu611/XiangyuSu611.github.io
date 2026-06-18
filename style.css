@@ -485,16 +485,6 @@ hr {
   font-weight: 800;
 }
 
-.pub-venue-trophy {
-  display: inline-block;
-  margin-right: 0.45em;
-  color: #d99a16;
-  font-size: 1.05em;
-  letter-spacing: 0;
-  text-transform: none;
-  transform: translateY(-0.04em);
-}
-
 .pub-topline a {
   color: var(--accent);
   text-decoration: none;
