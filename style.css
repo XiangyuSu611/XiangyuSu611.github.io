@@ -475,7 +475,6 @@ hr {
   font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--accent);
   margin-right: 2px;
 }
