@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=51" />
+  <link rel="stylesheet" href="style.css?v=52" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -537,7 +537,7 @@
           var awardIcon = isAwardVenue
             ? '<span class="pub-venue-trophy" aria-hidden="true">🏆</span>'
             : '';
-          toplineItems.push('<span class="pub-venue">' + awardIcon + escapeHtml(p.venue) + '</span>');
+          toplineItems.push('<span class="pub-venue' + (isAwardVenue ? ' pub-venue--award' : '') + '">' + awardIcon + escapeHtml(p.venue) + '</span>');
         }
         var linkItems = [];
         if (p.project_url) linkItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');

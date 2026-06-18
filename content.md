@@ -73,7 +73,7 @@ venue: Preprint 2025
 title: Human Activity Program Generation with Correction-by-Summarization
 authors: **Xiangyu Su**, Jintian Lin, Juntao Jian, Hao Wang, [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
 thumb: assets/publications/hapg.gif
-paper_url:
+paper_url: assets/publications/NIPS2025__activity_program_generation_final(1).pdf
 code_url:
 project_url:
 summary_en: A self-evolving LLM Agent that distills past error-correction experiences into reusable code rules to fix non-executable instructions on the fly, validated on household and construction tasks.

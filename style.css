@@ -480,6 +480,11 @@ hr {
   margin-right: 2px;
 }
 
+.pub-topline .pub-venue--award {
+  color: #d71920;
+  font-weight: 800;
+}
+
 .pub-venue-trophy {
   display: inline-block;
   margin-right: 0.45em;
