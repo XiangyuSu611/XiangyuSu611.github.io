@@ -461,3 +461,12 @@ ratio: 1.333
 location: Vienna · Austria
 title: 
 caption:
+
+[[photo]]
+src: assets/gallery/plate-49.jpg
+date: 2026-06-04
+orient: landscape
+ratio: 1.333
+location: Traunkirchen · Austria
+title: 
+caption:
