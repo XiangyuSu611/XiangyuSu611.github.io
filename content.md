@@ -55,7 +55,7 @@ My current research interests center on 🤖 ==Embodied Intelligence==, particul
 
 [[paper]]
 category: Embodied Intelligence
-venue: ICRA 2026 Best Paper Award in Automation
+venue: ICRA 2026 Best paper award in automation
 title: IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models
 authors: **Xiangyu Su**, [Juzhan Xu](https://juzhan.github.io/), [Oliver van Kaick](https://carleton.ca/scs/people/oliver-van-kaick/), [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
 thumb: assets/publications/imr-llm.gif
