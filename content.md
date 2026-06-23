@@ -6,7 +6,7 @@
 
 name: Xiangyu Su
 name_zh: 苏向宇
-photo: assets/profile.png
+photo: assets/profile.png?v=20260623
 affil: PhD Candidate · Visual Computing Research Center · Shenzhen University
 
 
