@@ -569,15 +569,30 @@
             '</span>' +
           '</' + tag + '>';
         }
+        function pubCoverageTag(items) {
+          var brands = items.map(function (c) {
+            var iconHtml = c.logo
+              ? '<img class="pub-tag-logo" src="' + escapeHtml(c.logo) + '" alt="" aria-hidden="true">'
+              : '<span class="pub-tag-marker" aria-hidden="true"></span>';
+            var inner = iconHtml + '<span class="pub-tag-value">' + escapeHtml(c.name) + '</span>';
+            if (c.url) {
+              return '<a class="pub-tag-brand pub-tag-brand-link" href="' + escapeHtml(c.url) + '" target="_blank" rel="noopener">' + inner + '</a>';
+            }
+            return '<span class="pub-tag-brand">' + inner + '</span>';
+          }).join('<span class="pub-tag-brand-dot" aria-hidden="true">·</span>');
+          return '<span class="pub-tag pub-tag--coverage pub-tag--coverage-list">' +
+            '<span class="pub-tag-label">Coverage by</span>' +
+            '<span class="pub-tag-sep" aria-hidden="true"></span>' +
+            '<span class="pub-tag-coverage-brands">' + brands + '</span>' +
+          '</span>';
+        }
         var tagItems = [];
         if (p.deployed_at) {
           var depParts = p.deployed_at.split('|').map(function (s) { return s.trim(); });
           if (depParts[0]) tagItems.push(pubTag('production', 'Deployed at', depParts[0], depParts[1] || '', depParts[2] || ''));
         }
         if (p.coverage && p.coverage.length) {
-          p.coverage.forEach(function (c) {
-            tagItems.push(pubTag('coverage', 'Coverage by', c.name, c.url, c.logo));
-          });
+          tagItems.push(pubCoverageTag(p.coverage));
         }
         var footerHtml = tagItems.length
           ? '<div class="pub-tags">' + tagItems.join('') + '</div>'

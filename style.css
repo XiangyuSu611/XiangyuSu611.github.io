@@ -594,6 +594,31 @@ hr {
   gap: 6px;
 }
 
+.pub-tag-coverage-brands {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pub-tag-brand-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.pub-tag-brand-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+.pub-tag-brand-dot {
+  color: var(--text-subtle);
+  opacity: 0.55;
+  line-height: 1;
+}
+
 .pub-tag-label {
   font-family: var(--font);
   font-size: 10.5px;

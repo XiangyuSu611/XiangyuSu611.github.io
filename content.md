@@ -66,6 +66,7 @@ summary_en: An LLM Agent that leverages operations research algorithms to genera
 deployed_at: SpeedBot Robotics | https://mp.weixin.qq.com/s/GMKHI9hd4Lk22fpMeaUCYg | assets/brands/speedbot.png
 coverage:
   机器之心 | https://baijiahao.baidu.com/s?id=1861057357639498582&wfr=spider&for=pc | assets/brands/jiqizhixin.png
+  量子位 | https://mp.weixin.qq.com/s/ju9n-x4tTGNqFptn5mpdeQ | assets/brands/qbitai.png
 
 [[paper]]
 category: Embodied Intelligence
