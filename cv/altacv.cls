@@ -27,7 +27,10 @@
 \LoadClass{extarticle}
 
 \RequirePackage[margin=2cm]{geometry}
-\RequirePackage{fontawesome}
+\RequirePackage{fontawesome5}
+\providecommand{\faChain}{\faLink}
+\providecommand{\faMapMarker}{\faMapMarkerAlt}
+\providecommand{\faLinkedin}{\faLinkedinIn}
 
 %% v1.1: Optionally load academicons
 \if@academicons
