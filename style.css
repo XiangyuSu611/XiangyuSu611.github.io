@@ -129,7 +129,18 @@ hr {
   transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-.theme-toggle input { display: none; }
+.theme-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.theme-toggle:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .theme-toggle:hover {
   border-color: var(--accent);
@@ -424,7 +435,8 @@ hr {
   overflow: hidden;
 }
 
-.pub-thumb img {
+.pub-thumb img,
+.pub-thumb video {
   width: 100%;
   height: auto;
   display: block;
@@ -717,6 +729,13 @@ hr {
   object-fit: contain;
   flex-shrink: 0;
   display: block;
+}
+
+.exp-org-logo--emblem {
+  width: 17px;
+  height: 14px;
+  object-fit: cover;
+  object-position: left center;
 }
 
 .exp-org a {

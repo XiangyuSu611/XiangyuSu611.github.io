@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=73" />
+  <link rel="stylesheet" href="style.css?v=20260714c" />
 
   <script>
     // Gallery is always dark — photos breathe better on black, independent of the
@@ -60,7 +60,7 @@
 </div>
 
 <!-- Lightbox overlay -->
-<div class="lightbox" id="lightbox" aria-hidden="true">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" aria-hidden="true">
   <button class="lightbox-close" aria-label="Close" type="button">&times;</button>
   <button class="lightbox-nav lightbox-prev" aria-label="Previous" type="button">&lsaquo;</button>
   <button class="lightbox-nav lightbox-next" aria-label="Next" type="button">&rsaquo;</button>
@@ -158,9 +158,10 @@
     function plateHtml(p, idx, role) {
       var date = formatDate(p.meta.date);
       var src = p.meta.src || '';
+      var displaySrc = p.meta.thumb || src;
       var alt = p.meta.title || p.meta.caption || 'Photo';
-      var imageHtml = src
-        ? '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" />'
+      var imageHtml = displaySrc
+        ? '<img src="' + escapeHtml(displaySrc) + '" alt="' + escapeHtml(alt) + '" loading="lazy" decoding="async" />'
         : '<div class="plate-image-placeholder">Image pending</div>';
       var loc = p.meta.location ? escapeHtml(p.meta.location) : '';
       var primary = loc
@@ -281,6 +282,7 @@
       var caption = box.querySelector('.lightbox-caption');
       var stream = document.querySelector('.gallery-stream');
       var current = -1;
+      var returnFocus = null;
 
       function open(idx) {
         var photos = window.__galleryPhotos || [];
@@ -299,12 +301,15 @@
         caption.innerHTML = title + cap + '<div class="lb-meta">' + meta + '</div>';
         document.body.classList.add('lightbox-open');
         box.setAttribute('aria-hidden', 'false');
+        box.querySelector('.lightbox-close').focus();
       }
 
       function close() {
         document.body.classList.remove('lightbox-open');
         box.setAttribute('aria-hidden', 'true');
         current = -1;
+        img.removeAttribute('src');
+        if (returnFocus) returnFocus.focus();
       }
 
       function step(dir) {
@@ -317,7 +322,10 @@
         if (!btn) return;
         var plate = btn.closest('.plate');
         var idx = parseInt(plate.getAttribute('data-idx'), 10);
-        if (!isNaN(idx)) open(idx);
+        if (!isNaN(idx)) {
+          returnFocus = btn;
+          open(idx);
+        }
       });
 
       box.querySelector('.lightbox-close').addEventListener('click', close);
@@ -331,6 +339,18 @@
         if (e.key === 'Escape') close();
         else if (e.key === 'ArrowLeft') step(-1);
         else if (e.key === 'ArrowRight') step(1);
+        else if (e.key === 'Tab') {
+          var controls = Array.prototype.slice.call(box.querySelectorAll('button'));
+          var first = controls[0];
+          var last = controls[controls.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       });
     }
 

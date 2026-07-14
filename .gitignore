@@ -11,6 +11,8 @@
 # Large publication source files (PDFs, raw videos) — kept locally
 assets/publications/*.pdf
 assets/publications/*.mp4
+!assets/publications/imr-llm.mp4
+!assets/publications/hapg.mp4
 
 # Gallery inbox — drop raw photos here, `./gallery.py ingest` processes them
 gallery_inbox/

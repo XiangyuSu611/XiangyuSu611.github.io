@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=53" />
+  <link rel="stylesheet" href="style.css?v=20260714c" />
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -524,8 +524,13 @@
     }
 
     function renderPubItem(p) {
+        var isVideoThumb = p.thumb && /\.(?:mp4|webm)(?:[?#].*)?$/i.test(p.thumb);
         var thumbHtml = p.thumb
-          ? '<img src="' + escapeHtml(p.thumb) + '" alt="">'
+          ? (isVideoThumb
+            ? '<video class="pub-thumb-video" data-src="' + escapeHtml(p.thumb) + '"' +
+              (p.thumb_poster ? ' poster="' + escapeHtml(p.thumb_poster) + '"' : '') +
+              ' muted loop playsinline preload="none" aria-hidden="true"></video>'
+            : '<img src="' + escapeHtml(p.thumb) + '" alt="" loading="lazy" decoding="async">')
           : '<div class="pub-thumb-placeholder"></div>';
         var categoryHtml = p.category
           ? '<div class="pub-category">' + escapeHtml(p.category) + '</div>'
@@ -617,6 +622,35 @@
       var container = document.querySelector('.pub-list');
       if (!container) return;
       container.innerHTML = pubs.map(renderPubItem).join('');
+      setupLazyPublicationVideos(container);
+    }
+
+    function setupLazyPublicationVideos(container) {
+      var videos = Array.prototype.slice.call(container.querySelectorAll('.pub-thumb-video[data-src]'));
+      if (!videos.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      function loadVideo(video) {
+        if (!video.dataset.src) return;
+        video.src = video.dataset.src;
+        video.removeAttribute('data-src');
+        video.load();
+        var promise = video.play();
+        if (promise && promise.catch) promise.catch(function () {});
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        videos.forEach(loadVideo);
+        return;
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          loadVideo(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '300px 0px' });
+      videos.forEach(function (video) { observer.observe(video); });
     }
 
     function renderInterests(data) {
@@ -674,8 +708,9 @@
         var kind = (it.kind || '').toLowerCase();
         var label = KIND_LABEL[kind] || (it.kind || '');
         var title = it.title || '';
+        var logoClass = 'exp-org-logo' + (it.logo_crop === 'emblem' ? ' exp-org-logo--emblem' : '');
         var logoHtml = it.logo
-          ? '<img class="exp-org-logo" src="' + escapeHtml(it.logo) + '" alt="" aria-hidden="true">'
+          ? '<img class="' + logoClass + '" src="' + escapeHtml(it.logo) + '" alt="" aria-hidden="true">'
           : '';
         var orgInner = it.org_url
           ? '<a href="' + escapeHtml(it.org_url) + '" target="_blank" rel="noopener">' + escapeHtml(it.org || '') + '</a>'
@@ -736,7 +771,6 @@
     }
 
     function render(data) {
-      if (data.basicInfo.name) document.title = data.basicInfo.name;
       renderHero(data);
       renderResearch(data.research);
       renderInterests(data.interests);

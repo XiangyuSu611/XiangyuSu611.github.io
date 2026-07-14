@@ -50,7 +50,8 @@ My current research interests center on 🤖 ==Embodied Intelligence==, particul
 ## Publications
 
 # Separate each paper with a [[paper]] marker.
-# thumb: image path (leave blank for placeholder)
+# thumb: image or MP4 path (leave blank for placeholder)
+# thumb_poster: optional poster image for an MP4 thumbnail
 # coverage: external press, format "name | url | logo"; delete the field if none.
 
 [[paper]]
@@ -58,7 +59,8 @@ category: Embodied Intelligence
 venue: ICRA 2026 Best Paper Award in Automation
 title: IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models
 authors: **Xiangyu Su**, [Juzhan Xu](https://juzhan.github.io/), [Oliver van Kaick](https://carleton.ca/scs/people/oliver-van-kaick/), [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
-thumb: assets/publications/imr-llm.gif
+thumb: assets/publications/imr-llm.mp4
+thumb_poster: assets/publications/imr-llm-poster.jpg
 paper_url: https://arxiv.org/abs/2603.02669
 code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
 project_url: https://xiangyusu611.github.io/imr-llm/
@@ -73,7 +75,8 @@ category: Embodied Intelligence
 venue: Preprint 2025
 title: Human Activity Program Generation with Correction-by-Summarization
 authors: **Xiangyu Su**, Jintian Lin, Juntao Jian, Hao Wang, [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
-thumb: assets/publications/hapg.gif
+thumb: assets/publications/hapg.mp4
+thumb_poster: assets/publications/hapg-poster.jpg
 paper_url: assets/publications/NIPS2025__activity_program_generation_final(1).pdf
 code_url:
 project_url:
@@ -109,6 +112,16 @@ summary_en: An algorithm combining image translation and material prediction net
 # kind: internship / research / visit / award / honor
 
 [[experience]]
+kind: internship
+title: Research Intern
+org: Institute of Industrial Artificial Intelligence, Chinese Academy of Sciences
+org_url: https://iaii.cas.cn/
+logo: assets/brands/iaii.png
+logo_crop: emblem
+period: 2026.07 – Present
+note:
+
+[[experience]]
 kind: award
 title: Outstanding Innovative PhD Talent Scholarship
 org: Shenzhen University
@@ -120,7 +133,7 @@ note:
 kind: internship
 title: Research Intern
 org: SpeedBot Robotics
-org_url: https://www.speedbot.com/en/home
+org_url: https://speedbot.com/cn/home
 logo: assets/brands/speedbot.png
 period: 2025.06 – 2025.09
 note: Low-code automatic program generation for industrial robots.
@@ -137,7 +150,7 @@ note:
 kind: internship
 title: Research Intern
 org: Tencent AI Lab
-org_url: https://www.tencent.com/zh-cn/
+org_url: https://ailab.tencent.com/ailab/zh/index
 logo: assets/brands/tencent-ai-lab.png
 period: 2022.08 – 2023.02
 note: Material transfer from photographs to 3D models.

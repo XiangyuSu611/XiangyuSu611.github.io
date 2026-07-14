@@ -13,12 +13,14 @@ What `add` does:
     1. Reads EXIF date (falls back to --date / today)
     2. Resizes long edge to MAX_LONG_EDGE (default 3200px), saves as JPEG q=JPEG_QUALITY, strips EXIF
     3. Copies to assets/gallery/plate-NN.jpg (auto-numbered)
-    4. Appends a [[photo]] entry to gallery.md (top = newest, so new entries are inserted after the header)
+    4. Appends a [[photo]] entry to gallery.md
 """
 
 import argparse
+import hashlib
 import json
 import re
+import shutil
 import sys
 import time
 import urllib.parse
@@ -34,12 +36,105 @@ except ImportError:
 
 ROOT = Path(__file__).parent.resolve()
 GALLERY_DIR = ROOT / "assets" / "gallery"
+THUMB_DIR = GALLERY_DIR / "thumbs"
 GALLERY_MD = ROOT / "gallery.md"
 INBOX = ROOT / "gallery_inbox"
 
 MAX_LONG_EDGE = 3200
 JPEG_QUALITY = 90
+THUMB_LONG_EDGE = 1400
+THUMB_QUALITY = 82
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp", ".tif", ".tiff"}
+
+
+def file_sha256(path: Path):
+    digest = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def photo_blocks():
+    if not GALLERY_MD.exists():
+        return "", []
+    text = GALLERY_MD.read_text(encoding="utf-8")
+    blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
+    return blocks[0], blocks[1:]
+
+
+def block_fields(block: str):
+    return {
+        m.group(1).lower(): m.group(2).strip()
+        for m in re.finditer(r"^([a-z0-9_]+):[ \t]*(.*)$", block, flags=re.MULTILINE)
+    }
+
+
+def set_block_field(block: str, key: str, value: str, after: str = "src"):
+    pattern = rf"^{re.escape(key)}:[ \t]*.*$"
+    if re.search(pattern, block, flags=re.MULTILINE):
+        return re.sub(pattern, f"{key}: {value}", block, count=1, flags=re.MULTILINE)
+    return re.sub(
+        rf"(^{re.escape(after)}:[ \t]*.*\n)",
+        lambda m: m.group(1) + f"{key}: {value}\n",
+        block,
+        count=1,
+        flags=re.MULTILINE,
+    )
+
+
+def write_photo_blocks(header: str, blocks):
+    GALLERY_MD.write_text(header + "".join(blocks), encoding="utf-8")
+
+
+def existing_source_hashes():
+    return {
+        fields.get("source_sha256")
+        for fields in (block_fields(block) for block in photo_blocks()[1])
+        if fields.get("source_sha256")
+    }
+
+
+def preserve_original(src: Path, source_hash: str):
+    INBOX.mkdir(parents=True, exist_ok=True)
+    if src.parent == INBOX:
+        return src
+    original = INBOX / src.name
+    if original.exists() and file_sha256(original) != source_hash:
+        original = INBOX / f"{src.stem}-{source_hash[:8]}{src.suffix.lower()}"
+    if not original.exists():
+        shutil.copy2(src, original)
+    return original
+
+
+def inbox_lookup():
+    if not INBOX.exists():
+        return {}, {}
+    files = [p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    by_name = {p.name: p for p in files}
+    by_hash = {file_sha256(p): p for p in files}
+    return by_name, by_hash
+
+
+def resolve_original(fields, by_name, by_hash):
+    original = by_name.get(fields.get("original", ""))
+    if original:
+        expected_hash = fields.get("source_sha256")
+        if not expected_hash or by_hash.get(expected_hash) == original:
+            return original
+    return by_hash.get(fields.get("source_sha256", ""))
+
+
+def image_signature(path: Path):
+    with Image.open(path) as opened:
+        img = ImageOps.exif_transpose(opened).convert("RGB")
+        ratio = img.width / img.height
+        img = img.resize((24, 24), Image.Resampling.BILINEAR)
+        return ratio, tuple(img.tobytes())
+
+
+def signature_distance(left, right):
+    return sum((a - b) ** 2 for a, b in zip(left, right)) / len(left)
 
 
 def read_exif_date(path: Path):
@@ -95,6 +190,25 @@ def process_image(src: Path, dest: Path):
     return img.size
 
 
+def process_thumbnail(src: Path, dest: Path):
+    THUMB_DIR.mkdir(parents=True, exist_ok=True)
+    with Image.open(src) as opened:
+        img = ImageOps.exif_transpose(opened).convert("RGB")
+        long_edge = max(img.size)
+        if long_edge > THUMB_LONG_EDGE:
+            scale = THUMB_LONG_EDGE / long_edge
+            img = img.resize(
+                (round(img.width * scale), round(img.height * scale)),
+                Image.Resampling.LANCZOS,
+            )
+        img.save(dest, "WEBP", quality=THUMB_QUALITY, method=6)
+        return img.size
+
+
+def thumbnail_for(dest: Path):
+    return THUMB_DIR / f"{dest.stem}.webp"
+
+
 def orient_of(size):
     w, h = size
     r = w / h
@@ -110,8 +224,22 @@ def ratio_of(size):
     return f"{w / h:.3f}"
 
 
-def format_entry(src_path: str, date: str, location: str, title: str, caption: str, orient: str = "", ratio: str = "") -> str:
+def format_entry(
+    src_path: str,
+    thumb_path: str,
+    original: str,
+    source_sha256: str,
+    date: str,
+    location: str,
+    title: str,
+    caption: str,
+    orient: str = "",
+    ratio: str = "",
+) -> str:
     lines = ["[[photo]]", f"src: {src_path}"]
+    lines.append(f"thumb: {thumb_path}")
+    lines.append(f"original: {original}")
+    lines.append(f"source_sha256: {source_sha256}")
     lines.append(f"date: {date or ''}")
     if orient:
         lines.append(f"orient: {orient}")
@@ -136,12 +264,20 @@ def cmd_add(args):
     if src.is_dir():
         sys.exit(f"Expected a file, got a directory: {src}")
 
+    source_hash = file_sha256(src)
+    if source_hash in existing_source_hashes():
+        sys.exit(f"Already imported: {src.name}")
+
+    original = preserve_original(src, source_hash)
+
     plate_num = next_plate_number()
     dest_name = f"plate-{plate_num:02d}.jpg"
     dest = GALLERY_DIR / dest_name
 
     date = args.date or read_exif_date(src) or datetime.today().strftime("%Y-%m-%d")
     size = process_image(src, dest)
+    thumb = thumbnail_for(dest)
+    process_thumbnail(dest, thumb)
     orient = orient_of(size)
     ratio = ratio_of(size)
 
@@ -149,6 +285,9 @@ def cmd_add(args):
 
     entry = format_entry(
         src_path=f"assets/gallery/{dest_name}",
+        thumb_path=f"assets/gallery/thumbs/{thumb.name}",
+        original=original.name,
+        source_sha256=source_hash,
         date=date,
         location=args.at or "",
         title=args.title or "",
@@ -175,24 +314,43 @@ def cmd_ingest(args):
 
     # Sort chronologically by EXIF date when available so plate numbers follow real-world order
     dated = []
+    known_hashes = existing_source_hashes()
+    skipped = []
     for p in photos:
+        source_hash = file_sha256(p)
+        if source_hash in known_hashes:
+            skipped.append(p)
+            continue
+        known_hashes.add(source_hash)
         d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
-        dated.append((d, p))
+        dated.append((d, p, source_hash))
     dated.sort(key=lambda x: x[0])
+
+    if skipped:
+        print(f"→ Skipping {len(skipped)} already imported image(s)")
+    if not dated:
+        print("✓ Nothing new to import")
+        return
 
     print(f"→ Processing {len(dated)} image(s) from {src_dir.relative_to(ROOT) if src_dir.is_relative_to(ROOT) else src_dir}\n")
 
     default_location = args.at or ""
     added = []
-    for date, src in dated:
+    for date, src, source_hash in dated:
+        original = preserve_original(src, source_hash)
         plate_num = next_plate_number()
         dest_name = f"plate-{plate_num:02d}.jpg"
         dest = GALLERY_DIR / dest_name
         size = process_image(src, dest)
+        thumb = thumbnail_for(dest)
+        process_thumbnail(dest, thumb)
         orient = orient_of(size)
         ratio = ratio_of(size)
         entry = format_entry(
             src_path=f"assets/gallery/{dest_name}",
+            thumb_path=f"assets/gallery/thumbs/{thumb.name}",
+            original=original.name,
+            source_sha256=source_hash,
             date=date,
             location=default_location,
             title="",
@@ -219,52 +377,44 @@ def cmd_ingest(args):
 
 
 def cmd_reprocess(args):
-    """Re-encode each plate from its original in ./gallery_inbox at current quality settings.
-
-    Inbox is sorted chronologically and paired 1:1 with gallery.md entries in
-    document order — so renamed plates (e.g. Dudu.jpg) get re-processed too.
-    """
+    """Re-encode each plate from its explicitly mapped original."""
     if not INBOX.exists():
         sys.exit(f"Inbox folder not found: {INBOX}")
-    inbox_files = sorted(
-        [p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
-    )
-    dated = []
-    for p in inbox_files:
-        d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
-        dated.append((d, p))
-    dated.sort(key=lambda x: x[0])
-
-    md_srcs = []
-    if GALLERY_MD.exists():
-        for line in GALLERY_MD.read_text(encoding="utf-8").splitlines():
-            m = re.match(r"^src:\s*(.+?)\s*$", line)
-            if m:
-                md_srcs.append(m.group(1))
-
-    if len(md_srcs) != len(dated):
-        sys.exit(
-            f"Inbox count ({len(dated)}) does not match gallery.md src count ({len(md_srcs)}); "
-            f"reprocess expects 1:1 chronological pairing."
-        )
-
-    print(f"→ Re-encoding {len(dated)} plate(s) at {MAX_LONG_EDGE}px long edge, JPEG q={JPEG_QUALITY}\n")
+    header, blocks = photo_blocks()
+    by_name, by_hash = inbox_lookup()
+    print(f"→ Re-encoding {len(blocks)} plate(s) at {MAX_LONG_EDGE}px long edge, JPEG q={JPEG_QUALITY}\n")
     total_before = 0
     total_after = 0
-    for (_d, src), md_src in zip(dated, md_srcs):
-        dest = ROOT / md_src
+    updated_blocks = []
+    skipped = 0
+    for block in blocks:
+        fields = block_fields(block)
+        dest = ROOT / fields.get("src", "")
+        src = resolve_original(fields, by_name, by_hash)
+        if not src:
+            print(f"  ! Skip {fields.get('src', '(missing src)')} (original not found)")
+            updated_blocks.append(block)
+            skipped += 1
+            continue
         if not dest.exists():
-            print(f"  ! Skip {md_src} (not found on disk)")
+            print(f"  ! Skip {fields.get('src')} (not found on disk)")
+            updated_blocks.append(block)
+            skipped += 1
             continue
         before = dest.stat().st_size
         size = process_image(src, dest)
+        thumb = thumbnail_for(dest)
+        process_thumbnail(dest, thumb)
+        block = set_block_field(block, "thumb", f"assets/gallery/thumbs/{thumb.name}")
+        updated_blocks.append(block)
         after = dest.stat().st_size
         total_before += before
         total_after += after
         print(f"  ✓ {dest.name}  ({size[0]}×{size[1]}, {before//1024} → {after//1024} KB)")
+    write_photo_blocks(header, updated_blocks)
     delta = (total_after - total_before) / 1024 / 1024
     sign = "+" if delta >= 0 else ""
-    print(f"\n✓ Total {total_before//1024//1024} → {total_after//1024//1024} MB  ({sign}{delta:.1f} MB)")
+    print(f"\n✓ Total {total_before//1024//1024} → {total_after//1024//1024} MB  ({sign}{delta:.1f} MB); {skipped} skipped")
 
 
 def cmd_list(args):
@@ -339,44 +489,27 @@ def cmd_geocode(args):
     if not GALLERY_MD.exists():
         sys.exit("gallery.md not found")
 
-    # Build ordered list of inbox originals by EXIF date to match plate numbering
     if not INBOX.exists():
         sys.exit(f"Inbox folder not found: {INBOX}")
-    inbox_files = sorted(
-        [p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
-    )
-    if not inbox_files:
+    by_name, by_hash = inbox_lookup()
+    if not by_name:
         sys.exit(f"No images in {INBOX}")
-    dated = []
-    for p in inbox_files:
-        d = read_exif_date(p) or datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d")
-        dated.append((d, p))
-    dated.sort(key=lambda x: x[0])  # same ordering gallery.py ingest used
-
-    # Match each plate-NN to the i-th inbox file
-    plate_to_src = {}
-    for i, (_d, src) in enumerate(dated, start=1):
-        plate_to_src[f"plate-{i:02d}.jpg"] = src
-
-    # Rewrite gallery.md
-    text = GALLERY_MD.read_text(encoding="utf-8")
-    blocks = re.split(r"(?=^\[\[photo\]\]$)", text, flags=re.MULTILINE)
-    header, photo_blocks = blocks[0], blocks[1:]
+    header, photo_blocks = photo_blocks()
 
     filled = 0
     skipped_no_gps = 0
     skipped_filled = 0
     new_blocks = []
-    for i, b in enumerate(photo_blocks):
-        src_m = re.search(r"^src:[ \t]*assets/gallery/(plate-\d+\.jpg)[ \t]*$", b, flags=re.MULTILINE)
+    for b in photo_blocks:
+        fields = block_fields(b)
         loc_m = re.search(r"^location:[ \t]*(.*)$", b, flags=re.MULTILINE)
-        plate_file = src_m.group(1) if src_m else None
+        plate_file = Path(fields.get("src", "")).name
         current_loc = (loc_m.group(1).strip() if loc_m else "")
         if current_loc and not args.force:
             skipped_filled += 1
             new_blocks.append(b)
             continue
-        original = plate_to_src.get(plate_file)
+        original = resolve_original(fields, by_name, by_hash)
         if not original or not original.exists():
             new_blocks.append(b)
             continue
@@ -405,9 +538,83 @@ def cmd_geocode(args):
         print(f"  ✓ {plate_file}  {original.name}  → {label}")
         time.sleep(1.1)  # Nominatim usage policy: <= 1 req/sec
 
-    new_text = header + "".join(new_blocks)
-    GALLERY_MD.write_text(new_text, encoding="utf-8")
+    write_photo_blocks(header, new_blocks)
     print(f"\n✓ Filled {filled} location(s); {skipped_no_gps} without GPS, {skipped_filled} already set.")
+
+
+def cmd_backfill_sources(args):
+    """Match legacy gallery assets to inbox originals by image content."""
+    header, blocks = photo_blocks()
+    by_name, by_hash = inbox_lookup()
+    originals = list(by_name.values())
+    if not blocks or not originals:
+        sys.exit("Both gallery.md entries and gallery_inbox originals are required")
+
+    original_signatures = {p: image_signature(p) for p in originals}
+    used = set()
+    assignments = {}
+
+    for index, block in enumerate(blocks):
+        fields = block_fields(block)
+        original = resolve_original(fields, by_name, by_hash)
+        if original:
+            assignments[index] = original
+            used.add(original)
+
+    unmatched = {i for i in range(len(blocks)) if i not in assignments}
+    while unmatched:
+        candidates = []
+        for index in unmatched:
+            fields = block_fields(blocks[index])
+            asset = ROOT / fields.get("src", "")
+            if not asset.exists():
+                continue
+            asset_ratio, asset_sig = image_signature(asset)
+            for original, (original_ratio, original_sig) in original_signatures.items():
+                if original in used or abs(asset_ratio - original_ratio) >= 0.02:
+                    continue
+                candidates.append((signature_distance(asset_sig, original_sig), index, original))
+        if not candidates:
+            break
+        score, index, original = min(candidates, key=lambda item: item[0])
+        if score > 25:
+            break
+        assignments[index] = original
+        used.add(original)
+        unmatched.remove(index)
+
+    updated = []
+    for index, block in enumerate(blocks):
+        original = assignments.get(index)
+        if not original:
+            updated.append(block)
+            continue
+        block = set_block_field(block, "original", original.name, after="src")
+        block = set_block_field(block, "source_sha256", file_sha256(original), after="original")
+        updated.append(block)
+
+    write_photo_blocks(header, updated)
+    print(f"✓ Added stable source mapping to {len(assignments)} entr{'y' if len(assignments) == 1 else 'ies'}; {len(unmatched)} unmatched")
+
+
+def cmd_backfill_thumbs(args):
+    """Generate WebP thumbnails for all existing gallery assets."""
+    header, blocks = photo_blocks()
+    updated = []
+    generated = 0
+    for block in blocks:
+        fields = block_fields(block)
+        src = ROOT / fields.get("src", "")
+        if not src.exists():
+            updated.append(block)
+            continue
+        thumb = thumbnail_for(src)
+        process_thumbnail(src, thumb)
+        block = set_block_field(block, "thumb", f"assets/gallery/thumbs/{thumb.name}")
+        updated.append(block)
+        generated += 1
+    write_photo_blocks(header, updated)
+    print(f"✓ Generated {generated} WebP thumbnails")
 
 
 def cmd_backfill_meta(args):
@@ -489,6 +696,8 @@ def main():
     sub.add_parser("list", help="List existing plates").set_defaults(func=cmd_list)
     sub.add_parser("reprocess", help="Re-encode all plates from inbox originals at current quality settings").set_defaults(func=cmd_reprocess)
     sub.add_parser("backfill-meta", help="Read each plate's dimensions and add/refresh orient+ratio fields").set_defaults(func=cmd_backfill_meta)
+    sub.add_parser("backfill-sources", help="Match legacy plates to inbox originals by image content").set_defaults(func=cmd_backfill_sources)
+    sub.add_parser("backfill-thumbs", help="Generate WebP thumbnails for every gallery plate").set_defaults(func=cmd_backfill_thumbs)
 
     geo_p = sub.add_parser("geocode", help="Fill empty location fields from inbox EXIF GPS via Nominatim")
     geo_p.add_argument("--lang", default="en", help="Reverse-geocode language (default: en)")
