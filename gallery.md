@@ -193,7 +193,7 @@ source_sha256: c11c22bff1d9f8e8745d9894b66756bd6860850b2f6219b6f39a8ecff05d4cc5
 date: 2023-06-23
 orient: landscape
 ratio: 1.333
-location: 
+location: Macau · China
 title: 
 caption:
 
