@@ -71,6 +71,18 @@ coverage:
   量子位 | https://mp.weixin.qq.com/s/ju9n-x4tTGNqFptn5mpdeQ | assets/brands/qbitai.png
 
 [[paper]]
+category: Embodied Intelligence
+venue: Under Review
+title: Human Activity Program Generation with Correction-by-Summarization
+authors: **Xiangyu Su**, Jintian Lin, Juntao Jian, Hao Wang, [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
+thumb: assets/publications/hapg.mp4
+thumb_poster: assets/publications/hapg-poster.jpg
+paper_url:
+code_url:
+project_url:
+summary_en: A self-evolving LLM Agent that distills past error-correction experiences into reusable code rules to fix non-executable instructions on the fly, validated on household and construction tasks.
+
+[[paper]]
 category: Computer Graphics
 venue: CVM 2025
 title: MTScan: Material Transfer from Partial Scans to CAD Models
