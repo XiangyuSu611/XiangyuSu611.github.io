@@ -1,0 +1,16 @@
+/* Display the user's original handwriting without altering the source image. */
+.hero-title .hero-title-signature {
+  display: inline-block;
+  width: auto;
+  height: 0.9em;
+  max-width: 100%;
+  object-fit: contain;
+  vertical-align: -0.12em;
+  filter: url("signature-filter.svg#signature-ink");
+  mix-blend-mode: multiply;
+}
+
+[data-theme="dark"] .hero-title .hero-title-signature {
+  filter: url("signature-filter.svg#signature-ink") invert(1);
+  mix-blend-mode: screen;
+}

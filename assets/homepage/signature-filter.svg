@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Expand dark strokes against white without modifying the source image. -->
+    <filter id="signature-ink" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceGraphic" operator="erode" radius="0.45" />
+    </filter>
+  </defs>
+</svg>

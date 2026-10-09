@@ -1,0 +1,25 @@
+/* Preview-only light palette; keep the existing dark theme unchanged. */
+:root:not([data-theme="dark"]) {
+  --bg: #FAF9F6;
+  --beyond-background: #F1EFE9;
+}
+
+:root:not([data-theme="dark"]) .beyond-research {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 28px;
+  border-top-color: transparent;
+}
+
+/* A quiet, full-width band, without changing the content or carousel width. */
+:root:not([data-theme="dark"]) .beyond-research::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--beyond-background);
+  pointer-events: none;
+}

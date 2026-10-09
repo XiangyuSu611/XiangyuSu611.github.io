@@ -1,0 +1,13 @@
+/* Display-only crop of the user's untouched 3024 × 4032 garden photograph.
+   Crop measured on its 1368 × 1824 display: x=290, y=1050, size=420.
+   Percentage sizing keeps the same head-and-shoulders framing at every size. */
+.hero-photo { position: relative; }
+.hero-photo img {
+  position: absolute;
+  width: 325.714286%;
+  max-width: none;
+  height: auto;
+  left: -69.047619%;
+  top: -250%;
+  object-fit: initial;
+}

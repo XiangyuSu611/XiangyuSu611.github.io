@@ -1,0 +1,11 @@
+/* Preview-only reading adjustments; leave the introductory paragraph intact. */
+.research-prose p,
+.interests-list.as-prose p {
+  text-align: left;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+.hero-affil {
+  color: var(--text-muted);
+}

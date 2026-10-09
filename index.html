@@ -34,6 +34,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20260714c" />
+  <link rel="stylesheet" href="assets/homepage/beyond-research.css?v=20260930-carousel-v2" />
+  <link rel="stylesheet" href="assets/homepage/publication-motion.css?v=20260930-persistent-float" />
+  <link rel="stylesheet" href="assets/homepage/signature.css?v=20260930-compact-bold" />
+  <link rel="stylesheet" href="assets/homepage/avatar.css?v=20261009-garden" />
+  <link rel="stylesheet" href="assets/homepage/warm-background.css?v=20260930" />
+  <link rel="stylesheet" href="assets/homepage/readability.css?v=20260930-interests" />
+  <link rel="stylesheet" href="assets/homepage/research-easter-eggs.css?v=20260930-research-v2" />
+  <script type="module" src="assets/homepage/beyond-research.js?v=20261009-carousel-1500ms"></script>
+  <script type="module" src="assets/homepage/research-easter-eggs.js?v=20260930-research-v2"></script>
 
   <!-- FOUC prevention: set theme before first paint -->
   <script>
@@ -43,6 +52,7 @@
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
+
 
   <!-- GoatCounter analytics (no cookies, privacy-friendly) -->
   <script data-goatcounter="https://xiangyusu611.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -131,7 +141,31 @@
     <div class="research-prose"></div>
   </section>
 
-  <hr class="interests-hr" />
+  <div class="research-cameo-anchor">
+    <hr class="interests-hr" />
+    <div id="research-cameo" class="research-cameo" role="group" aria-label="Research illustration" hidden>
+      <div class="research-cameo-entry research-cameo-robot" data-scene="robot" hidden>
+        <div class="research-cameo-parallax">
+          <img class="research-cameo-art" width="1374" height="1145" alt="A white industrial robot arm holding a metal workpiece above a fixture." decoding="async" />
+        </div>
+        <div class="research-cameo-plan">
+          <p class="research-cameo-command">Polish, then place.</p>
+          <ol aria-label="Task plan">
+            <li><span>1</span>Pick</li>
+            <li><span>2</span>Polish</li>
+            <li><span>3</span>Place</li>
+          </ol>
+        </div>
+      </div>
+      <div class="research-cameo-entry research-cameo-materials" data-scene="materials" hidden>
+        <div class="research-cameo-parallax">
+          <img class="research-cameo-art" width="1774" height="887" alt="Photo + Material → 3D: a photograph of a wooden armchair, a blue fabric material sphere, and a differently shaped 3D shell chair with matching blue fabric and wooden legs." decoding="async" />
+        </div>
+      </div>
+      <button type="button" class="research-cameo-close" aria-label="Close research illustration" title="Close (Esc)">&times;</button>
+    </div>
+    <span class="research-egg-status" role="status" aria-live="polite"></span>
+  </div>
 
   <!-- ======================================================
        RESEARCH INTERESTS
@@ -163,10 +197,94 @@
   </section>
 
   <!-- ======================================================
+       BEYOND RESEARCH — photography selection
+       ====================================================== -->
+  <section id="beyond-research" class="beyond-research" aria-labelledby="beyond-research-title">
+    <div class="beyond-research-heading">
+      <h2 id="beyond-research-title">Beyond research</h2>
+      <a class="beyond-research-gallery" href="gallery.html">Gallery</a>
+    </div>
+
+    <div class="beyond-research-viewport" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Ten travel photographs. Use the left and right arrow keys to browse.">
+    <div class="beyond-research-grid" id="beyond-research-track">
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Hallstatt, 2026">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-45.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="Hallstatt’s lakeside church and village beneath misty mountains." /></div>
+          <figcaption><span>Hallstatt</span><time datetime="2026-06-05">2026</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Vienna, 2026">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-35.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="A garden statue overlooking Vienna at sunset." /></div>
+          <figcaption><span>Vienna</span><time datetime="2026-06-02">2026</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Beijing, 2023">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-14.webp" width="1400" height="993" loading="lazy" decoding="async" draggable="false" alt="Blue-tiled temple roofs and carved white stone gates in Beijing." /></div>
+          <figcaption><span>Beijing</span><time datetime="2023-05-16">2023</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Traunkirchen, 2026">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-41.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="A lakeside church below steep mountain cliffs in Traunkirchen." /></div>
+          <figcaption><span>Traunkirchen</span><time datetime="2026-06-04">2026</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Wenling, 2022">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-10.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="The sun low over the sea and rocky coastline in Wenling." /></div>
+          <figcaption><span>Wenling</span><time datetime="2022-10-03">2022</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Vienna, 2026">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-32.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="Chandeliers and gilded balconies inside a concert hall in Vienna." /></div>
+          <figcaption><span>Vienna</span><time datetime="2026-06-01">2026</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Shanghai, 2023">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-23.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="Shanghai’s illuminated skyline reflected in the river at night." /></div>
+          <figcaption><span>Shanghai</span><time datetime="2023-08-19">2023</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Hallstatt, 2026">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-43.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="A curving railway beside mist-covered mountains near Hallstatt." /></div>
+          <figcaption><span>Hallstatt</span><time datetime="2026-06-05">2026</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Shenzhen, 2022">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-08.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="City buildings and illuminated roads in Shenzhen at dusk." /></div>
+          <figcaption><span>Shenzhen</span><time datetime="2022-07-20">2022</time></figcaption>
+        </figure>
+      </a>
+      <a class="beyond-research-photo" href="gallery.html" aria-label="Explore the Gallery — Yingde, 2023">
+        <figure>
+          <div class="beyond-research-image"><img src="assets/gallery/thumbs/plate-21.webp" width="1400" height="1050" loading="lazy" decoding="async" draggable="false" alt="Towering white clouds above a dark hill in Yingde." /></div>
+          <figcaption><span>Yingde</span><time datetime="2023-07-31">2023</time></figcaption>
+        </figure>
+      </a>
+    </div>
+    </div>
+    <div class="beyond-research-controls" hidden>
+      <button type="button" class="beyond-research-play" data-carousel-toggle aria-pressed="false" aria-label="Pause automatic slideshow">Pause</button>
+      <div class="beyond-research-navigation" role="group" aria-label="Slideshow controls">
+        <button type="button" data-carousel-prev aria-controls="beyond-research-track" aria-label="Previous photograph"><span aria-hidden="true">←</span></button>
+        <span class="beyond-research-position" aria-hidden="true">01 / 10</span>
+        <button type="button" data-carousel-next aria-controls="beyond-research-track" aria-label="Next photograph"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <p class="beyond-research-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+  </section>
+
+  <!-- ======================================================
        FOOTER
        ====================================================== -->
   <footer class="site-footer">
-    Xiangyu Su · 2026 · Built with <img class="claude-logo" src="assets/brands/claude-code.png" alt="" aria-hidden="true"><span class="footer-cc">Claude Code</span>
+    © 2026 Xiangyu Su
   </footer>
 
 </div><!-- /.container -->
@@ -469,7 +587,8 @@
       if (nameZh) {
         titleEl.innerHTML = escapeHtml(name) +
           '<span class="hero-title-sep">·</span>' +
-          '<span class="hero-title-zh">' + escapeHtml(nameZh) + '</span>';
+          '<img class="hero-title-signature" src="assets/homepage/xiangyu-signature.jpg"' +
+          ' width="1458" height="751" alt="' + escapeHtml(nameZh) + '" />';
       } else {
         titleEl.textContent = name;
       }
@@ -606,8 +725,8 @@
           : '';
 
         return (
-          '<div class="pub-item">' +
-            '<div class="pub-thumb">' + thumbHtml + '</div>' +
+          '<div class="pub-item"' + (p.title === 'Human Activity Program Generation with Correction-by-Summarization' ? ' id="human-activity"' : '') + '>' +
+            '<div class="pub-thumb' + (p.thumb ? ' pub-thumb--floating' : '') + '">' + thumbHtml + '</div>' +
             '<div class="pub-body">' +
               categoryHtml +
               toplineHtml +
@@ -684,7 +803,10 @@
       } else {
         container.classList.add('as-prose');
         container.innerHTML = data.paragraphs.map(function (p) {
-          return '<p>' + renderInline(p) + '</p>';
+          var prose = renderInline(p)
+            .replace('🤖', '<button type="button" class="research-egg-trigger" data-research-egg="robot" aria-label="Embodied intelligence: explore robot task planning" aria-controls="research-cameo" aria-expanded="false" title="Explore robot task planning"><span aria-hidden="true">🤖</span></button>')
+            .replace('📐', '<button type="button" class="research-egg-trigger" data-research-egg="materials" aria-label="Computer graphics: explore material transfer" aria-controls="research-cameo" aria-expanded="false" title="Explore material transfer"><span aria-hidden="true">📐</span></button>');
+          return '<p>' + prose + '</p>';
         }).join('');
       }
     }
@@ -797,7 +919,14 @@
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
       })
-      .then(function (md) { render(parseMd(md)); })
+      .then(function (md) {
+        render(parseMd(md));
+        if (location.hash === '#human-activity' || location.hash === '#beyond-research') {
+          requestAnimationFrame(function () {
+            document.getElementById(location.hash.slice(1)).scrollIntoView();
+          });
+        }
+      })
       .catch(showLoadError);
   })();
 

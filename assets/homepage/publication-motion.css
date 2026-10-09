@@ -1,0 +1,17 @@
+/* Preview-only, persistent elevation for all four publication previews. */
+.pub-list .pub-thumb--floating,
+.pub-list .pub-thumb--floating:hover {
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--bg);
+  transform: translateY(-3px);
+  box-shadow:
+    0 3px 8px rgba(28, 26, 21, 0.035),
+    0 12px 28px -8px rgba(28, 26, 21, 0.12);
+}
+
+[data-theme="dark"] .pub-list .pub-thumb--floating {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.055),
+    0 12px 28px -8px rgba(0, 0, 0, 0.38);
+}
