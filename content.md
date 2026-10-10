@@ -123,6 +123,13 @@ note:
 
 [[experience]]
 kind: award
+title: Best Paper Award in Automation
+org: IEEE International Conference on Robotics and Automation (ICRA)
+period: 2026.06
+note:
+
+[[experience]]
+kind: award
 title: Outstanding Innovative PhD Talent Scholarship
 org: Shenzhen University
 org_url: https://en.szu.edu.cn/
