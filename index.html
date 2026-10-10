@@ -41,6 +41,8 @@
   <link rel="stylesheet" href="assets/homepage/warm-background.css?v=20260930" />
   <link rel="stylesheet" href="assets/homepage/readability.css?v=20260930-interests" />
   <link rel="stylesheet" href="assets/homepage/research-easter-eggs.css?v=20260930-research-v2" />
+  <link rel="stylesheet" href="assets/homepage/publications.css?v=20261010-white-blue" />
+  <script type="module" src="assets/homepage/publication-citations.js?v=20261010"></script>
   <script type="module" src="assets/homepage/beyond-research.js?v=20261009-carousel-1500ms"></script>
   <script type="module" src="assets/homepage/research-easter-eggs.js?v=20260930-research-v2"></script>
 
@@ -180,7 +182,7 @@
   <!-- ======================================================
        PUBLICATIONS
        ====================================================== -->
-  <section aria-label="Publications">
+  <section aria-label="Publications" id="publications">
     <h2 class="section-title">Publications</h2>
 
     <div class="pub-list"></div>
@@ -657,21 +659,22 @@
           ? '<div class="pub-category">' + escapeHtml(p.category) + '</div>'
           : '';
 
-        var isAwardVenue = p.venue && /award/i.test(p.venue);
-        var toplineItems = [];
-        if (p.venue) {
-          toplineItems.push('<span class="pub-venue' + (isAwardVenue ? ' pub-venue--award' : '') + '">' + escapeHtml(p.venue) + '</span>');
-        }
+        var awardMatch = (p.venue || '').match(/^(.*?)\s+(Best Paper Award.*)$/i);
+        var venueHtml = p.venue
+          ? '<div class="pub-venue">' + (awardMatch
+            ? '<span>' + escapeHtml(awardMatch[1]) + '</span><span class="pub-venue-dot" aria-hidden="true">·</span><span class="pub-award">' + escapeHtml(awardMatch[2]) + '</span>'
+            : escapeHtml(p.venue)) + '</div>' : '';
         var linkItems = [];
-        if (p.project_url) linkItems.push('<a href="' + escapeHtml(p.project_url) + '" target="_blank" rel="noopener">Project Page</a>');
-        if (p.paper_url)   linkItems.push('<a href="' + escapeHtml(p.paper_url)   + '" target="_blank" rel="noopener">Paper</a>');
-        if (p.code_url)    linkItems.push('<a href="' + escapeHtml(p.code_url)    + '" target="_blank" rel="noopener">Code</a>');
-        var toplineHtml = isAwardVenue
-          ? '<div class="pub-topline pub-topline--venue">' + toplineItems.join('') + '</div>' +
-            (linkItems.length ? '<div class="pub-topline pub-topline--links">' + linkItems.join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>' : '')
-          : (toplineItems.concat(linkItems).length
-            ? '<div class="pub-topline">' + toplineItems.concat(linkItems).join('<span class="pub-topline-sep" aria-hidden="true">·</span>') + '</div>'
-            : '');
+        function action(label, url, icon) {
+          return '<a class="pub-action" href="' + escapeHtml(url) + '" target="_blank" rel="noopener"><span class="pub-action-icon" aria-hidden="true">' + icon + '</span>' + label + '</a>';
+        }
+        if (p.paper_url) {
+          linkItems.push(action('Paper', p.paper_url, SOCIAL_ICONS.cv.svg));
+          linkItems.push('<button type="button" class="pub-action pub-cite" aria-haspopup="dialog" aria-label="Cite ' + escapeHtml(p.title) + '" data-citation="' + escapeHtml(JSON.stringify({ title: p.title, authors: p.authors, venue: p.venue, paper_url: p.paper_url })) + '"><span class="pub-action-icon pub-icon-quote" aria-hidden="true"></span>Cite</button>');
+        }
+        if (p.code_url) linkItems.push(action('Code', p.code_url, SOCIAL_ICONS.github.svg));
+        if (p.project_url) linkItems.push(action('Project', p.project_url, '<span class="pub-icon-project"></span>'));
+        var actionsHtml = linkItems.length ? '<div class="pub-actions">' + linkItems.join('') + '</div>' : '';
 
         var summaryHtml = p.summary_en
           ? '<div class="pub-summary">' + renderInline(p.summary_en) + '</div>'
@@ -726,14 +729,14 @@
 
         return (
           '<div class="pub-item"' + (p.title === 'Human Activity Program Generation with Correction-by-Summarization' ? ' id="human-activity"' : '') + '>' +
-            '<div class="pub-thumb' + (p.thumb ? ' pub-thumb--floating' : '') + '">' + thumbHtml + '</div>' +
+            '<div class="pub-visual">' + categoryHtml + '<div class="pub-thumb' + (p.thumb ? ' pub-thumb--floating' : '') + '">' + thumbHtml + '</div></div>' +
             '<div class="pub-body">' +
-              categoryHtml +
-              toplineHtml +
               '<div class="pub-title">' + renderInline(p.title) + '</div>' +
               '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +
+              venueHtml +
               summaryHtml +
               footerHtml +
+              actionsHtml +
             '</div>' +
           '</div>'
         );
@@ -921,7 +924,7 @@
       })
       .then(function (md) {
         render(parseMd(md));
-        if (location.hash === '#human-activity' || location.hash === '#beyond-research') {
+        if (location.hash === '#human-activity' || location.hash === '#beyond-research' || location.hash === '#publications') {
           requestAnimationFrame(function () {
             document.getElementById(location.hash.slice(1)).scrollIntoView();
           });
