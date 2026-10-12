@@ -18,8 +18,6 @@
 #publications { scroll-margin-top: 30px; }
 #publications > .section-title {
   color: var(--pub-ink);
-  border-bottom: 1px solid var(--pub-line);
-  padding-bottom: 18px;
   margin-bottom: 26px;
 }
 .pub-list .pub-item {
