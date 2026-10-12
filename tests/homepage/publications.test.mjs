@@ -14,6 +14,17 @@ runInNewContext(slice('    function escapeHtml', '    function stripInlineCommen
   slice('    function renderPubItem', '    function renderPubs'), context);
 const papers = context.parsePubs(context.parseSections(md).Publications);
 
+test('dark publication colors follow the site theme while light blue and the award gradient remain', () => {
+  const css = readFileSync(new URL('../../assets/homepage/publications.css', import.meta.url), 'utf8');
+  const dark = css.match(/\[data-theme="dark"\]\s*\{([^}]+)\}/)[1];
+  for (const [token, global] of [['ink', 'text'], ['muted', 'text-muted'], ['blue', 'accent'], ['line', 'border']]) {
+    assert(dark.includes(`--pub-${token}: var(--${global});`));
+  }
+  assert(dark.includes('--pub-highlight: color-mix(in srgb, var(--accent) 20%, var(--bg));'));
+  assert(css.includes('--pub-blue: #2672b9;'));
+  assert(css.includes('background-image: linear-gradient(100deg, #f9ca55, #ffae54 28%, #ff846c 65%, #ff789a);'));
+});
+
 test('all executable inline scripts compile', () => {
   for (const [, attrs, body] of source.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
     if (!attrs.includes('application/ld+json') && body.trim()) new Script(body);

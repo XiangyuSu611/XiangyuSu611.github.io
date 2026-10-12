@@ -1,4 +1,4 @@
-/* Approved white/blue publication design; production homepage. */
+/* White/blue in light mode; reuse the site's green palette in dark mode. */
 :root:not([data-theme="dark"]) {
   --bg: #fff;
   --beyond-background: #f5f8fc;
@@ -9,11 +9,11 @@
   --pub-highlight: #ddeeff;
 }
 [data-theme="dark"] {
-  --pub-ink: #e1ebfa;
-  --pub-muted: #acbdd3;
-  --pub-blue: #85bfff;
-  --pub-line: #2c435c;
-  --pub-highlight: #233e5d;
+  --pub-ink: var(--text);
+  --pub-muted: var(--text-muted);
+  --pub-blue: var(--accent);
+  --pub-line: var(--border);
+  --pub-highlight: color-mix(in srgb, var(--accent) 20%, var(--bg));
 }
 #publications { scroll-margin-top: 30px; }
 #publications > .section-title {
@@ -173,6 +173,8 @@
   box-shadow: 0 20px 70px #10233d26;
 }
 .citation-dialog::backdrop { background: #10233d66; }
+[data-theme="dark"] .citation-dialog { box-shadow: 0 20px 70px #00000066; }
+[data-theme="dark"] .citation-dialog::backdrop { background: #00000099; }
 .citation-dialog h2 { font: 700 23px/1.3 var(--font); }
 .citation-title { margin: 10px 0 18px; font-size: 14px; color: var(--pub-muted); }
 .citation-dialog textarea {
