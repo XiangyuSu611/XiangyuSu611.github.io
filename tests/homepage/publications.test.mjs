@@ -14,15 +14,34 @@ runInNewContext(slice('    function escapeHtml', '    function stripInlineCommen
   slice('    function renderPubItem', '    function renderPubs'), context);
 const papers = context.parsePubs(context.parseSections(md).Publications);
 
-test('dark publication colors follow the site theme while light blue and the award gradient remain', () => {
+test('publication text and links follow the site palette in both themes without changing highlights or awards', () => {
   const css = readFileSync(new URL('../../assets/homepage/publications.css', import.meta.url), 'utf8');
+  const light = css.match(/:root:not\(\[data-theme="dark"\]\)\s*\{([^}]+)\}/)[1];
   const dark = css.match(/\[data-theme="dark"\]\s*\{([^}]+)\}/)[1];
+  for (const [token, global] of [['ink', 'text'], ['muted', 'text-muted'], ['blue', 'accent']]) {
+    assert(light.includes(`--pub-${token}: var(--${global});`));
+  }
   for (const [token, global] of [['ink', 'text'], ['muted', 'text-muted'], ['blue', 'accent'], ['line', 'border']]) {
     assert(dark.includes(`--pub-${token}: var(--${global});`));
   }
   assert(dark.includes('--pub-highlight: color-mix(in srgb, var(--accent) 20%, var(--bg));'));
-  assert(css.includes('--pub-blue: #2672b9;'));
+  assert(light.includes('--pub-highlight: #ddeeff;'));
+  assert(css.includes('background: linear-gradient(100deg, #b97800 0%, #ee7400 28%, #ee4634 65%, #db3657 100%);'));
   assert(css.includes('background-image: linear-gradient(100deg, #f9ca55, #ffae54 28%, #ff846c 65%, #ff789a);'));
+});
+
+test('publication typography uses the site font, restrained titles and the existing compact summaries', () => {
+  const css = readFileSync(new URL('../../assets/homepage/publications.css', import.meta.url), 'utf8');
+  const name = css.match(/\.pub-authors strong\s*\{([^}]+)\}/)[1];
+  assert(name.includes('font-family: var(--font);'));
+  assert(name.includes('letter-spacing: normal;'));
+  const titles = [...css.matchAll(/\.pub-list \.pub-title\s*\{([^}]+)\}/g)];
+  assert.equal(titles.length, 1);
+  assert(titles[0][1].includes('font-size: 20px;'));
+  const summary = css.match(/\.pub-list \.pub-summary\s*\{([^}]+)\}/)[1];
+  assert(summary.includes('font-size: 15px;'));
+  assert(summary.includes('line-height: 1.65;'));
+  assert(css.includes('background: var(--pub-highlight);'));
 });
 
 test('all executable inline scripts compile', () => {
