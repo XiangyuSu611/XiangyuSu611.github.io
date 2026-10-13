@@ -62,6 +62,20 @@ test('under-review work keeps no resource or citation controls', () => {
   assert.equal(buildCitation(papers[1]), '');
 });
 
+test('video thumbnails use keyboard-accessible buttons and defer their separate HD sources', () => {
+  for (const paper of papers.slice(0, 2)) {
+    const html = context.renderPubItem(paper);
+    assert.match(html, /<button class="pub-thumb[^\"]*pub-video-trigger" type="button" aria-haspopup="dialog"/);
+    assert(html.includes('data-video-src="' + paper.video + '"'));
+    assert(html.includes('data-src="' + paper.thumb + '"'));
+    assert.match(paper.thumb, /-preview\.mp4$/);
+    assert.match(paper.video, /-hd\.mp4$/);
+    assert(!html.includes(' src="' + paper.video + '"'));
+    assert.match(html, /preload="none"/);
+  }
+  for (const paper of papers.slice(2)) assert(!context.renderPubItem(paper).includes('pub-video-trigger'));
+});
+
 test('citation preserves author order and known year and arXiv metadata', () => {
   assert.deepEqual(plainAuthors(papers[0].authors), ['Xiangyu Su', 'Juzhan Xu', 'Oliver van Kaick', 'Kai Xu', 'Ruizhen Hu']);
   const bib = buildCitation(papers[0]);

@@ -18,7 +18,7 @@ test('production has no dependency on the local preview', () => {
 test('published homepage assets exist at their production paths', () => {
   const paths = [
     ...[...html.matchAll(/(?:src|href|poster)=["']((?:assets\/|style\.css)[^"']+)["']/g)].map(m => m[1]),
-    ...[...content.matchAll(/^(?:photo|thumb|thumb_poster): (.+)$/gm)].map(m => m[1]),
+    ...[...content.matchAll(/^(?:photo|thumb|thumb_poster|video): (.+)$/gm)].map(m => m[1]),
     ...Object.values(SCENES).map(scene => scene.asset),
     'assets/homepage/signature-filter.svg',
   ];

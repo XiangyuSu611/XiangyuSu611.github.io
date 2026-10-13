@@ -42,6 +42,8 @@
   <link rel="stylesheet" href="assets/homepage/readability.css?v=20260930-interests" />
   <link rel="stylesheet" href="assets/homepage/research-easter-eggs.css?v=20260930-research-v2" />
   <link rel="stylesheet" href="assets/homepage/publications.css?v=20261012-single-divider" />
+  <link rel="stylesheet" href="assets/homepage/publication-videos.css?v=20261013-hd" />
+  <script type="module" src="assets/homepage/publication-videos.js?v=20261013-hd"></script>
   <script type="module" src="assets/homepage/publication-citations.js?v=20261010"></script>
   <script type="module" src="assets/homepage/beyond-research.js?v=20261009-carousel-1500ms"></script>
   <script type="module" src="assets/homepage/research-easter-eggs.js?v=20260930-research-v2"></script>
@@ -659,6 +661,16 @@
           ? '<div class="pub-category">' + escapeHtml(p.category) + '</div>'
           : '';
 
+        var thumbTag = isVideoThumb ? 'button' : 'div';
+        var videoAttrs = isVideoThumb
+          ? ' type="button" aria-haspopup="dialog" aria-label="Watch video: ' + escapeHtml(p.title) +
+            '" title="Watch enlarged video" data-video-src="' + escapeHtml(p.video || p.thumb) +
+            '" data-video-title="' + escapeHtml(p.title) + '" data-video-poster="' + escapeHtml(p.thumb_poster || '') + '"'
+          : '';
+        var expandHint = isVideoThumb
+          ? '<span class="pub-video-expand" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg></span>'
+          : '';
+
         var awardMatch = (p.venue || '').match(/^(.*?)\s+(Best Paper Award.*)$/i);
         var venueHtml = p.venue
           ? '<div class="pub-venue">' + (awardMatch
@@ -729,7 +741,7 @@
 
         return (
           '<div class="pub-item"' + (p.title === 'Human Activity Program Generation with Correction-by-Summarization' ? ' id="human-activity"' : '') + '>' +
-            '<div class="pub-visual">' + categoryHtml + '<div class="pub-thumb' + (p.thumb ? ' pub-thumb--floating' : '') + '">' + thumbHtml + '</div></div>' +
+            '<div class="pub-visual">' + categoryHtml + '<' + thumbTag + ' class="pub-thumb' + (p.thumb ? ' pub-thumb--floating' : '') + (isVideoThumb ? ' pub-video-trigger' : '') + '"' + videoAttrs + '>' + thumbHtml + expandHint + '</' + thumbTag + '></div>' +
             '<div class="pub-body">' +
               '<div class="pub-title">' + renderInline(p.title) + '</div>' +
               '<div class="pub-authors">' + renderInline(p.authors || '') + '</div>' +

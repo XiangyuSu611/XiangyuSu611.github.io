@@ -52,6 +52,7 @@ My current research interests center on 🤖 ==Embodied Intelligence==, particul
 # Separate each paper with a [[paper]] marker.
 # thumb: image or MP4 path (leave blank for placeholder)
 # thumb_poster: optional poster image for an MP4 thumbnail
+# video: optional full-resolution clip, loaded only when the preview is opened
 # coverage: external press, format "name | url | logo"; delete the field if none.
 
 [[paper]]
@@ -59,8 +60,9 @@ category: Embodied Intelligence
 venue: ICRA 2026 Best Paper Award in Automation
 title: IMR-LLM: Industrial Multi-Robot Task Planning and Program Generation using Large Language Models
 authors: **Xiangyu Su**, [Juzhan Xu](https://juzhan.github.io/), [Oliver van Kaick](https://carleton.ca/scs/people/oliver-van-kaick/), [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
-thumb: assets/publications/imr-llm.mp4
-thumb_poster: assets/publications/imr-llm-poster.jpg
+thumb: assets/publications/imr-llm-preview.mp4
+video: assets/publications/imr-llm-hd.mp4
+thumb_poster: assets/publications/imr-llm-hd-poster.jpg
 paper_url: https://arxiv.org/abs/2603.02669
 code_url: https://github.com/XiangyuSu611/IMR-LLM-Code
 project_url: https://xiangyusu611.github.io/imr-llm/
@@ -75,8 +77,9 @@ category: Embodied Intelligence
 venue: Under Review
 title: Human Activity Program Generation with Correction-by-Summarization
 authors: **Xiangyu Su**, Jintian Lin, Juntao Jian, Hao Wang, [Kai Xu](https://kevinkaixu.net/), [Ruizhen Hu](https://csse.szu.edu.cn/staff/ruizhenhu/)
-thumb: assets/publications/hapg.mp4
-thumb_poster: assets/publications/hapg-poster.jpg
+thumb: assets/publications/hapg-preview.mp4
+video: assets/publications/hapg-hd.mp4
+thumb_poster: assets/publications/hapg-hd-poster.jpg
 paper_url:
 code_url:
 project_url:

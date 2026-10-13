@@ -13,6 +13,10 @@ assets/publications/*.pdf
 assets/publications/*.mp4
 !assets/publications/imr-llm.mp4
 !assets/publications/hapg.mp4
+!assets/publications/imr-llm-hd.mp4
+!assets/publications/hapg-hd.mp4
+!assets/publications/imr-llm-preview.mp4
+!assets/publications/hapg-preview.mp4
 
 # Gallery inbox — drop raw photos here, `./gallery.py ingest` processes them
 gallery_inbox/
